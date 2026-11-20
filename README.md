@@ -2,6 +2,7 @@
 
 SmartNanoFormulator is a research prototype with a FastAPI service and a Flutter Web client. The backend wraps the supplied `Hybrid(root).answer(request)` engine. It reports the model and literature branches separately and retains the engine's field-by-field decision rules.
 
+- [Production Flutter app](https://smartnanoformulator.web.app)
 - [GitHub source](https://github.com/alihamdy135/smartnanoformulator)
 - [Production API documentation](https://smartnanoformulator-api-alihatab.vercel.app/docs)
 
@@ -50,30 +51,24 @@ Build Flutter Web with the HTTPS API origin:
 cd frontend
 flutter build web --release \
   --pwa-strategy=none --no-web-resources-cdn \
-  --dart-define=NANOPREDICT_API_BASE_URL=https://YOUR-API.vercel.app
+  --dart-define=NANOPREDICT_API_BASE_URL=https://smartnanoformulator-api-alihatab.vercel.app
 cd ..
 ```
 
-Firebase Hosting configuration is in `firebase.json`. A project-local Firebase CLI is pinned in `tools/firebase-cli` so a global install is not required. Log in with the Google account that owns the Hosting project, select the project, then deploy:
+Firebase Hosting serves `frontend/build/web` using the configuration in `firebase.json`. Deploy to the `smartnanoformulator` project from the repository root using the pinned Firebase CLI:
 
 ```bash
-cd tools/firebase-cli
-export XDG_CONFIG_HOME=/tmp/smartnano-firebase/config
-export XDG_CACHE_HOME=/tmp/smartnano-firebase/cache
-./node_modules/.bin/firebase login
-./node_modules/.bin/firebase projects:list
-cd ../..
-./tools/firebase-cli/node_modules/.bin/firebase use --add
-./tools/firebase-cli/node_modules/.bin/firebase deploy --only hosting
+npm ci --prefix tools/firebase-cli
+./tools/firebase-cli/node_modules/.bin/firebase login
+./tools/firebase-cli/node_modules/.bin/firebase projects:list
+./tools/firebase-cli/node_modules/.bin/firebase deploy --only hosting --project smartnanoformulator
 ```
 
-Sign in using the Google account that has access to the Firebase project. If the CLI prints a sign-in URL, open it and follow the CLI instructions to finish authorization in your terminal.
-
-The CLI account state is kept outside the repository under `/tmp/smartnano-firebase`; use a writable, private config directory if you need credentials to persist across machine restarts. `firebase use --add` writes the selected project alias to `.firebaserc`, which is intentionally created only after the owner selects a project. At the original handoff, no Firebase project ID or authorized local account was present.
+Sign in with a Google account that has Firebase Hosting deploy access to this project. If the CLI prints a sign-in URL, complete authorization in your browser and enter the one-time code in your own terminal when prompted.
 
 ### Automatic deployments from GitHub
 
-`.github/workflows/firebase-hosting.yml` builds Flutter and deploys the live Firebase Hosting channel when frontend or Hosting configuration changes reach `main`. It uses the Actions variable `NANOPREDICT_API_BASE_URL` when set and defaults to the current Vercel API URL. Configure the Actions variable `FIREBASE_PROJECT_ID` and the Actions secret `FIREBASE_SERVICE_ACCOUNT` in the GitHub repository settings. Store the Hosting service account JSON in that secret. After configuring credentials, run the workflow from the Actions tab on `main` for the initial release.
+`.github/workflows/firebase-hosting.yml` builds Flutter and deploys the live Firebase Hosting channel when frontend or Hosting configuration changes reach `main`. It uses the Actions variable `NANOPREDICT_API_BASE_URL` when set and defaults to the current Vercel API URL. The Actions variable `FIREBASE_PROJECT_ID` is `smartnanoformulator`. For a new GitHub setup, configure the Actions secret `FIREBASE_SERVICE_ACCOUNT` with the credential of a dedicated Hosting deployment service account. Store it directly in GitHub Actions secrets. After configuring credentials, run the workflow from the Actions tab on `main` for the initial release.
 
 The `alihatab/smartnanoformulator-api` Vercel project uses the GitHub repository root for FastAPI builds. Pushes to the production branch, `main`, trigger backend builds. The Flutter workflow defaults to `smartnanoformulator-api-alihatab.vercel.app`.
 
@@ -81,4 +76,5 @@ The `alihatab/smartnanoformulator-api` Vercel project uses the GitHub repository
 
 - Backend: `NANOPREDICT_ALLOWED_ORIGINS`, `NANOPREDICT_ALLOWED_ORIGIN_REGEX`, `NANOPREDICT_MODEL_RELEASE`, `NANOPREDICT_CORPUS_RELEASE`.
 - Flutter build-time: `NANOPREDICT_API_BASE_URL`.
-- `FIREBASE_PROJECT_ID` and `NANOPREDICT_AUTH_REQUIRED` are reserved for a future Firebase Authentication integration; authentication is not enabled by this release contract.
+- GitHub Actions: `FIREBASE_PROJECT_ID` (repository variable) and `FIREBASE_SERVICE_ACCOUNT` (repository secret).
+- Backend Firebase Authentication is not enabled in this release.
