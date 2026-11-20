@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "app.py": {
+      "maxDuration": 120,
+      "includeFiles": "runtime-assets.zip",
+      "excludeFiles": "{**/nvidia/**,**/tests/**,**/__pycache__/**,**/*.pyc}"
+    }
+  }
+}

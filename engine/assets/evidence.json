@@ -1,0 +1,163 @@
+[
+  {
+    "id": "usp-liposomes",
+    "title": "USP-NF General Chapter <1154> Liposome Drug Products",
+    "url": "https://doi.org/10.31003/USPNF_M17435_02_01",
+    "kind": "compendial",
+    "carrier": "liposome",
+    "topics": [
+      "excipients",
+      "carrier",
+      "size",
+      "release"
+    ],
+    "text": "Liposomes have a lipid bilayer and an aqueous compartment. The aqueous compartment and lipid bilayer provide distinct locations for incorporating water-soluble and lipophilic payloads. Product-specific characterization depends on the formulation and route.",
+    "limitation": "General formulation guidance. Provides neither a drug-specific ratio nor a performance prediction."
+  },
+  {
+    "id": "intech-liposomes",
+    "title": "Drug Delivery through Liposomes",
+    "url": "https://doi.org/10.5772/intechopen.97727",
+    "kind": "book chapter",
+    "carrier": "liposome",
+    "topics": [
+      "excipients",
+      "carrier",
+      "entrapment"
+    ],
+    "text": "Liposome design considers lipid composition, vesicle characteristics, and drug association with aqueous or lipid regions.",
+    "limitation": "Background for candidate design. Independently measured outcomes are needed for a particular batch."
+  },
+  {
+    "id": "eugster-process",
+    "title": "Eugster et al. (2024), Leveraging machine learning to streamline the development of liposomal drug delivery systems",
+    "url": "https://doi.org/10.1016/j.jconrel.2024.10.065",
+    "kind": "experimental",
+    "carrier": "liposome",
+    "topics": [
+      "size",
+      "pdi",
+      "formation",
+      "ratios"
+    ],
+    "text": "The study related liposome formation and size to chip geometry, lipid composition and microfluidic flow settings. Its size regression used a screened subset of runs.",
+    "limitation": "This is the training source for the Eugster model. It cannot independently confirm that model or establish drug-specific loading, release or tissue delivery.",
+    "training_source": "eugster"
+  },
+  {
+    "id": "celecoxib-skin",
+    "title": "Bragagni et al. (2012), Comparative study of liposomes, transfersomes and ethosomes for topical celecoxib",
+    "url": "https://doi.org/10.3109/10717544.2012.724472",
+    "kind": "comparative study",
+    "drug": "celecoxib",
+    "route": "topical",
+    "tissue": "skin",
+    "carrier": "ethosome",
+    "topics": [
+      "carrier",
+      "excipients",
+      "entrapment",
+      "size",
+      "pdi"
+    ],
+    "text": "The study compared liposomes, transfersomes and ethosomes for topical celecoxib. The Tween 20 ethosome was a favorable experimental candidate in this comparison.",
+    "limitation": "Study-specific comparison using excised human skin. Batch F measurements apply to that published formulation.",
+    "locator": "Table 2, batch F",
+    "measurements": {
+      "size": {
+        "value": 258.4,
+        "unit": "nm"
+      },
+      "pdi": {
+        "value": 0.19,
+        "unit": "unitless"
+      },
+      "entrapment": {
+        "value": 54.4,
+        "unit": "%"
+      }
+    }
+  },
+  {
+    "id": "niosomes-donepezil",
+    "title": "Shahiwala et al. (2023), Designing Optimum Drug Delivery Systems Using Machine Learning Approaches: a Prototype Study of Niosomes",
+    "url": "https://doi.org/10.1208/s12249-023-02547-2",
+    "kind": "experimental",
+    "drug": "donepezil hydrochloride",
+    "carrier": "niosome",
+    "topics": [
+      "carrier",
+      "ratios",
+      "excipients",
+      "size",
+      "entrapment"
+    ],
+    "text": "The authors examined surfactant and cholesterol ratios and validated a formulation model with experimental donepezil hydrochloride niosomes.",
+    "limitation": "A carrier- and drug-specific example. It does not justify transferring a ratio across drug forms or administration routes."
+  },
+  {
+    "id": "transfersome-ethosome",
+    "title": "Ascenso et al. (2015), Development, characterization, and skin delivery studies of ultradeformable vesicles",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4583114/",
+    "kind": "comparative study",
+    "carrier": "transfersome",
+    "route": "topical",
+    "tissue": "skin",
+    "topics": [
+      "carrier",
+      "excipients",
+      "pdi",
+      "size"
+    ],
+    "text": "The experimental comparison varied surfactants in transfersomes and included ethanol-containing vesicle systems for skin delivery. It studied caffeine and vitamin E as model actives.",
+    "limitation": "Evidence for the studied model actives and skin experiments. Results do not transfer directly to a different payload."
+  },
+  {
+    "id": "oral-quercetin",
+    "title": "Riva et al. (2019), Improved Oral Absorption of Quercetin from Quercetin Phytosome",
+    "url": "https://doi.org/10.1007/s13318-018-0517-3",
+    "kind": "experimental",
+    "drug": "quercetin",
+    "carrier": "phytosome",
+    "route": "oral",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "bioavailability"
+    ],
+    "text": "The study evaluated a lecithin-based quercetin phytosome and reported oral bioavailability in healthy volunteers.",
+    "limitation": "Oral pharmacokinetics for a specific product. It does not establish release kinetics, tissue targeting, or efficacy for another formulation."
+  },
+  {
+    "id": "yanes-release",
+    "title": "Yanes et al. (2025), Making in vitro release and formulation data AI-ready",
+    "url": "https://doi.org/10.1016/j.ijpx.2025.100393",
+    "kind": "methods",
+    "carrier": "liposome",
+    "topics": [
+      "release",
+      "assay",
+      "stability"
+    ],
+    "text": "The liposome release database records formulation and assay conditions alongside digitized curves. Release comparisons require defined medium, apparatus and test conditions.",
+    "limitation": "A 24-hour measurement is not a full release curve. Results from incompatible assays are not direct substitutes."
+  },
+  {
+    "id": "fda-liposomes",
+    "title": "FDA (2018), Liposome Drug Products guidance",
+    "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/liposome-drug-products-chemistry-manufacturing-and-controls-human-pharmacokinetics-and",
+    "kind": "regulatory",
+    "carrier": "liposome",
+    "topics": [
+      "size",
+      "pdi",
+      "entrapment",
+      "release",
+      "stability",
+      "tissue"
+    ],
+    "text": "The guidance discusses liposome product characterization and separates chemistry, manufacturing and controls from pharmacokinetics and bioavailability evidence.",
+    "limitation": "General guidance. It does not establish delivery to a target tissue for an untested formulation."
+  }
+]

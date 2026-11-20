@@ -1,0 +1,178 @@
+{
+  "request": {
+    "carrier": "liposome",
+    "model_family": "eugster",
+    "targets": [
+      "size",
+      "pdi",
+      "formation"
+    ],
+    "candidate": {
+      "primary_lipid": "DMPC",
+      "chip": "ZZ",
+      "cholesterol_pct": 40,
+      "peg_pct": 5,
+      "tfr_ml_min": 8,
+      "aqueous_to_organic_frr": 1
+    }
+  },
+  "results": {
+    "size": {
+      "decision": "model_estimate",
+      "confidence_basis": "in-domain benchmark support",
+      "rationale": "No matched independent measurement for this candidate. Literature provides context.",
+      "model": {
+        "status": "process_estimate",
+        "value": 461.4,
+        "unit": "nm",
+        "support": "observed settings",
+        "formation_score": 1.0,
+        "grouped_cv_mae": 17.417033765820428,
+        "grouped_cv_absolute_error_p90": 43.8861,
+        "limitation": "Conditional on formation. Grouped CV error describes this cohort; it is not a calibrated prediction interval."
+      },
+      "evidence": [
+        {
+          "id": "fda-liposomes",
+          "title": "FDA (2018), Liposome Drug Products guidance",
+          "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/liposome-drug-products-chemistry-manufacturing-and-controls-human-pharmacokinetics-and",
+          "kind": "regulatory",
+          "carrier": "liposome",
+          "topics": [
+            "size",
+            "pdi",
+            "entrapment",
+            "release",
+            "stability",
+            "tissue"
+          ],
+          "text": "The guidance discusses liposome product characterization and separates chemistry, manufacturing and controls from pharmacokinetics and bioavailability evidence.",
+          "limitation": "General guidance. It does not establish delivery to a target tissue for an untested formulation.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "eugster-process",
+          "title": "Eugster et al. (2024), Leveraging machine learning to streamline the development of liposomal drug delivery systems",
+          "url": "https://doi.org/10.1016/j.jconrel.2024.10.065",
+          "kind": "experimental",
+          "carrier": "liposome",
+          "topics": [
+            "size",
+            "pdi",
+            "formation",
+            "ratios"
+          ],
+          "text": "The study related liposome formation and size to chip geometry, lipid composition and microfluidic flow settings. Its size regression used a screened subset of runs.",
+          "limitation": "This is the training source for the Eugster model. It cannot independently confirm that model or establish drug-specific loading, release or tissue delivery.",
+          "training_source": "eugster",
+          "applicability": "background_or_analogue",
+          "independence": "training_source"
+        },
+        {
+          "id": "usp-liposomes",
+          "title": "USP-NF General Chapter <1154> Liposome Drug Products",
+          "url": "https://doi.org/10.31003/USPNF_M17435_02_01",
+          "kind": "compendial",
+          "carrier": "liposome",
+          "topics": [
+            "excipients",
+            "carrier",
+            "size",
+            "release"
+          ],
+          "text": "Liposomes have a lipid bilayer and an aqueous compartment. The aqueous compartment and lipid bilayer provide distinct locations for incorporating water-soluble and lipophilic payloads. Product-specific characterization depends on the formulation and route.",
+          "limitation": "General formulation guidance. Provides neither a drug-specific ratio nor a performance prediction.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        }
+      ]
+    },
+    "pdi": {
+      "decision": "model_estimate",
+      "confidence_basis": "in-domain benchmark support",
+      "rationale": "No matched independent measurement for this candidate. Literature provides context.",
+      "model": {
+        "status": "process_estimate",
+        "value": 0.1425,
+        "unit": "unitless",
+        "support": "observed settings",
+        "formation_score": 1.0,
+        "grouped_cv_mae": 0.03759177032249556,
+        "grouped_cv_absolute_error_p90": 0.0796,
+        "limitation": "Conditional on formation. Grouped CV error describes this cohort; it is not a calibrated prediction interval."
+      },
+      "evidence": [
+        {
+          "id": "fda-liposomes",
+          "title": "FDA (2018), Liposome Drug Products guidance",
+          "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/liposome-drug-products-chemistry-manufacturing-and-controls-human-pharmacokinetics-and",
+          "kind": "regulatory",
+          "carrier": "liposome",
+          "topics": [
+            "size",
+            "pdi",
+            "entrapment",
+            "release",
+            "stability",
+            "tissue"
+          ],
+          "text": "The guidance discusses liposome product characterization and separates chemistry, manufacturing and controls from pharmacokinetics and bioavailability evidence.",
+          "limitation": "General guidance. It does not establish delivery to a target tissue for an untested formulation.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "eugster-process",
+          "title": "Eugster et al. (2024), Leveraging machine learning to streamline the development of liposomal drug delivery systems",
+          "url": "https://doi.org/10.1016/j.jconrel.2024.10.065",
+          "kind": "experimental",
+          "carrier": "liposome",
+          "topics": [
+            "size",
+            "pdi",
+            "formation",
+            "ratios"
+          ],
+          "text": "The study related liposome formation and size to chip geometry, lipid composition and microfluidic flow settings. Its size regression used a screened subset of runs.",
+          "limitation": "This is the training source for the Eugster model. It cannot independently confirm that model or establish drug-specific loading, release or tissue delivery.",
+          "training_source": "eugster",
+          "applicability": "background_or_analogue",
+          "independence": "training_source"
+        }
+      ]
+    },
+    "formation": {
+      "decision": "model_estimate",
+      "confidence_basis": "in-domain benchmark support",
+      "rationale": "No matched independent measurement for this candidate. Literature provides context.",
+      "model": {
+        "status": "process_estimate",
+        "value": 1.0,
+        "unit": "uncalibrated score",
+        "support": "observed settings"
+      },
+      "evidence": [
+        {
+          "id": "eugster-process",
+          "title": "Eugster et al. (2024), Leveraging machine learning to streamline the development of liposomal drug delivery systems",
+          "url": "https://doi.org/10.1016/j.jconrel.2024.10.065",
+          "kind": "experimental",
+          "carrier": "liposome",
+          "topics": [
+            "size",
+            "pdi",
+            "formation",
+            "ratios"
+          ],
+          "text": "The study related liposome formation and size to chip geometry, lipid composition and microfluidic flow settings. Its size regression used a screened subset of runs.",
+          "limitation": "This is the training source for the Eugster model. It cannot independently confirm that model or establish drug-specific loading, release or tissue delivery.",
+          "training_source": "eugster",
+          "applicability": "background_or_analogue",
+          "independence": "training_source"
+        }
+      ]
+    }
+  },
+  "method": "Extractive literature retrieval and rule-based adjudication. Evidence relevance and model error are reported separately."
+}

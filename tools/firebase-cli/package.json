@@ -1,0 +1,9 @@
+{
+  "name": "smartnanoformulator-firebase-cli",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Project-local Firebase Hosting CLI tooling",
+  "devDependencies": {
+    "firebase-tools": "15.32.1"
+  }
+}

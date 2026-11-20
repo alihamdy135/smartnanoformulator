@@ -1,0 +1,227 @@
+openapi: 3.1.0
+info:
+  title: SmartNanoFormulator API
+  version: 0.1.0
+  description: Proposed contract for the first public-facing research prototype.
+paths:
+  /healthz:
+    get:
+      operationId: health
+      responses:
+        '200':
+          description: Required runtime assets are present and the engine is ready.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, api_version, model_release, corpus_release]
+                properties:
+                  status: {const: ready}
+                  api_version: {type: string}
+                  model_release: {type: string}
+                  corpus_release: {type: string}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /v1/formulation-assessments:
+    post:
+      operationId: assessFormulation
+      description: Maps to model_family drug. Optional descriptors are echoed as request context.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/FormulationRequest'}
+            example:
+              drug: celecoxib
+              route: topical
+              tissue: skin
+              targets: [carrier, excipients, entrapment, release]
+              desired_release: {hours: 24, percent: 65}
+      responses:
+        '200': {$ref: '#/components/responses/Assessment'}
+        '422': {$ref: '#/components/responses/Invalid'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /v1/process-assessments:
+    post:
+      operationId: assessProcess
+      description: Maps to model_family eugster and carrier liposome.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ProcessRequest'}
+            example:
+              targets: [size, pdi, formation]
+              candidate:
+                primary_lipid: DMPC
+                chip: ZZ
+                cholesterol_pct: 40
+                peg_pct: 5
+                tfr_ml_min: 8
+                aqueous_to_organic_frr: 1
+      responses:
+        '200': {$ref: '#/components/responses/Assessment'}
+        '422': {$ref: '#/components/responses/Invalid'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+components:
+  responses:
+    Assessment:
+      description: An assessment including scientific abstention when applicable.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Assessment'}
+    Invalid:
+      description: Malformed request or input violates the transport contract.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    Unavailable:
+      description: Required model or corpus is unavailable.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+  schemas:
+    Percentage:
+      type: number
+      minimum: 0
+      maximum: 100
+    FormulationRequest:
+      type: object
+      additionalProperties: false
+      required: [drug, route, tissue, targets]
+      properties:
+        drug: {type: string, minLength: 1, maxLength: 160}
+        drug_form: {type: string, maxLength: 160}
+        route: {type: string, minLength: 1, maxLength: 100}
+        tissue: {type: string, minLength: 1, maxLength: 100}
+        carrier: {enum: [liposome, niosome, transfersome, ethosome, phytosome]}
+        assay: {type: string, maxLength: 200}
+        targets:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items: {enum: [carrier, excipients, ratios, batches, size, pdi, zeta, entrapment, release, tissue, stability, bioavailability]}
+        desired_release:
+          type: object
+          additionalProperties: false
+          required: [hours, percent]
+          properties:
+            hours: {type: number, exclusiveMinimum: 0}
+            percent: {$ref: '#/components/schemas/Percentage'}
+        descriptors:
+          type: object
+          additionalProperties: false
+          properties:
+            mw_da: {type: number, exclusiveMinimum: 0}
+            logp: {type: number}
+            pka: {type: number}
+            solubility_mg_ml: {type: number, minimum: 0}
+            solubility_conditions: {type: string, maxLength: 200}
+            stability_notes: {type: string, maxLength: 500}
+    ProcessRequest:
+      type: object
+      additionalProperties: false
+      required: [targets, candidate]
+      properties:
+        assay: {type: string, maxLength: 200}
+        targets:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items: {enum: [size, pdi, formation]}
+        candidate:
+          type: object
+          description: The backend additionally validates that cholesterol plus PEG does not exceed 100 percent.
+          additionalProperties: false
+          required: [primary_lipid, chip, cholesterol_pct, peg_pct, tfr_ml_min, aqueous_to_organic_frr]
+          properties:
+            primary_lipid: {type: string, minLength: 1, maxLength: 80}
+            chip: {type: string, minLength: 1, maxLength: 80}
+            cholesterol_pct: {$ref: '#/components/schemas/Percentage'}
+            peg_pct: {$ref: '#/components/schemas/Percentage'}
+            tfr_ml_min: {type: number, exclusiveMinimum: 0}
+            aqueous_to_organic_frr: {type: number, exclusiveMinimum: 0}
+    Measurement:
+      type: object
+      required: [value, unit]
+      properties:
+        value: {type: number}
+        unit: {type: string}
+      additionalProperties: true
+    Evidence:
+      type: object
+      required: [id, title, url, kind, applicability, independence, text, limitation]
+      properties:
+        id: {type: string}
+        title: {type: string}
+        url: {type: string, format: uri}
+        kind: {type: string}
+        locator: {type: string}
+        text: {type: string}
+        limitation: {type: string}
+        drug: {type: string}
+        route: {type: string}
+        tissue: {type: string}
+        carrier: {type: string}
+        assay: {type: string}
+        applicability: {enum: [matched_drug_and_route, background_or_analogue]}
+        independence: {enum: [training_source, training_overlap_unverified]}
+        comparison: {enum: [discordant, within_error_screen]}
+        measurements:
+          type: object
+          additionalProperties: {$ref: '#/components/schemas/Measurement'}
+      additionalProperties: true
+    EndpointResult:
+      type: object
+      required: [decision, confidence_basis, rationale, model, evidence]
+      properties:
+        decision: {enum: [model_estimate, literature_candidate, background_only, insufficient_evidence, conflicting_evidence]}
+        confidence_basis: {type: string}
+        rationale: {type: string}
+        model:
+          type: object
+          required: [status]
+          properties:
+            status: {enum: [process_estimate, withheld, unsupported_endpoint, out_of_scope, missing_inputs, invalid_inputs]}
+            value: {type: number}
+            unit: {type: string}
+            reason: {type: string}
+            support: {type: string}
+            formation_score: {type: number}
+            grouped_cv_mae: {type: number}
+            grouped_cv_absolute_error_p90: {type: number}
+            limitation: {type: string}
+            missing: {type: array, items: {type: string}}
+          additionalProperties: true
+        evidence:
+          type: array
+          maxItems: 3
+          items: {$ref: '#/components/schemas/Evidence'}
+    Assessment:
+      type: object
+      required: [request_id, api_version, model_release, corpus_release, request, results, method]
+      properties:
+        request_id: {type: string}
+        api_version: {type: string}
+        model_release: {type: string}
+        corpus_release: {type: string}
+        request: {type: object}
+        method: {type: string}
+        results:
+          type: object
+          minProperties: 1
+          additionalProperties: {$ref: '#/components/schemas/EndpointResult'}
+    Error:
+      type: object
+      required: [request_id, code, message]
+      properties:
+        request_id: {type: string}
+        code: {enum: [INVALID_REQUEST, ENGINE_UNAVAILABLE]}
+        message: {type: string}
+        fields:
+          type: array
+          items:
+            type: object
+            required: [path, message]
+            properties:
+              path: {type: string}
+              message: {type: string}

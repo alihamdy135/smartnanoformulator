@@ -1,0 +1,22 @@
+[project]
+name = "smartnanoformulator-api"
+version = "0.1.0"
+description = "Evidence-aware nanocarrier formulation and Eugster process assessments"
+requires-python = ">=3.14"
+dependencies = [
+    "numpy==2.5.4",
+    "scipy==1.18.1",
+    "scikit-learn==1.9.1",
+    "xgboost==3.2.0",
+    "joblib==1.6.0",
+    "fastapi==0.117.1",
+    "uvicorn==0.40.0",
+]
+
+[tool.vercel]
+entrypoint = "app:app"
+
+[tool.uv]
+# The released PDI estimator uses CPU inference; NCCL is only needed for
+# XGBoost distributed GPU collectives, which this API does not invoke.
+exclude-dependencies = ["nvidia-nccl-cu12"]

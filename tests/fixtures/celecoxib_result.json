@@ -1,0 +1,357 @@
+{
+  "request": {
+    "drug": "celecoxib",
+    "route": "topical",
+    "tissue": "skin",
+    "targets": [
+      "carrier",
+      "excipients",
+      "entrapment",
+      "release"
+    ],
+    "desired_release": {
+      "hours": 24,
+      "percent": 65
+    }
+  },
+  "results": {
+    "carrier": {
+      "decision": "literature_candidate",
+      "confidence_basis": "study-specific evidence",
+      "rationale": "A source matches the drug and route. Results apply to the reported experiment.",
+      "model": {
+        "status": "unsupported_endpoint",
+        "reason": "No trained estimator for this output."
+      },
+      "evidence": [
+        {
+          "id": "celecoxib-skin",
+          "title": "Bragagni et al. (2012), Comparative study of liposomes, transfersomes and ethosomes for topical celecoxib",
+          "url": "https://doi.org/10.3109/10717544.2012.724472",
+          "kind": "comparative study",
+          "drug": "celecoxib",
+          "route": "topical",
+          "tissue": "skin",
+          "carrier": "ethosome",
+          "topics": [
+            "carrier",
+            "excipients",
+            "entrapment",
+            "size",
+            "pdi"
+          ],
+          "text": "The study compared liposomes, transfersomes and ethosomes for topical celecoxib. The Tween 20 ethosome was a favorable experimental candidate in this comparison.",
+          "limitation": "Study-specific comparison using excised human skin. Batch F measurements apply to that published formulation.",
+          "locator": "Table 2, batch F",
+          "measurements": {
+            "size": {
+              "value": 258.4,
+              "unit": "nm"
+            },
+            "pdi": {
+              "value": 0.19,
+              "unit": "unitless"
+            },
+            "entrapment": {
+              "value": 54.4,
+              "unit": "%"
+            }
+          },
+          "applicability": "matched_drug_and_route",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "transfersome-ethosome",
+          "title": "Ascenso et al. (2015), Development, characterization, and skin delivery studies of ultradeformable vesicles",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4583114/",
+          "kind": "comparative study",
+          "carrier": "transfersome",
+          "route": "topical",
+          "tissue": "skin",
+          "topics": [
+            "carrier",
+            "excipients",
+            "pdi",
+            "size"
+          ],
+          "text": "The experimental comparison varied surfactants in transfersomes and included ethanol-containing vesicle systems for skin delivery. It studied caffeine and vitamin E as model actives.",
+          "limitation": "Evidence for the studied model actives and skin experiments. Results do not transfer directly to a different payload.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "intech-liposomes",
+          "title": "Drug Delivery through Liposomes",
+          "url": "https://doi.org/10.5772/intechopen.97727",
+          "kind": "book chapter",
+          "carrier": "liposome",
+          "topics": [
+            "excipients",
+            "carrier",
+            "entrapment"
+          ],
+          "text": "Liposome design considers lipid composition, vesicle characteristics, and drug association with aqueous or lipid regions.",
+          "limitation": "Background for candidate design. Independently measured outcomes are needed for a particular batch.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        }
+      ]
+    },
+    "excipients": {
+      "decision": "literature_candidate",
+      "confidence_basis": "study-specific evidence",
+      "rationale": "A source matches the drug and route. Results apply to the reported experiment.",
+      "model": {
+        "status": "unsupported_endpoint",
+        "reason": "No trained estimator for this output."
+      },
+      "evidence": [
+        {
+          "id": "celecoxib-skin",
+          "title": "Bragagni et al. (2012), Comparative study of liposomes, transfersomes and ethosomes for topical celecoxib",
+          "url": "https://doi.org/10.3109/10717544.2012.724472",
+          "kind": "comparative study",
+          "drug": "celecoxib",
+          "route": "topical",
+          "tissue": "skin",
+          "carrier": "ethosome",
+          "topics": [
+            "carrier",
+            "excipients",
+            "entrapment",
+            "size",
+            "pdi"
+          ],
+          "text": "The study compared liposomes, transfersomes and ethosomes for topical celecoxib. The Tween 20 ethosome was a favorable experimental candidate in this comparison.",
+          "limitation": "Study-specific comparison using excised human skin. Batch F measurements apply to that published formulation.",
+          "locator": "Table 2, batch F",
+          "measurements": {
+            "size": {
+              "value": 258.4,
+              "unit": "nm"
+            },
+            "pdi": {
+              "value": 0.19,
+              "unit": "unitless"
+            },
+            "entrapment": {
+              "value": 54.4,
+              "unit": "%"
+            }
+          },
+          "applicability": "matched_drug_and_route",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "transfersome-ethosome",
+          "title": "Ascenso et al. (2015), Development, characterization, and skin delivery studies of ultradeformable vesicles",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4583114/",
+          "kind": "comparative study",
+          "carrier": "transfersome",
+          "route": "topical",
+          "tissue": "skin",
+          "topics": [
+            "carrier",
+            "excipients",
+            "pdi",
+            "size"
+          ],
+          "text": "The experimental comparison varied surfactants in transfersomes and included ethanol-containing vesicle systems for skin delivery. It studied caffeine and vitamin E as model actives.",
+          "limitation": "Evidence for the studied model actives and skin experiments. Results do not transfer directly to a different payload.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "intech-liposomes",
+          "title": "Drug Delivery through Liposomes",
+          "url": "https://doi.org/10.5772/intechopen.97727",
+          "kind": "book chapter",
+          "carrier": "liposome",
+          "topics": [
+            "excipients",
+            "carrier",
+            "entrapment"
+          ],
+          "text": "Liposome design considers lipid composition, vesicle characteristics, and drug association with aqueous or lipid regions.",
+          "limitation": "Background for candidate design. Independently measured outcomes are needed for a particular batch.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        }
+      ]
+    },
+    "entrapment": {
+      "decision": "literature_candidate",
+      "confidence_basis": "study-specific evidence",
+      "rationale": "A source matches the drug and route. Results apply to the reported experiment.",
+      "model": {
+        "status": "withheld",
+        "reason": "The screened drug model did not show lower MAE than the median on held-out studies.",
+        "benchmark": [
+          {
+            "grouping": "source_study_id",
+            "mae": 19.397912317514038,
+            "median_mae": 19.084148936170216,
+            "n": 282
+          },
+          {
+            "grouping": "drug_group",
+            "mae": 19.109219858156028,
+            "median_mae": 19.109219858156028,
+            "n": 282
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "id": "celecoxib-skin",
+          "title": "Bragagni et al. (2012), Comparative study of liposomes, transfersomes and ethosomes for topical celecoxib",
+          "url": "https://doi.org/10.3109/10717544.2012.724472",
+          "kind": "comparative study",
+          "drug": "celecoxib",
+          "route": "topical",
+          "tissue": "skin",
+          "carrier": "ethosome",
+          "topics": [
+            "carrier",
+            "excipients",
+            "entrapment",
+            "size",
+            "pdi"
+          ],
+          "text": "The study compared liposomes, transfersomes and ethosomes for topical celecoxib. The Tween 20 ethosome was a favorable experimental candidate in this comparison.",
+          "limitation": "Study-specific comparison using excised human skin. Batch F measurements apply to that published formulation.",
+          "locator": "Table 2, batch F",
+          "measurements": {
+            "size": {
+              "value": 258.4,
+              "unit": "nm"
+            },
+            "pdi": {
+              "value": 0.19,
+              "unit": "unitless"
+            },
+            "entrapment": {
+              "value": 54.4,
+              "unit": "%"
+            }
+          },
+          "applicability": "matched_drug_and_route",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "intech-liposomes",
+          "title": "Drug Delivery through Liposomes",
+          "url": "https://doi.org/10.5772/intechopen.97727",
+          "kind": "book chapter",
+          "carrier": "liposome",
+          "topics": [
+            "excipients",
+            "carrier",
+            "entrapment"
+          ],
+          "text": "Liposome design considers lipid composition, vesicle characteristics, and drug association with aqueous or lipid regions.",
+          "limitation": "Background for candidate design. Independently measured outcomes are needed for a particular batch.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "fda-liposomes",
+          "title": "FDA (2018), Liposome Drug Products guidance",
+          "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/liposome-drug-products-chemistry-manufacturing-and-controls-human-pharmacokinetics-and",
+          "kind": "regulatory",
+          "carrier": "liposome",
+          "topics": [
+            "size",
+            "pdi",
+            "entrapment",
+            "release",
+            "stability",
+            "tissue"
+          ],
+          "text": "The guidance discusses liposome product characterization and separates chemistry, manufacturing and controls from pharmacokinetics and bioavailability evidence.",
+          "limitation": "General guidance. It does not establish delivery to a target tissue for an untested formulation.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        }
+      ]
+    },
+    "release": {
+      "decision": "background_only",
+      "confidence_basis": "indirect evidence",
+      "rationale": "Retrieved sources can guide experimental design. Candidate-specific results remain unresolved.",
+      "model": {
+        "status": "withheld",
+        "reason": "The screened drug model did not show lower MAE than the median on held-out studies.",
+        "benchmark": [
+          {
+            "grouping": "source_study_id",
+            "mae": 16.58388606523632,
+            "median_mae": 14.164629629629632,
+            "n": 27
+          },
+          {
+            "grouping": "drug_group",
+            "mae": 14.347297094804922,
+            "median_mae": 14.349629629629632,
+            "n": 27
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "id": "yanes-release",
+          "title": "Yanes et al. (2025), Making in vitro release and formulation data AI-ready",
+          "url": "https://doi.org/10.1016/j.ijpx.2025.100393",
+          "kind": "methods",
+          "carrier": "liposome",
+          "topics": [
+            "release",
+            "assay",
+            "stability"
+          ],
+          "text": "The liposome release database records formulation and assay conditions alongside digitized curves. Release comparisons require defined medium, apparatus and test conditions.",
+          "limitation": "A 24-hour measurement is not a full release curve. Results from incompatible assays are not direct substitutes.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "fda-liposomes",
+          "title": "FDA (2018), Liposome Drug Products guidance",
+          "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/liposome-drug-products-chemistry-manufacturing-and-controls-human-pharmacokinetics-and",
+          "kind": "regulatory",
+          "carrier": "liposome",
+          "topics": [
+            "size",
+            "pdi",
+            "entrapment",
+            "release",
+            "stability",
+            "tissue"
+          ],
+          "text": "The guidance discusses liposome product characterization and separates chemistry, manufacturing and controls from pharmacokinetics and bioavailability evidence.",
+          "limitation": "General guidance. It does not establish delivery to a target tissue for an untested formulation.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        },
+        {
+          "id": "usp-liposomes",
+          "title": "USP-NF General Chapter <1154> Liposome Drug Products",
+          "url": "https://doi.org/10.31003/USPNF_M17435_02_01",
+          "kind": "compendial",
+          "carrier": "liposome",
+          "topics": [
+            "excipients",
+            "carrier",
+            "size",
+            "release"
+          ],
+          "text": "Liposomes have a lipid bilayer and an aqueous compartment. The aqueous compartment and lipid bilayer provide distinct locations for incorporating water-soluble and lipophilic payloads. Product-specific characterization depends on the formulation and route.",
+          "limitation": "General formulation guidance. Provides neither a drug-specific ratio nor a performance prediction.",
+          "applicability": "background_or_analogue",
+          "independence": "training_overlap_unverified"
+        }
+      ]
+    }
+  },
+  "method": "Extractive literature retrieval and rule-based adjudication. Evidence relevance and model error are reported separately."
+}

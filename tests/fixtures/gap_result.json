@@ -1,0 +1,60 @@
+{
+  "request": {
+    "drug": "quercetin",
+    "route": "intranasal",
+    "tissue": "brain",
+    "carrier": "phytosome",
+    "targets": [
+      "ratios",
+      "release",
+      "tissue"
+    ]
+  },
+  "results": {
+    "ratios": {
+      "decision": "insufficient_evidence",
+      "confidence_basis": "insufficient",
+      "rationale": "The corpus has no applicable evidence for this output.",
+      "model": {
+        "status": "unsupported_endpoint",
+        "reason": "No trained estimator for this output."
+      },
+      "evidence": []
+    },
+    "release": {
+      "decision": "insufficient_evidence",
+      "confidence_basis": "insufficient",
+      "rationale": "The corpus has no applicable evidence for this output.",
+      "model": {
+        "status": "withheld",
+        "reason": "The screened drug model did not show lower MAE than the median on held-out studies.",
+        "benchmark": [
+          {
+            "grouping": "source_study_id",
+            "mae": 16.58388606523632,
+            "median_mae": 14.164629629629632,
+            "n": 27
+          },
+          {
+            "grouping": "drug_group",
+            "mae": 14.347297094804922,
+            "median_mae": 14.349629629629632,
+            "n": 27
+          }
+        ]
+      },
+      "evidence": []
+    },
+    "tissue": {
+      "decision": "insufficient_evidence",
+      "confidence_basis": "insufficient",
+      "rationale": "The corpus has no applicable evidence for this output.",
+      "model": {
+        "status": "unsupported_endpoint",
+        "reason": "No trained estimator for this output."
+      },
+      "evidence": []
+    }
+  },
+  "method": "Extractive literature retrieval and rule-based adjudication. Evidence relevance and model error are reported separately."
+}

@@ -1,0 +1,60 @@
+name: Build and deploy Flutter web to Firebase Hosting
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - "firebase.json"
+      - ".github/workflows/firebase-hosting.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firebase-hosting-live-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Hosting project configuration
+        env:
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: ': "${FIREBASE_PROJECT_ID:?Set the FIREBASE_PROJECT_ID repository variable}"'
+
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: "3.32.3"
+          channel: stable
+
+      - name: Resolve Flutter packages
+        working-directory: frontend
+        run: flutter pub get
+
+      - name: Build production web app
+        working-directory: frontend
+        env:
+          NANOPREDICT_API_BASE_URL: ${{ vars.NANOPREDICT_API_BASE_URL || 'https://smartnanoformulator-api-alihatab.vercel.app' }}
+        run: >-
+          flutter build web --release
+          --pwa-strategy=none
+          --no-web-resources-cdn
+          --dart-define="NANOPREDICT_API_BASE_URL=$NANOPREDICT_API_BASE_URL"
+
+      - name: Deploy live Hosting site
+        uses: FirebaseExtended/action-hosting-deploy@500ac625ca2dd40cbd15f7659af953801858032a # v0
+        with:
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ vars.FIREBASE_PROJECT_ID }}
+          channelId: live
+          firebaseToolsVersion: "15.32.1"
