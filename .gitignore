@@ -18,3 +18,4 @@ firebase-service-account*.json
 .env.*
 !.env.example
 
+gha-creds-*.json

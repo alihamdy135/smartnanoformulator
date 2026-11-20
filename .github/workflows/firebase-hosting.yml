@@ -7,6 +7,7 @@ on:
     paths:
       - "frontend/**"
       - "firebase.json"
+      - "tools/firebase-cli/package*.json"
       - ".github/workflows/firebase-hosting.yml"
 
 permissions:
@@ -20,11 +21,19 @@ jobs:
   build-and-deploy:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Check Hosting project configuration
         env:
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
-        run: ': "${FIREBASE_PROJECT_ID:?Set the FIREBASE_PROJECT_ID repository variable}"'
+          FIREBASE_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.FIREBASE_WORKLOAD_IDENTITY_PROVIDER }}
+          FIREBASE_DEPLOY_SERVICE_ACCOUNT: ${{ vars.FIREBASE_DEPLOY_SERVICE_ACCOUNT }}
+        run: |
+          : "${FIREBASE_PROJECT_ID:?Set the FIREBASE_PROJECT_ID repository variable}"
+          : "${FIREBASE_WORKLOAD_IDENTITY_PROVIDER:?Set the FIREBASE_WORKLOAD_IDENTITY_PROVIDER repository variable}"
+          : "${FIREBASE_DEPLOY_SERVICE_ACCOUNT:?Set the FIREBASE_DEPLOY_SERVICE_ACCOUNT repository variable}"
 
       - name: Check out source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -51,10 +60,26 @@ jobs:
           --no-web-resources-cdn
           --dart-define="NANOPREDICT_API_BASE_URL=$NANOPREDICT_API_BASE_URL"
 
-      - name: Deploy live Hosting site
-        uses: FirebaseExtended/action-hosting-deploy@500ac625ca2dd40cbd15f7659af953801858032a # v0
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: ${{ vars.FIREBASE_PROJECT_ID }}
-          channelId: live
-          firebaseToolsVersion: "15.32.1"
+          node-version: "24"
+
+      - name: Install pinned Firebase CLI
+        run: npm ci --prefix tools/firebase-cli
+
+      # Authenticate after the build so the short-lived credential is fresh.
+      - name: Authenticate to Firebase
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          project_id: ${{ vars.FIREBASE_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.FIREBASE_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.FIREBASE_DEPLOY_SERVICE_ACCOUNT }}
+
+      - name: Deploy live Hosting site
+        env:
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: >-
+          ./tools/firebase-cli/node_modules/.bin/firebase deploy --only hosting
+          --project "$FIREBASE_PROJECT_ID" --non-interactive
+          --message "GitHub main ${GITHUB_SHA}"
