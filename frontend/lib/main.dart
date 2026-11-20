@@ -9,12 +9,15 @@ const _apiBase = String.fromEnvironment(
   defaultValue: 'http://127.0.0.1:8000',
 );
 
-const _ink = Color(0xFF152B36);
-const _muted = Color(0xFF61737B);
-const _teal = Color(0xFF117C78);
-const _line = Color(0xFFE1E8E9);
+const _ink = Color(0xFF193127);
+const _forest = Color(0xFF142E26);
+const _lime = Color(0xFFDCFA9C);
+const _indigo = Color(0xFF4852A2);
+const _muted = Color(0xFF54685D);
+const _teal = Color(0xFF176749);
+const _line = Color(0xFFD8E2DA);
 const _surface = Color(0xFFFFFFFF);
-const _soft = Color(0xFFF2F6F6);
+const _soft = Color(0xFFF0F5F0);
 
 void main() => runApp(const SmartNanoFormulatorApp());
 
@@ -34,7 +37,7 @@ class SmartNanoFormulatorApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: scheme,
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFF5F7F8),
+        scaffoldBackgroundColor: const Color(0xFFF5F7F2),
         textTheme: const TextTheme(
           headlineMedium: TextStyle(
             color: _ink,
@@ -54,7 +57,7 @@ class SmartNanoFormulatorApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: const Color(0xFFFBFCFC),
+          fillColor: const Color(0xFFFAFCF9),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 14,
@@ -108,32 +111,37 @@ class _WorkspacePageState extends State<WorkspacePage> {
             Expanded(
               child: LayoutBuilder(
                 builder: (context, bounds) {
-                  final wide = bounds.maxWidth >= 980;
+                  final wide = bounds.maxWidth >= 900;
                   return SingleChildScrollView(
                     padding: EdgeInsets.symmetric(
-                      horizontal: wide ? 32 : 18,
+                      horizontal: wide ? 32 : 14,
                       vertical: 24,
                     ),
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 1240),
+                        constraints: const BoxConstraints(maxWidth: 1180),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const _IntroHeader(),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 20),
+                            const _SectionLabel('CHOOSE A WORKFLOW'),
+                            const SizedBox(height: 9),
                             _FlowPicker(
                               selected: _activeFlow,
                               onSelected: (value) =>
                                   setState(() => _activeFlow = value),
                             ),
                             const SizedBox(height: 20),
-                            IndexedStack(
-                              index: _activeFlow,
-                              children: const [
-                                FormulationFlow(),
-                                ProcessFlow(),
-                              ],
+                            Visibility(
+                              visible: _activeFlow == 0,
+                              maintainState: true,
+                              child: const FormulationFlow(),
+                            ),
+                            Visibility(
+                              visible: _activeFlow == 1,
+                              maintainState: true,
+                              child: const ProcessFlow(),
                             ),
                             const SizedBox(height: 24),
                             const _ScopeFooter(),
@@ -157,181 +165,192 @@ class _TopBar extends StatelessWidget {
   final VoidCallback onDocs;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: _line)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1240),
-          child: Row(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE5F3F1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.science_outlined,
-                  color: _teal,
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: 11),
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'SmartNanoFormulator',
-                    style: TextStyle(
-                      color: _ink,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
+  Widget build(BuildContext context) => Material(
+        color: _surface,
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: _line)),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1180),
+              child: LayoutBuilder(
+                builder: (context, bounds) => Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: _forest,
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                      child: const Icon(Icons.science_outlined,
+                          color: _lime, size: 22),
                     ),
-                  ),
-                  Text(
-                    'EVIDENCE WORKSPACE',
-                    style: TextStyle(
-                      color: _muted,
-                      letterSpacing: 1.15,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w700,
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'SmartNanoFormulator',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w800),
+                          ),
+                          Text('Research workspace',
+                              style: TextStyle(fontSize: 12, color: _muted)),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    if (bounds.maxWidth >= 450)
+                      OutlinedButton.icon(
+                        onPressed: onDocs,
+                        label: const Text('API documentation'),
+                        icon: const Icon(Icons.open_in_new_rounded, size: 16),
+                      )
+                    else
+                      IconButton(
+                        tooltip: 'Open API documentation',
+                        onPressed: onDocs,
+                        icon: const Icon(Icons.open_in_new_rounded, size: 19),
+                      ),
+                  ],
+                ),
               ),
-              const Spacer(),
-              const _Pill(
-                label: 'RESEARCH PROTOTYPE',
-                color: Color(0xFFEDF5F3),
-                textColor: _teal,
-              ),
-              const SizedBox(width: 8),
-              IconButton(
-                tooltip: 'Open API documentation',
-                onPressed: onDocs,
-                icon: const Icon(Icons.open_in_new_rounded, size: 18),
-                color: _muted,
-              ),
-            ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 class _IntroHeader extends StatelessWidget {
   const _IntroHeader();
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, bounds) {
-        final compact = bounds.maxWidth < 700;
-        final content = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Evidence first. Estimates in scope.',
-              style: TextStyle(
-                color: _ink,
-                fontSize: 30,
-                height: 1.12,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.9,
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, bounds) {
+          final compact = bounds.maxWidth < 640;
+          return SizedBox(
+            width: double.infinity,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(compact ? 22 : 28),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [_forest, Color(0xFF1F5042)],
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: ExcludeSemantics(
+                        child: CustomPaint(
+                            painter: _LiposomeIllustration(compact)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(compact ? 22 : 36),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth:
+                            compact ? double.infinity : bounds.maxWidth * .57,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const _Pill(
+                            label: 'RESEARCH PROTOTYPE',
+                            icon: Icons.science_outlined,
+                            color: Color(0xFF29493E),
+                            textColor: _lime,
+                          ),
+                          const SizedBox(height: 13),
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              'Formulation Lab',
+                              style: TextStyle(
+                                fontSize: compact ? 36 : 53,
+                                height: 1.07,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: compact ? -1.3 : -2.2,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Screen published formulation evidence or benchmark a microfluidic liposome process.',
+                            style: TextStyle(
+                                color: Color(0xFFD7E7DD),
+                                fontSize: 16,
+                                height: 1.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 9),
-            const Text(
-              'Screen formulation literature or assess a microfluidic liposome process against its documented cohort.',
-              style: TextStyle(color: _muted, fontSize: 15, height: 1.5),
-            ),
-            const SizedBox(height: 14),
-            const Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _Pill(
-                  label: 'CITED EVIDENCE',
-                  color: Colors.white,
-                  textColor: _muted,
-                  icon: Icons.link_rounded,
-                ),
-                _Pill(
-                  label: 'SCIENTIFIC ABSTENTION',
-                  color: Colors.white,
-                  textColor: _muted,
-                  icon: Icons.pause_circle_outline_rounded,
-                ),
-                _Pill(
-                  label: 'EUGSTER PROCESS SCOPE',
-                  color: Colors.white,
-                  textColor: _muted,
-                  icon: Icons.tune_rounded,
-                ),
-              ],
-            ),
-          ],
-        );
-        if (compact) return content;
-        return Row(
-          children: [
-            Expanded(child: content),
-            const SizedBox(width: 30),
-            const _StatusNote(),
-          ],
-        );
-      },
-    );
-  }
+          );
+        },
+      );
 }
 
-class _StatusNote extends StatelessWidget {
-  const _StatusNote();
+class _LiposomeIllustration extends CustomPainter {
+  const _LiposomeIllustration(this.compact);
+  final bool compact;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 275,
-      padding: const EdgeInsets.all(17),
-      decoration: BoxDecoration(
-        color: const Color(0xFFEAF3F2),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFD4E7E4)),
-      ),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.fact_check_outlined, size: 17, color: _teal),
-              SizedBox(width: 8),
-              Text(
-                'HOW TO READ RESULTS',
-                style: TextStyle(
-                  fontSize: 10,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.w800,
-                  color: _teal,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Model estimate, published observation, and your target stay separate.',
-            style: TextStyle(fontSize: 13, height: 1.5, color: _ink),
-          ),
-        ],
-      ),
+  void paint(Canvas canvas, Size size) {
+    final center =
+        Offset(size.width * (compact ? 1.04 : .82), size.height * .55);
+    final radius = size.height * .31;
+    final orbit = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = _lime.withValues(alpha: compact ? .08 : .24);
+    for (final factor in [1.28, 1.65, 2.05, 2.45]) {
+      canvas.drawCircle(center, radius * factor, orbit);
+    }
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..shader = const RadialGradient(
+          colors: [Color(0xFF53846A), Color(0xFF275746)],
+        ).createShader(Rect.fromCircle(center: center, radius: radius)),
     );
+    final head = Paint()..color = _lime.withValues(alpha: compact ? .22 : .92);
+    final tail = Paint()
+      ..strokeWidth = 1
+      ..color = _lime.withValues(alpha: compact ? .13 : .43);
+    for (var i = 0; i < 36; i++) {
+      final direction = Offset.fromDirection(i * 6.283185307 / 36);
+      canvas.drawLine(center + direction * (radius - 9),
+          center + direction * (radius + 1), tail);
+      canvas.drawCircle(center + direction * (radius + 4), 2.5, head);
+      canvas.drawCircle(center + direction * (radius - 12), 1.7, head);
+    }
+    for (final (x, y, dot) in [
+      (-.32, -.28, 4.0),
+      (.22, -.18, 3.0),
+      (-.1, .36, 3.5),
+      (.43, .27, 2.0),
+      (1.76, -.58, 3.2),
+      (-1.36, .81, 3.0)
+    ]) {
+      canvas.drawCircle(center + Offset(x * radius, y * radius), dot, head);
+    }
   }
+
+  @override
+  bool shouldRepaint(_LiposomeIllustration oldDelegate) =>
+      compact != oldDelegate.compact;
 }
 
 class _FlowPicker extends StatelessWidget {
@@ -340,33 +359,116 @@ class _FlowPicker extends StatelessWidget {
   final ValueChanged<int> onSelected;
 
   @override
-  Widget build(BuildContext context) {
-    return SegmentedButton<int>(
-      showSelectedIcon: false,
-      segments: const [
-        ButtonSegment(
-          value: 0,
-          icon: Icon(Icons.biotech_outlined),
-          label: Text('Formulation evidence'),
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, bounds) {
+          final cards = [
+            _WorkflowCard(
+              title: 'Formulation evidence',
+              description: 'Find published batches, measurements, and gaps.',
+              icon: Icons.biotech_outlined,
+              accent: _teal,
+              tint: const Color(0xFFE6F2E9),
+              selected: selected == 0,
+              onTap: () => onSelected(0),
+            ),
+            _WorkflowCard(
+              title: 'Microfluidic process',
+              description:
+                  'Check formation, size, and PDI in the Eugster cohort.',
+              icon: Icons.water_drop_outlined,
+              accent: _indigo,
+              tint: const Color(0xFFEBEDFA),
+              selected: selected == 1,
+              onTap: () => onSelected(1),
+            ),
+          ];
+          if (bounds.maxWidth < 620) {
+            return Column(
+                children: [cards[0], const SizedBox(height: 9), cards[1]]);
+          }
+          return Row(children: [
+            Expanded(child: cards[0]),
+            const SizedBox(width: 12),
+            Expanded(child: cards[1]),
+          ]);
+        },
+      );
+}
+
+class _WorkflowCard extends StatelessWidget {
+  const _WorkflowCard({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.accent,
+    required this.tint,
+    required this.selected,
+    required this.onTap,
+  });
+  final String title, description;
+  final IconData icon;
+  final Color accent, tint;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        selected: selected,
+        child: Material(
+          color: selected ? tint : _surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: selected ? accent : _line, width: 1.2),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            focusColor: accent.withValues(alpha: .14),
+            hoverColor: accent.withValues(alpha: .07),
+            child: Padding(
+              padding: const EdgeInsets.all(13),
+              child: Row(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: selected ? accent : tint,
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: Icon(icon,
+                        color: selected ? Colors.white : accent, size: 22),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title,
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w800)),
+                        const SizedBox(height: 3),
+                        Text(description,
+                            style: const TextStyle(
+                                color: _muted, fontSize: 13, height: 1.35)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    selected
+                        ? Icons.check_circle_rounded
+                        : Icons.arrow_forward_rounded,
+                    color: selected ? accent : _muted,
+                    size: 19,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-        ButtonSegment(
-          value: 1,
-          icon: Icon(Icons.water_drop_outlined),
-          label: Text('Microfluidic process'),
-        ),
-      ],
-      selected: {selected},
-      onSelectionChanged: (values) => onSelected(values.first),
-      style: ButtonStyle(
-        padding: const WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-        ),
-        textStyle: const WidgetStatePropertyAll(
-          TextStyle(fontWeight: FontWeight.w600),
-        ),
-      ),
-    );
-  }
+      );
 }
 
 class FormulationFlow extends StatefulWidget {
@@ -378,6 +480,7 @@ class FormulationFlow extends StatefulWidget {
 
 class _FormulationFlowState extends State<FormulationFlow> {
   final _formKey = GlobalKey<FormState>();
+  final _resultsKey = GlobalKey();
   final _drug = TextEditingController(text: 'celecoxib');
   final _drugForm = TextEditingController();
   final _route = TextEditingController(text: 'topical');
@@ -398,9 +501,11 @@ class _FormulationFlowState extends State<FormulationFlow> {
     'release',
   };
   String? _carrier;
-  bool _advanced = false;
+  Key _carrierFieldKey = const ValueKey('initial-carrier');
+  final _details = ExpansibleController();
   bool _loading = false;
   String? _error;
+  String? _formError;
   Map<String, dynamic>? _result;
 
   static const _allTargets = [
@@ -417,6 +522,40 @@ class _FormulationFlowState extends State<FormulationFlow> {
     ('stability', 'Stability'),
     ('bioavailability', 'Bioavailability'),
   ];
+
+  void _loadExample(String example) {
+    final gap = example == 'gap';
+    _formKey.currentState!.reset();
+    for (final controller in [
+      _drugForm,
+      _assay,
+      _mw,
+      _logp,
+      _pka,
+      _solubility,
+      _solubilityConditions,
+      _stability,
+    ]) {
+      controller.clear();
+    }
+    _drug.text = gap ? 'quercetin' : 'celecoxib';
+    _route.text = gap ? 'intranasal' : 'topical';
+    _tissue.text = gap ? 'brain' : 'skin';
+    _hours.text = gap ? '' : '24';
+    _percent.text = gap ? '' : '65';
+    setState(() {
+      _carrier = gap ? 'phytosome' : null;
+      _carrierFieldKey = UniqueKey();
+      _targets
+        ..clear()
+        ..addAll(gap
+            ? ['ratios', 'release', 'tissue']
+            : ['carrier', 'excipients', 'entrapment', 'release']);
+      _result = null;
+      _error = null;
+      _formError = null;
+    });
+  }
 
   @override
   void dispose() {
@@ -437,6 +576,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
     ]) {
       controller.dispose();
     }
+    _details.dispose();
     super.dispose();
   }
 
@@ -453,7 +593,11 @@ class _FormulationFlowState extends State<FormulationFlow> {
     return null;
   }
 
+  bool get _hasReleaseTarget =>
+      _hours.text.trim().isNotEmpty || _percent.text.trim().isNotEmpty;
+
   String? _percentValidator(String? value) {
+    if (!_hasReleaseTarget) return null;
     final error = _optionalNumber(value);
     if (error != null) return error;
     if (value == null || value.trim().isEmpty)
@@ -464,9 +608,21 @@ class _FormulationFlowState extends State<FormulationFlow> {
   }
 
   Future<void> _submit() async {
-    if (_loading || !_formKey.currentState!.validate()) return;
+    if (_loading) return;
+    if (!_formKey.currentState!.validate()) {
+      if (_optionalNumber(_mw.text, positive: true) != null ||
+          _optionalNumber(_logp.text) != null ||
+          _optionalNumber(_pka.text) != null ||
+          _optionalNumber(_solubility.text, nonNegative: true) != null ||
+          [_drugForm, _assay, _solubilityConditions]
+              .any((c) => c.text.length > 200) ||
+          _stability.text.length > 500) {
+        _details.expand();
+      }
+      return;
+    }
     if (_targets.isEmpty) {
-      setState(() => _error = 'Select at least one output to assess.');
+      setState(() => _formError = 'Select at least one output to assess.');
       return;
     }
     final payload = <String, dynamic>{
@@ -482,7 +638,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
       payload['drug_form'] = _drugForm.text.trim();
     if (_assay.text.trim().isNotEmpty) payload['assay'] = _assay.text.trim();
     if (_carrier != null) payload['carrier'] = _carrier;
-    if (_targets.contains('release')) {
+    if (_targets.contains('release') && _hasReleaseTarget) {
       payload['desired_release'] = {
         'hours': double.parse(_hours.text),
         'percent': double.parse(_percent.text),
@@ -504,20 +660,23 @@ class _FormulationFlowState extends State<FormulationFlow> {
       descriptors['stability_notes'] = _stability.text.trim();
     if (descriptors.isNotEmpty) payload['descriptors'] = descriptors;
 
+    FocusManager.instance.primaryFocus?.unfocus();
+    _revealReport(context, _resultsKey);
     setState(() {
       _loading = true;
       _error = null;
+      _formError = null;
     });
     try {
       final response = await _postJson('/v1/formulation-assessments', payload);
       if (mounted) setState(() => _result = response);
     } on ApiException catch (error) {
       if (mounted) setState(() => _error = error.describe());
-    } catch (error) {
+    } catch (_) {
       if (mounted)
         setState(
           () => _error =
-              'Could not reach the assessment API. Check the connection and try again. $error',
+              'Could not reach the assessment API. Check your connection and try again.',
         );
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -528,13 +687,15 @@ class _FormulationFlowState extends State<FormulationFlow> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, bounds) {
-        final wide = bounds.maxWidth >= 980;
+        final wide = bounds.maxWidth >= 900;
         final form = _formCard();
         final output = AssessmentPanel(
+          key: _resultsKey,
           result: _result,
           error: _error,
           loading: _loading,
           onRetry: _submit,
+          accent: _teal,
           emptyTitle: 'Your evidence review will appear here',
           emptyHint:
               'Enter the drug, route, tissue, and endpoints you want to screen.',
@@ -565,43 +726,60 @@ class _FormulationFlowState extends State<FormulationFlow> {
               title: 'Define the research question',
               icon: Icons.biotech_outlined,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            PopupMenuButton<String>(
+              enabled: !_loading,
+              onSelected: _loadExample,
+              tooltip: 'Load a reference example',
+              itemBuilder: (context) => const [
+                PopupMenuItem(
+                    value: 'celecoxib', child: Text('Topical celecoxib')),
+                PopupMenuItem(
+                    value: 'gap', child: Text('Intranasal quercetin')),
+              ],
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 11, horizontal: 6),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.science_outlined, color: _teal, size: 18),
+                    SizedBox(width: 7),
+                    Text('Load example',
+                        style: TextStyle(
+                            color: _teal, fontWeight: FontWeight.w700)),
+                    Icon(Icons.expand_more_rounded, color: _teal, size: 17),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
             _field(_drug, 'Drug', required: true, hint: 'e.g. celecoxib'),
             const SizedBox(height: 13),
-            _field(
-              _drugForm,
-              'Drug form',
-              hint: 'Optional · salt, hydrate, polymorph',
-            ),
-            const SizedBox(height: 13),
-            Row(
+            _FieldGroup(
               children: [
-                Expanded(
-                  child: _field(
-                    _route,
-                    'Administration route',
-                    required: true,
-                    hint: 'e.g. topical',
-                  ),
+                _field(
+                  _route,
+                  'Administration route',
+                  required: true,
+                  hint: 'e.g. topical',
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _field(
-                    _tissue,
-                    'Target tissue',
-                    required: true,
-                    hint: 'e.g. skin',
-                  ),
+                _field(
+                  _tissue,
+                  'Target tissue',
+                  required: true,
+                  hint: 'e.g. skin',
                 ),
               ],
             ),
             const SizedBox(height: 13),
             DropdownButtonFormField<String?>(
+              key: _carrierFieldKey,
               value: _carrier,
+              isExpanded: true,
               decoration: const InputDecoration(
                 labelText: 'Carrier filter',
-                helperText:
-                    'Leave as any carrier to search across the supplied corpus.',
+                helperText: 'Search all carrier types or narrow by one.',
+                helperMaxLines: 2,
               ),
               items: const [
                 DropdownMenuItem<String?>(
@@ -666,54 +844,44 @@ class _FormulationFlowState extends State<FormulationFlow> {
             ),
             if (_targets.contains('release')) ...[
               const SizedBox(height: 15),
-              const _SectionLabel('YOUR RELEASE TARGET'),
+              const _SectionLabel('RELEASE TARGET (OPTIONAL)'),
               const SizedBox(height: 9),
-              Row(
+              _FieldGroup(
                 children: [
-                  Expanded(
-                    child: _field(
-                      _percent,
-                      'Target release',
-                      suffix: '%',
-                      validator: _percentValidator,
-                      keyboard: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
+                  _field(
+                    _percent,
+                    'Target release',
+                    suffix: '%',
+                    validator: _percentValidator,
+                    keyboard: const TextInputType.numberWithOptions(
+                      decimal: true,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _field(
-                      _hours,
-                      'At time',
-                      suffix: 'hours',
-                      validator: (value) {
-                        final error = _optionalNumber(value, positive: true);
-                        if (error != null) return error;
-                        if (value == null || value.trim().isEmpty)
-                          return 'Enter a time.';
-                        return null;
-                      },
-                      keyboard: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
+                  _field(
+                    _hours,
+                    'At time',
+                    suffix: 'hours',
+                    validator: (value) {
+                      if (!_hasReleaseTarget) return null;
+                      final error = _optionalNumber(value, positive: true);
+                      if (error != null) return error;
+                      if (value == null || value.trim().isEmpty)
+                        return 'Enter a time.';
+                      return null;
+                    },
+                    keyboard: const TextInputType.numberWithOptions(
+                      decimal: true,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 5),
               const Text(
-                'This is your design target. It is not a measured or predicted release value.',
+                'Leave both fields blank to screen without a target. Entered values are kept separate from measurements.',
                 style: TextStyle(color: _muted, fontSize: 11, height: 1.4),
               ),
             ],
             const SizedBox(height: 12),
-            _field(
-              _assay,
-              'Assay context',
-              hint: 'Optional · specify method or medium',
-            ),
-            const SizedBox(height: 8),
             Theme(
               data: Theme.of(
                 context,
@@ -721,11 +889,10 @@ class _FormulationFlowState extends State<FormulationFlow> {
               child: ExpansionTile(
                 tilePadding: EdgeInsets.zero,
                 childrenPadding: const EdgeInsets.only(bottom: 8),
-                initiallyExpanded: _advanced,
-                onExpansionChanged: (value) =>
-                    setState(() => _advanced = value),
+                controller: _details,
+                maintainState: true,
                 title: const Text(
-                  'Optional physicochemical descriptors',
+                  'Optional formulation details',
                   style: TextStyle(
                     color: _ink,
                     fontWeight: FontWeight.w600,
@@ -733,43 +900,47 @@ class _FormulationFlowState extends State<FormulationFlow> {
                   ),
                 ),
                 subtitle: const Text(
-                  'Echoed as context · not used for numerical drug estimates',
+                  'Drug form, assay, and physicochemical descriptors',
                   style: TextStyle(fontSize: 11, color: _muted),
                 ),
                 children: [
-                  Row(
+                  _field(
+                    _drugForm,
+                    'Drug form',
+                    hint: 'Optional · salt, hydrate, polymorph',
+                  ),
+                  const SizedBox(height: 13),
+                  _field(
+                    _assay,
+                    'Assay context',
+                    hint: 'Optional · specify method or medium',
+                  ),
+                  const SizedBox(height: 8),
+                  _FieldGroup(
                     children: [
-                      Expanded(
-                        child: _field(
-                          _mw,
-                          'Molecular weight',
-                          suffix: 'Da',
-                          validator: (v) => _optionalNumber(v, positive: true),
-                          keyboard: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
+                      _field(
+                        _mw,
+                        'Molecular weight',
+                        suffix: 'Da',
+                        validator: (v) => _optionalNumber(v, positive: true),
+                        keyboard: const TextInputType.numberWithOptions(
+                          decimal: true,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _field(
-                          _logp,
-                          'LogP',
-                          validator: _optionalNumber,
-                          keyboard: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
+                      _field(
+                        _logp,
+                        'LogP',
+                        validator: _optionalNumber,
+                        keyboard: const TextInputType.numberWithOptions(
+                          decimal: true,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _field(
-                          _pka,
-                          'pKa',
-                          validator: _optionalNumber,
-                          keyboard: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
+                      _field(
+                        _pka,
+                        'pKa',
+                        validator: _optionalNumber,
+                        keyboard: const TextInputType.numberWithOptions(
+                          decimal: true,
                         ),
                       ),
                     ],
@@ -801,6 +972,18 @@ class _FormulationFlowState extends State<FormulationFlow> {
               ),
             ),
             const SizedBox(height: 13),
+            if (_formError != null)
+              Semantics(
+                liveRegion: true,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    _formError!,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
+                ),
+              ),
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
@@ -821,7 +1004,8 @@ class _FormulationFlowState extends State<FormulationFlow> {
                 style: FilledButton.styleFrom(
                   backgroundColor: _teal,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  minimumSize: const Size(0, 48),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -846,6 +1030,9 @@ class _FormulationFlowState extends State<FormulationFlow> {
   }) {
     return TextFormField(
       controller: controller,
+      textInputAction: keyboard == null && maxLines > 1
+          ? TextInputAction.newline
+          : TextInputAction.next,
       keyboardType: keyboard,
       maxLines: maxLines,
       decoration: InputDecoration(
@@ -853,8 +1040,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
         hintText: hint,
         suffixText: suffix,
       ),
-      validator:
-          validator ??
+      validator: validator ??
           (value) {
             if (required && (value == null || value.trim().isEmpty))
               return 'This field is required.';
@@ -876,6 +1062,7 @@ class ProcessFlow extends StatefulWidget {
 
 class _ProcessFlowState extends State<ProcessFlow> {
   final _formKey = GlobalKey<FormState>();
+  final _resultsKey = GlobalKey();
   final _lipid = TextEditingController(text: 'DMPC');
   final _chip = TextEditingController(text: 'ZZ');
   final _cholesterol = TextEditingController(text: '40');
@@ -886,7 +1073,27 @@ class _ProcessFlowState extends State<ProcessFlow> {
   final Set<String> _targets = {'size', 'pdi', 'formation'};
   bool _loading = false;
   String? _error;
+  String? _formError;
   Map<String, dynamic>? _result;
+
+  void _loadExample() {
+    _formKey.currentState!.reset();
+    _lipid.text = 'DMPC';
+    _chip.text = 'ZZ';
+    _cholesterol.text = '40';
+    _peg.text = '5';
+    _flow.text = '8';
+    _ratio.text = '1';
+    _assay.clear();
+    setState(() {
+      _targets
+        ..clear()
+        ..addAll(['size', 'pdi', 'formation']);
+      _result = null;
+      _error = null;
+      _formError = null;
+    });
+  }
 
   @override
   void dispose() {
@@ -921,12 +1128,12 @@ class _ProcessFlowState extends State<ProcessFlow> {
   Future<void> _submit() async {
     if (_loading || !_formKey.currentState!.validate()) return;
     if (_targets.isEmpty) {
-      setState(() => _error = 'Select at least one process output.');
+      setState(() => _formError = 'Select at least one process output.');
       return;
     }
     if (double.parse(_cholesterol.text) + double.parse(_peg.text) > 100) {
       setState(
-        () => _error =
+        () => _formError =
             'Cholesterol and PEG percentages cannot add up to more than 100%.',
       );
       return;
@@ -943,20 +1150,23 @@ class _ProcessFlowState extends State<ProcessFlow> {
       },
     };
     if (_assay.text.trim().isNotEmpty) payload['assay'] = _assay.text.trim();
+    FocusManager.instance.primaryFocus?.unfocus();
+    _revealReport(context, _resultsKey);
     setState(() {
       _loading = true;
       _error = null;
+      _formError = null;
     });
     try {
       final response = await _postJson('/v1/process-assessments', payload);
       if (mounted) setState(() => _result = response);
     } on ApiException catch (error) {
       if (mounted) setState(() => _error = error.describe());
-    } catch (error) {
+    } catch (_) {
       if (mounted)
         setState(
           () => _error =
-              'Could not reach the assessment API. Check the connection and try again. $error',
+              'Could not reach the assessment API. Check your connection and try again.',
         );
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -967,13 +1177,15 @@ class _ProcessFlowState extends State<ProcessFlow> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, bounds) {
-        final wide = bounds.maxWidth >= 980;
+        final wide = bounds.maxWidth >= 900;
         final form = _formCard();
         final output = AssessmentPanel(
+          key: _resultsKey,
           result: _result,
           error: _error,
           loading: _loading,
           onRetry: _submit,
+          accent: _indigo,
           emptyTitle: 'Process benchmarks will appear here',
           emptyHint:
               'Use a liposome recipe and settings covered by the Eugster cohort.',
@@ -1003,53 +1215,53 @@ class _ProcessFlowState extends State<ProcessFlow> {
               eyebrow: 'EUGSTER MICROFLUIDIC COHORT',
               title: 'Set liposome process inputs',
               icon: Icons.water_drop_outlined,
+              accent: _indigo,
             ),
             const SizedBox(height: 11),
             const Text(
               'Model scope is limited to supported lipid and chip pairings and observed process ranges.',
               style: TextStyle(color: _muted, fontSize: 12, height: 1.45),
             ),
-            const SizedBox(height: 19),
-            Row(
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                style: TextButton.styleFrom(foregroundColor: _indigo),
+                onPressed: _loading ? null : _loadExample,
+                label: const Text('Load cohort example'),
+                icon: const Icon(Icons.science_outlined, size: 18),
+              ),
+            ),
+            const SizedBox(height: 9),
+            _FieldGroup(
               children: [
-                Expanded(
-                  child: _field(
-                    _lipid,
-                    'Primary lipid',
-                    hint: 'e.g. DMPC',
-                    required: true,
-                  ),
+                _field(
+                  _lipid,
+                  'Primary lipid',
+                  hint: 'e.g. DMPC',
+                  required: true,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _field(_chip, 'Chip', hint: 'e.g. ZZ', required: true),
-                ),
+                _field(_chip, 'Chip', hint: 'e.g. ZZ', required: true),
               ],
             ),
             const SizedBox(height: 13),
-            Row(
+            _FieldGroup(
               children: [
-                Expanded(
-                  child: _field(
-                    _cholesterol,
-                    'Cholesterol',
-                    suffix: '%',
-                    validator: (v) => _numberValidator(v, percentage: true),
-                    keyboard: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
+                _field(
+                  _cholesterol,
+                  'Cholesterol',
+                  suffix: '%',
+                  validator: (v) => _numberValidator(v, percentage: true),
+                  keyboard: const TextInputType.numberWithOptions(
+                    decimal: true,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _field(
-                    _peg,
-                    'PEG',
-                    suffix: '%',
-                    validator: (v) => _numberValidator(v, percentage: true),
-                    keyboard: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
+                _field(
+                  _peg,
+                  'PEG',
+                  suffix: '%',
+                  validator: (v) => _numberValidator(v, percentage: true),
+                  keyboard: const TextInputType.numberWithOptions(
+                    decimal: true,
                   ),
                 ),
               ],
@@ -1060,29 +1272,24 @@ class _ProcessFlowState extends State<ProcessFlow> {
               style: TextStyle(color: _muted, fontSize: 11),
             ),
             const SizedBox(height: 13),
-            Row(
+            _FieldGroup(
               children: [
-                Expanded(
-                  child: _field(
-                    _flow,
-                    'Total flow rate',
-                    suffix: 'mL/min',
-                    validator: (v) => _numberValidator(v, positive: true),
-                    keyboard: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
+                _field(
+                  _flow,
+                  'Total flow rate',
+                  suffix: 'mL/min',
+                  validator: (v) => _numberValidator(v, positive: true),
+                  keyboard: const TextInputType.numberWithOptions(
+                    decimal: true,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _field(
-                    _ratio,
-                    'Aqueous : organic',
-                    suffix: 'FRR',
-                    validator: (v) => _numberValidator(v, positive: true),
-                    keyboard: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
+                _field(
+                  _ratio,
+                  'Aqueous : organic',
+                  suffix: 'FRR',
+                  validator: (v) => _numberValidator(v, positive: true),
+                  keyboard: const TextInputType.numberWithOptions(
+                    decimal: true,
                   ),
                 ),
               ],
@@ -1093,36 +1300,35 @@ class _ProcessFlowState extends State<ProcessFlow> {
             Wrap(
               spacing: 8,
               runSpacing: 4,
-              children:
-                  [
-                        ('size', 'Particle size · nm'),
-                        ('pdi', 'PDI · unitless'),
-                        ('formation', 'Formation score'),
-                      ]
-                      .map(
-                        (item) => FilterChip(
-                          label: Text(item.$2),
-                          selected: _targets.contains(item.$1),
-                          onSelected: (selected) => setState(() {
-                            selected
-                                ? _targets.add(item.$1)
-                                : _targets.remove(item.$1);
-                          }),
-                          side: BorderSide(
-                            color: _targets.contains(item.$1)
-                                ? const Color(0xFFADD7D2)
-                                : _line,
-                          ),
-                          backgroundColor: Colors.white,
-                          selectedColor: const Color(0xFFE7F4F1),
-                          labelStyle: TextStyle(
-                            fontSize: 12,
-                            color: _targets.contains(item.$1) ? _teal : _muted,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      )
-                      .toList(),
+              children: [
+                ('size', 'Particle size · nm'),
+                ('pdi', 'PDI · unitless'),
+                ('formation', 'Formation score'),
+              ]
+                  .map(
+                    (item) => FilterChip(
+                      label: Text(item.$2),
+                      selected: _targets.contains(item.$1),
+                      onSelected: (selected) => setState(() {
+                        selected
+                            ? _targets.add(item.$1)
+                            : _targets.remove(item.$1);
+                      }),
+                      side: BorderSide(
+                        color: _targets.contains(item.$1)
+                            ? const Color(0xFFC4C9EA)
+                            : _line,
+                      ),
+                      backgroundColor: Colors.white,
+                      selectedColor: const Color(0xFFEBEDFA),
+                      labelStyle: TextStyle(
+                        fontSize: 12,
+                        color: _targets.contains(item.$1) ? _teal : _muted,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
             const SizedBox(height: 13),
             _field(
@@ -1161,6 +1367,18 @@ class _ProcessFlowState extends State<ProcessFlow> {
               ),
             ),
             const SizedBox(height: 15),
+            if (_formError != null)
+              Semantics(
+                liveRegion: true,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    _formError!,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
+                ),
+              ),
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
@@ -1179,9 +1397,10 @@ class _ProcessFlowState extends State<ProcessFlow> {
                   _loading ? 'Assessing process…' : 'Assess process settings',
                 ),
                 style: FilledButton.styleFrom(
-                  backgroundColor: _teal,
+                  backgroundColor: _indigo,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  minimumSize: const Size(0, 48),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -1205,14 +1424,14 @@ class _ProcessFlowState extends State<ProcessFlow> {
   }) {
     return TextFormField(
       controller: controller,
+      textInputAction: TextInputAction.next,
       keyboardType: keyboard,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         suffixText: suffix,
       ),
-      validator:
-          validator ??
+      validator: validator ??
           (value) => required && (value == null || value.trim().isEmpty)
               ? 'This field is required.'
               : null,
@@ -1227,6 +1446,7 @@ class AssessmentPanel extends StatelessWidget {
     required this.error,
     required this.loading,
     required this.onRetry,
+    required this.accent,
     required this.emptyTitle,
     required this.emptyHint,
   });
@@ -1234,6 +1454,7 @@ class AssessmentPanel extends StatelessWidget {
   final String? error;
   final bool loading;
   final VoidCallback onRetry;
+  final Color accent;
   final String emptyTitle;
   final String emptyHint;
 
@@ -1245,18 +1466,19 @@ class AssessmentPanel extends StatelessWidget {
         child: loading
             ? const _LoadingState(key: ValueKey('loading'))
             : error != null
-            ? _ErrorState(
-                key: const ValueKey('error'),
-                error: error!,
-                onRetry: onRetry,
-              )
-            : result == null
-            ? _EmptyState(
-                key: const ValueKey('empty'),
-                title: emptyTitle,
-                hint: emptyHint,
-              )
-            : _ResultView(key: const ValueKey('result'), data: result!),
+                ? _ErrorState(
+                    key: const ValueKey('error'),
+                    error: error!,
+                    onRetry: onRetry,
+                  )
+                : result == null
+                    ? _EmptyState(
+                        accent: accent,
+                        key: const ValueKey('empty'),
+                        title: emptyTitle,
+                        hint: emptyHint,
+                      )
+                    : _ResultView(key: const ValueKey('result'), data: result!),
       ),
     );
   }
@@ -1358,7 +1580,9 @@ class _SubmittedContext extends StatelessWidget {
           ),
           if (desired.isNotEmpty) ...[
             const SizedBox(height: 7),
-            Row(
+            Wrap(
+              spacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 const Icon(
                   Icons.flag_outlined,
@@ -1435,7 +1659,7 @@ class _EndpointCard extends StatelessWidget {
           const SizedBox(height: 9),
           Text(
             '${report['rationale'] ?? ''}',
-            style: const TextStyle(color: _muted, fontSize: 12, height: 1.5),
+            style: const TextStyle(color: _muted, fontSize: 14, height: 1.5),
           ),
           const SizedBox(height: 12),
           _ModelReport(model: model, endpoint: name),
@@ -1612,7 +1836,7 @@ class _ModelReport extends StatelessWidget {
             const SizedBox(height: 5),
             Text(
               '$limitation',
-              style: const TextStyle(color: _muted, fontSize: 10, height: 1.4),
+              style: const TextStyle(color: _muted, fontSize: 12, height: 1.45),
             ),
           ],
           if (status == 'unsupported_endpoint')
@@ -1662,7 +1886,7 @@ class _EvidenceCard extends StatelessWidget {
                   style: const TextStyle(
                     color: _ink,
                     fontWeight: FontWeight.w700,
-                    fontSize: 12,
+                    fontSize: 14,
                     height: 1.4,
                   ),
                 ),
@@ -1692,7 +1916,7 @@ class _EvidenceCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             '${item['text'] ?? ''}',
-            style: const TextStyle(color: _ink, fontSize: 11, height: 1.45),
+            style: const TextStyle(color: _ink, fontSize: 13, height: 1.5),
           ),
           if (measured.isNotEmpty) ...[
             const SizedBox(height: 7),
@@ -1727,7 +1951,7 @@ class _EvidenceCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             'Limitation: ${item['limitation'] ?? 'Not stated'}',
-            style: const TextStyle(color: _muted, fontSize: 10, height: 1.4),
+            style: const TextStyle(color: _muted, fontSize: 12, height: 1.45),
           ),
           const SizedBox(height: 2),
           Text(
@@ -1764,55 +1988,60 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _StateMessage(
-    icon: Icons.cloud_off_outlined,
-    color: const Color(0xFFB84943),
-    title: 'Assessment request failed',
-    body: error,
-    footer: TextButton.icon(
-      onPressed: onRetry,
-      icon: const Icon(Icons.refresh_rounded),
-      label: const Text('Try again'),
-    ),
-  );
+        icon: Icons.cloud_off_outlined,
+        color: const Color(0xFFB84943),
+        title: 'Assessment request failed',
+        body: error,
+        footer: TextButton.icon(
+          onPressed: onRetry,
+          icon: const Icon(Icons.refresh_rounded),
+          label: const Text('Try again'),
+        ),
+      );
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({super.key, required this.title, required this.hint});
+  const _EmptyState(
+      {super.key,
+      required this.title,
+      required this.hint,
+      required this.accent});
+  final Color accent;
   final String title;
   final String hint;
   @override
   Widget build(BuildContext context) => _StateMessage(
-    icon: Icons.notes_rounded,
-    color: _teal,
-    title: title,
-    body: hint,
-    footer: const _Pill(
-      label: 'READY FOR INPUT',
-      color: Color(0xFFEFF5F5),
-      textColor: _teal,
-    ),
-  );
+        icon: Icons.fact_check_outlined,
+        color: accent,
+        title: title,
+        body: hint,
+        footer: const _Pill(
+          label: 'READY FOR INPUT',
+          color: Color(0xFFEFF5F5),
+          textColor: _teal,
+        ),
+      );
 }
 
 class _LoadingState extends StatelessWidget {
   const _LoadingState({super.key});
   @override
   Widget build(BuildContext context) => const SizedBox(
-    height: 300,
-    child: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(color: _teal, strokeWidth: 2.5),
-          SizedBox(height: 16),
-          Text(
-            'Assessing model scope and evidence…',
-            style: TextStyle(color: _muted, fontWeight: FontWeight.w600),
+        height: 235,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(color: _teal, strokeWidth: 2.5),
+              SizedBox(height: 16),
+              Text(
+                'Assessing model scope and evidence…',
+                style: TextStyle(color: _muted, fontWeight: FontWeight.w600),
+              ),
+            ],
           ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 }
 
 class _StateMessage extends StatelessWidget {
@@ -1830,64 +2059,96 @@ class _StateMessage extends StatelessWidget {
   final Widget footer;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 300,
-    child: Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 330),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: _ink,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
+  Widget build(BuildContext context) => ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 235),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 330),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: .09),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(icon, color: color, size: 26),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: _ink,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  body,
+                  textAlign: TextAlign.center,
+                  style:
+                      const TextStyle(color: _muted, fontSize: 14, height: 1.5),
+                ),
+                const SizedBox(height: 13),
+                footer,
+              ],
             ),
-            const SizedBox(height: 6),
-            Text(
-              body,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: _muted, fontSize: 12, height: 1.5),
-            ),
-            const SizedBox(height: 13),
-            footer,
-          ],
+          ),
         ),
-      ),
-    ),
-  );
+      );
 }
 
 class _ScopeFooter extends StatelessWidget {
   const _ScopeFooter();
   @override
   Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-    decoration: BoxDecoration(
-      color: const Color(0xFFEFF2F3),
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: const Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(Icons.shield_outlined, color: _muted, size: 17),
-        SizedBox(width: 9),
-        Expanded(
-          child: Text(
-            'Research use. Evidence relevance is not calibrated confidence. Drug-loaded estimates, cross-carrier rankings, ratio optimization, and tissue delivery predictions are not released by this prototype.',
-            style: TextStyle(color: _muted, fontSize: 11, height: 1.45),
-          ),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        decoration: BoxDecoration(
+          color: const Color(0xFFEFF2F3),
+          borderRadius: BorderRadius.circular(12),
         ),
-      ],
-    ),
-  );
+        child: const Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.shield_outlined, color: _muted, size: 17),
+            SizedBox(width: 9),
+            Expanded(
+              child: Text(
+                'Research use. Evidence relevance is not calibrated confidence. Drug-loaded estimates, cross-carrier rankings, ratio optimization, and tissue delivery predictions are not released by this prototype.',
+                style: TextStyle(color: _muted, fontSize: 11, height: 1.45),
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+class _FieldGroup extends StatelessWidget {
+  const _FieldGroup({required this.children});
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, bounds) {
+          final columns = bounds.maxWidth >= (children.length == 3 ? 460 : 320);
+          if (columns) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 12,
+              children: [for (final child in children) Expanded(child: child)],
+            );
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 12,
+            children: children,
+          );
+        },
+      );
 }
 
 class _CardShell extends StatelessWidget {
@@ -1895,22 +2156,22 @@ class _CardShell extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: _surface,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(color: _line),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0x080B2531),
-          blurRadius: 18,
-          offset: Offset(0, 5),
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: _surface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: _line),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x080B2531),
+              blurRadius: 18,
+              offset: Offset(0, 5),
+            ),
+          ],
         ),
-      ],
-    ),
-    child: child,
-  );
+        child: child,
+      );
 }
 
 class _CardHeading extends StatelessWidget {
@@ -1918,51 +2179,53 @@ class _CardHeading extends StatelessWidget {
     required this.eyebrow,
     required this.title,
     required this.icon,
+    this.accent = _teal,
   });
   final String eyebrow;
   final String title;
   final IconData icon;
+  final Color accent;
   @override
   Widget build(BuildContext context) => Row(
-    children: [
-      Container(
-        width: 35,
-        height: 35,
-        decoration: BoxDecoration(
-          color: const Color(0xFFEAF4F2),
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: Icon(icon, color: _teal, size: 19),
-      ),
-      const SizedBox(width: 10),
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              eyebrow,
-              style: const TextStyle(
-                color: _teal,
-                letterSpacing: 1,
-                fontWeight: FontWeight.w800,
-                fontSize: 9,
-              ),
+        children: [
+          Container(
+            width: 35,
+            height: 35,
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: .09),
+              borderRadius: BorderRadius.circular(11),
             ),
-            const SizedBox(height: 2),
-            Text(
-              title,
-              style: const TextStyle(
-                color: _ink,
-                fontWeight: FontWeight.w700,
-                fontSize: 17,
-                letterSpacing: -0.2,
-              ),
+            child: Icon(icon, color: accent, size: 19),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  eyebrow,
+                  style: TextStyle(
+                    color: accent,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 10,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: _ink,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 19,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    ],
-  );
+          ),
+        ],
+      );
 }
 
 class _SectionLabel extends StatelessWidget {
@@ -1970,14 +2233,14 @@ class _SectionLabel extends StatelessWidget {
   final String text;
   @override
   Widget build(BuildContext context) => Text(
-    text,
-    style: const TextStyle(
-      color: _muted,
-      fontSize: 9,
-      fontWeight: FontWeight.w800,
-      letterSpacing: 0.9,
-    ),
-  );
+        text,
+        style: const TextStyle(
+          color: _muted,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.9,
+        ),
+      );
 }
 
 class _Pill extends StatelessWidget {
@@ -1993,30 +2256,30 @@ class _Pill extends StatelessWidget {
   final IconData? icon;
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-    decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (icon != null) ...[
-          Icon(icon, size: 12, color: textColor),
-          const SizedBox(width: 4),
-        ],
-        Text(
-          label,
-          style: TextStyle(
-            color: textColor,
-            letterSpacing: 0.25,
-            fontWeight: FontWeight.w800,
-            fontSize: 8.5,
-          ),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(20),
         ),
-      ],
-    ),
-  );
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 12, color: textColor),
+              const SizedBox(width: 4),
+            ],
+            Text(
+              label,
+              style: TextStyle(
+                color: textColor,
+                letterSpacing: 0.25,
+                fontWeight: FontWeight.w800,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
+      );
 }
 
 class _InlineNote extends StatelessWidget {
@@ -2024,12 +2287,28 @@ class _InlineNote extends StatelessWidget {
   final String text;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(top: 5),
-    child: Text(
-      text,
-      style: const TextStyle(color: _muted, fontSize: 10, height: 1.4),
-    ),
-  );
+        padding: const EdgeInsets.only(top: 5),
+        child: Text(
+          text,
+          style: const TextStyle(color: _muted, fontSize: 12, height: 1.45),
+        ),
+      );
+}
+
+void _revealReport(BuildContext context, GlobalKey key) {
+  if (MediaQuery.sizeOf(context).width >= 960) return;
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final report = key.currentContext;
+    if (report == null || !TickerMode.of(report)) return;
+    Scrollable.ensureVisible(
+      report,
+      alignment: .05,
+      duration: MediaQuery.disableAnimationsOf(report)
+          ? Duration.zero
+          : const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+    );
+  });
 }
 
 class ApiException implements Exception {
@@ -2081,45 +2360,45 @@ String _titleCase(String input) =>
     input.isEmpty ? input : '${input[0].toUpperCase()}${input.substring(1)}';
 
 String _humanStatus(String status) => switch (status) {
-  'process_estimate' => 'ESTIMATE',
-  'withheld' => 'WITHHELD',
-  'unsupported_endpoint' => 'UNSUPPORTED',
-  'out_of_scope' => 'OUT OF SCOPE',
-  'missing_inputs' => 'INPUTS NEEDED',
-  'invalid_inputs' => 'INVALID INPUTS',
-  _ => _titleCase(status.replaceAll('_', ' ')),
-};
+      'process_estimate' => 'ESTIMATE',
+      'withheld' => 'WITHHELD',
+      'unsupported_endpoint' => 'UNSUPPORTED',
+      'out_of_scope' => 'OUT OF SCOPE',
+      'missing_inputs' => 'INPUTS NEEDED',
+      'invalid_inputs' => 'INVALID INPUTS',
+      _ => _titleCase(status.replaceAll('_', ' ')),
+    };
 
 (String, Color, Color, IconData) _decisionAppearance(String decision) =>
     switch (decision) {
       'model_estimate' => (
-        'MODEL ESTIMATE',
-        _teal,
-        const Color(0xFFE8F4F1),
-        Icons.auto_graph_rounded,
-      ),
+          'MODEL ESTIMATE',
+          _teal,
+          const Color(0xFFE8F4F1),
+          Icons.auto_graph_rounded,
+        ),
       'literature_candidate' => (
-        'LITERATURE CANDIDATE',
-        const Color(0xFF2F6981),
-        const Color(0xFFEAF3F7),
-        Icons.menu_book_outlined,
-      ),
+          'LITERATURE CANDIDATE',
+          const Color(0xFF2F6981),
+          const Color(0xFFEAF3F7),
+          Icons.menu_book_outlined,
+        ),
       'conflicting_evidence' => (
-        'REVIEW CONFLICT',
-        const Color(0xFF9A5D1B),
-        const Color(0xFFFFF2DE),
-        Icons.compare_arrows_rounded,
-      ),
+          'REVIEW CONFLICT',
+          const Color(0xFF9A5D1B),
+          const Color(0xFFFFF2DE),
+          Icons.compare_arrows_rounded,
+        ),
       'background_only' => (
-        'BACKGROUND ONLY',
-        const Color(0xFF6A5C9B),
-        const Color(0xFFF0EDFA),
-        Icons.info_outline_rounded,
-      ),
+          'BACKGROUND ONLY',
+          const Color(0xFF6A5C9B),
+          const Color(0xFFF0EDFA),
+          Icons.info_outline_rounded,
+        ),
       _ => (
-        'INSUFFICIENT EVIDENCE',
-        _muted,
-        const Color(0xFFF0F3F4),
-        Icons.help_outline_rounded,
-      ),
+          'INSUFFICIENT EVIDENCE',
+          _muted,
+          const Color(0xFFF0F3F4),
+          Icons.help_outline_rounded,
+        ),
     };
