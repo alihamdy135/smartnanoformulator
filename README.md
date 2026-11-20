@@ -2,6 +2,9 @@
 
 SmartNanoFormulator is a research prototype with a FastAPI service and a Flutter Web client. The backend wraps the supplied `Hybrid(root).answer(request)` engine. It reports the model and literature branches separately and retains the engine's field-by-field decision rules.
 
+- [GitHub source](https://github.com/alihamdy135/smartnanoformulator)
+- [Production API documentation](https://smartnanoformulator-api-alihatab.vercel.app/docs)
+
 ## Scientific scope
 
 - Drug-loaded numerical predictions remain withheld. The topical celecoxib flow shows the published Tween 20 ethosome, Batch F, and its observed 54.4% entrapment. A 65% release at 24 hours is shown as a user target; the release estimate stays unresolved.
@@ -72,7 +75,7 @@ The CLI account state is kept outside the repository under `/tmp/smartnano-fireb
 
 `.github/workflows/firebase-hosting.yml` builds Flutter and deploys the live Firebase Hosting channel when frontend or Hosting configuration changes reach `main`. It uses the Actions variable `NANOPREDICT_API_BASE_URL` when set and defaults to the current Vercel API URL. Configure the Actions variable `FIREBASE_PROJECT_ID` and the Actions secret `FIREBASE_SERVICE_ACCOUNT` in the GitHub repository settings. Store the Hosting service account JSON in that secret. After configuring credentials, run the workflow from the Actions tab on `main` for the initial release.
 
-For automatic Vercel backend deployments, connect the pushed GitHub repository to the Vercel project with the repository root as its root directory. The existing `vercel.json` and Python requirements configure the FastAPI deployment. Confirm that Vercel's production domain remains `smartnanoformulator-api-alihatab.vercel.app` before changing the API URL used by the Flutter workflow.
+The `alihatab/smartnanoformulator-api` Vercel project uses the GitHub repository root for FastAPI builds. Pushes to the production branch, `main`, trigger backend builds. The Flutter workflow defaults to `smartnanoformulator-api-alihatab.vercel.app`.
 
 ## Configuration names
 
