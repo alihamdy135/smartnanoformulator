@@ -4,20 +4,20 @@ import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 
+part 'workspace.dart';
+
 const _apiBase = String.fromEnvironment(
   'NANOPREDICT_API_BASE_URL',
   defaultValue: 'http://127.0.0.1:8000',
 );
 
-const _ink = Color(0xFF193127);
-const _forest = Color(0xFF142E26);
-const _lime = Color(0xFFDCFA9C);
-const _indigo = Color(0xFF4852A2);
-const _muted = Color(0xFF54685D);
-const _teal = Color(0xFF176749);
-const _line = Color(0xFFD8E2DA);
+const _ink = Color(0xFF142039);
+const _indigo = Color(0xFF6240B3);
+const _muted = Color(0xFF52617A);
+const _teal = Color(0xFF2756D5);
+const _line = Color(0xFFDCE3EF);
 const _surface = Color(0xFFFFFFFF);
-const _soft = Color(0xFFF0F5F0);
+const _soft = Color(0xFFF0F4FA);
 
 void main() => runApp(const SmartNanoFormulatorApp());
 
@@ -37,7 +37,7 @@ class SmartNanoFormulatorApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: scheme,
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFF5F7F2),
+        scaffoldBackgroundColor: const Color(0xFFF1F4F9),
         textTheme: const TextTheme(
           headlineMedium: TextStyle(
             color: _ink,
@@ -57,7 +57,7 @@ class SmartNanoFormulatorApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: const Color(0xFFFAFCF9),
+          fillColor: const Color(0xFFFAFBFD),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 14,
@@ -91,388 +91,9 @@ class SmartNanoFormulatorApp extends StatelessWidget {
   }
 }
 
-class WorkspacePage extends StatefulWidget {
-  const WorkspacePage({super.key});
-
-  @override
-  State<WorkspacePage> createState() => _WorkspacePageState();
-}
-
-class _WorkspacePageState extends State<WorkspacePage> {
-  int _activeFlow = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            _TopBar(onDocs: () => _openUrl('$_apiBase/docs')),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, bounds) {
-                  final wide = bounds.maxWidth >= 900;
-                  return SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: wide ? 32 : 14,
-                      vertical: 24,
-                    ),
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 1180),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const _IntroHeader(),
-                            const SizedBox(height: 20),
-                            const _SectionLabel('CHOOSE A WORKFLOW'),
-                            const SizedBox(height: 9),
-                            _FlowPicker(
-                              selected: _activeFlow,
-                              onSelected: (value) =>
-                                  setState(() => _activeFlow = value),
-                            ),
-                            const SizedBox(height: 20),
-                            Visibility(
-                              visible: _activeFlow == 0,
-                              maintainState: true,
-                              child: const FormulationFlow(),
-                            ),
-                            Visibility(
-                              visible: _activeFlow == 1,
-                              maintainState: true,
-                              child: const ProcessFlow(),
-                            ),
-                            const SizedBox(height: 24),
-                            const _ScopeFooter(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TopBar extends StatelessWidget {
-  const _TopBar({required this.onDocs});
-  final VoidCallback onDocs;
-
-  @override
-  Widget build(BuildContext context) => Material(
-        color: _surface,
-        child: Container(
-          decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: _line)),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1180),
-              child: LayoutBuilder(
-                builder: (context, bounds) => Row(
-                  children: [
-                    Container(
-                      width: 42,
-                      height: 42,
-                      decoration: BoxDecoration(
-                        color: _forest,
-                        borderRadius: BorderRadius.circular(13),
-                      ),
-                      child: const Icon(Icons.science_outlined,
-                          color: _lime, size: 22),
-                    ),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'SmartNanoFormulator',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w800),
-                          ),
-                          Text('Research workspace',
-                              style: TextStyle(fontSize: 12, color: _muted)),
-                        ],
-                      ),
-                    ),
-                    if (bounds.maxWidth >= 450)
-                      OutlinedButton.icon(
-                        onPressed: onDocs,
-                        label: const Text('API documentation'),
-                        icon: const Icon(Icons.open_in_new_rounded, size: 16),
-                      )
-                    else
-                      IconButton(
-                        tooltip: 'Open API documentation',
-                        onPressed: onDocs,
-                        icon: const Icon(Icons.open_in_new_rounded, size: 19),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-}
-
-class _IntroHeader extends StatelessWidget {
-  const _IntroHeader();
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, bounds) {
-          final compact = bounds.maxWidth < 640;
-          return SizedBox(
-            width: double.infinity,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(compact ? 22 : 28),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [_forest, Color(0xFF1F5042)],
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: ExcludeSemantics(
-                        child: CustomPaint(
-                            painter: _LiposomeIllustration(compact)),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(compact ? 22 : 36),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth:
-                            compact ? double.infinity : bounds.maxWidth * .57,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const _Pill(
-                            label: 'RESEARCH PROTOTYPE',
-                            icon: Icons.science_outlined,
-                            color: Color(0xFF29493E),
-                            textColor: _lime,
-                          ),
-                          const SizedBox(height: 13),
-                          Semantics(
-                            header: true,
-                            child: Text(
-                              'Formulation Lab',
-                              style: TextStyle(
-                                fontSize: compact ? 36 : 53,
-                                height: 1.07,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: compact ? -1.3 : -2.2,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Screen published formulation evidence or benchmark a microfluidic liposome process.',
-                            style: TextStyle(
-                                color: Color(0xFFD7E7DD),
-                                fontSize: 16,
-                                height: 1.5),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-}
-
-class _LiposomeIllustration extends CustomPainter {
-  const _LiposomeIllustration(this.compact);
-  final bool compact;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center =
-        Offset(size.width * (compact ? 1.04 : .82), size.height * .55);
-    final radius = size.height * .31;
-    final orbit = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-      ..color = _lime.withValues(alpha: compact ? .08 : .24);
-    for (final factor in [1.28, 1.65, 2.05, 2.45]) {
-      canvas.drawCircle(center, radius * factor, orbit);
-    }
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..shader = const RadialGradient(
-          colors: [Color(0xFF53846A), Color(0xFF275746)],
-        ).createShader(Rect.fromCircle(center: center, radius: radius)),
-    );
-    final head = Paint()..color = _lime.withValues(alpha: compact ? .22 : .92);
-    final tail = Paint()
-      ..strokeWidth = 1
-      ..color = _lime.withValues(alpha: compact ? .13 : .43);
-    for (var i = 0; i < 36; i++) {
-      final direction = Offset.fromDirection(i * 6.283185307 / 36);
-      canvas.drawLine(center + direction * (radius - 9),
-          center + direction * (radius + 1), tail);
-      canvas.drawCircle(center + direction * (radius + 4), 2.5, head);
-      canvas.drawCircle(center + direction * (radius - 12), 1.7, head);
-    }
-    for (final (x, y, dot) in [
-      (-.32, -.28, 4.0),
-      (.22, -.18, 3.0),
-      (-.1, .36, 3.5),
-      (.43, .27, 2.0),
-      (1.76, -.58, 3.2),
-      (-1.36, .81, 3.0)
-    ]) {
-      canvas.drawCircle(center + Offset(x * radius, y * radius), dot, head);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_LiposomeIllustration oldDelegate) =>
-      compact != oldDelegate.compact;
-}
-
-class _FlowPicker extends StatelessWidget {
-  const _FlowPicker({required this.selected, required this.onSelected});
-  final int selected;
-  final ValueChanged<int> onSelected;
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, bounds) {
-          final cards = [
-            _WorkflowCard(
-              title: 'Formulation evidence',
-              description: 'Find published batches, measurements, and gaps.',
-              icon: Icons.biotech_outlined,
-              accent: _teal,
-              tint: const Color(0xFFE6F2E9),
-              selected: selected == 0,
-              onTap: () => onSelected(0),
-            ),
-            _WorkflowCard(
-              title: 'Microfluidic process',
-              description:
-                  'Check formation, size, and PDI in the Eugster cohort.',
-              icon: Icons.water_drop_outlined,
-              accent: _indigo,
-              tint: const Color(0xFFEBEDFA),
-              selected: selected == 1,
-              onTap: () => onSelected(1),
-            ),
-          ];
-          if (bounds.maxWidth < 620) {
-            return Column(
-                children: [cards[0], const SizedBox(height: 9), cards[1]]);
-          }
-          return Row(children: [
-            Expanded(child: cards[0]),
-            const SizedBox(width: 12),
-            Expanded(child: cards[1]),
-          ]);
-        },
-      );
-}
-
-class _WorkflowCard extends StatelessWidget {
-  const _WorkflowCard({
-    required this.title,
-    required this.description,
-    required this.icon,
-    required this.accent,
-    required this.tint,
-    required this.selected,
-    required this.onTap,
-  });
-  final String title, description;
-  final IconData icon;
-  final Color accent, tint;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => Semantics(
-        button: true,
-        selected: selected,
-        child: Material(
-          color: selected ? tint : _surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: selected ? accent : _line, width: 1.2),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onTap,
-            focusColor: accent.withValues(alpha: .14),
-            hoverColor: accent.withValues(alpha: .07),
-            child: Padding(
-              padding: const EdgeInsets.all(13),
-              child: Row(
-                children: [
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      color: selected ? accent : tint,
-                      borderRadius: BorderRadius.circular(11),
-                    ),
-                    child: Icon(icon,
-                        color: selected ? Colors.white : accent, size: 22),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(title,
-                            style: const TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w800)),
-                        const SizedBox(height: 3),
-                        Text(description,
-                            style: const TextStyle(
-                                color: _muted, fontSize: 13, height: 1.35)),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    selected
-                        ? Icons.check_circle_rounded
-                        : Icons.arrow_forward_rounded,
-                    color: selected ? accent : _muted,
-                    size: 19,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-}
-
 class FormulationFlow extends StatefulWidget {
-  const FormulationFlow({super.key});
+  const FormulationFlow({super.key, this.initialExample});
+  final String? initialExample;
 
   @override
   State<FormulationFlow> createState() => _FormulationFlowState();
@@ -481,13 +102,13 @@ class FormulationFlow extends StatefulWidget {
 class _FormulationFlowState extends State<FormulationFlow> {
   final _formKey = GlobalKey<FormState>();
   final _resultsKey = GlobalKey();
-  final _drug = TextEditingController(text: 'celecoxib');
+  final _drug = TextEditingController();
   final _drugForm = TextEditingController();
-  final _route = TextEditingController(text: 'topical');
-  final _tissue = TextEditingController(text: 'skin');
+  final _route = TextEditingController();
+  final _tissue = TextEditingController();
   final _assay = TextEditingController();
-  final _hours = TextEditingController(text: '24');
-  final _percent = TextEditingController(text: '65');
+  final _hours = TextEditingController();
+  final _percent = TextEditingController();
   final _mw = TextEditingController();
   final _logp = TextEditingController();
   final _pka = TextEditingController();
@@ -523,9 +144,20 @@ class _FormulationFlowState extends State<FormulationFlow> {
     ('bioavailability', 'Bioavailability'),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    final example = widget.initialExample;
+    if (example != null) _applyExample(example);
+  }
+
   void _loadExample(String example) {
-    final gap = example == 'gap';
     _formKey.currentState!.reset();
+    setState(() => _applyExample(example));
+  }
+
+  void _applyExample(String example) {
+    final gap = example == 'gap';
     for (final controller in [
       _drugForm,
       _assay,
@@ -543,18 +175,16 @@ class _FormulationFlowState extends State<FormulationFlow> {
     _tissue.text = gap ? 'brain' : 'skin';
     _hours.text = gap ? '' : '24';
     _percent.text = gap ? '' : '65';
-    setState(() {
-      _carrier = gap ? 'phytosome' : null;
-      _carrierFieldKey = UniqueKey();
-      _targets
-        ..clear()
-        ..addAll(gap
-            ? ['ratios', 'release', 'tissue']
-            : ['carrier', 'excipients', 'entrapment', 'release']);
-      _result = null;
-      _error = null;
-      _formError = null;
-    });
+    _carrier = gap ? 'phytosome' : null;
+    _carrierFieldKey = UniqueKey();
+    _targets
+      ..clear()
+      ..addAll(gap
+          ? ['ratios', 'release', 'tissue']
+          : ['carrier', 'excipients', 'entrapment', 'release']);
+    _result = null;
+    _error = null;
+    _formError = null;
   }
 
   @override
@@ -661,7 +291,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
     if (descriptors.isNotEmpty) payload['descriptors'] = descriptors;
 
     FocusManager.instance.primaryFocus?.unfocus();
-    _revealReport(context, _resultsKey);
+    _revealReport(_resultsKey);
     setState(() {
       _loading = true;
       _error = null;
@@ -687,7 +317,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, bounds) {
-        final wide = bounds.maxWidth >= 900;
+        final wide = bounds.maxWidth >= 810;
         final form = _formCard();
         final output = AssessmentPanel(
           key: _resultsKey,
@@ -706,7 +336,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
             children: [
               Expanded(flex: 5, child: form),
               const SizedBox(width: 18),
-              Expanded(flex: 6, child: output),
+              Expanded(flex: 7, child: output),
             ],
           );
         return Column(children: [form, const SizedBox(height: 16), output]);
@@ -723,7 +353,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
           children: [
             const _CardHeading(
               eyebrow: 'FORMULATION SCREEN',
-              title: 'Define the research question',
+              title: 'Assessment inputs',
               icon: Icons.biotech_outlined,
             ),
             const SizedBox(height: 10),
@@ -828,11 +458,11 @@ class _FormulationFlowState extends State<FormulationFlow> {
                       showCheckmark: true,
                       side: BorderSide(
                         color: _targets.contains(entry.$1)
-                            ? const Color(0xFFADD7D2)
+                            ? const Color(0xFFC2D0F8)
                             : _line,
                       ),
                       backgroundColor: Colors.white,
-                      selectedColor: const Color(0xFFE7F4F1),
+                      selectedColor: const Color(0xFFEAF0FF),
                       labelStyle: TextStyle(
                         fontSize: 12,
                         color: _targets.contains(entry.$1) ? _teal : _muted,
@@ -1054,7 +684,8 @@ class _FormulationFlowState extends State<FormulationFlow> {
 }
 
 class ProcessFlow extends StatefulWidget {
-  const ProcessFlow({super.key});
+  const ProcessFlow({super.key, this.useExample = false});
+  final bool useExample;
 
   @override
   State<ProcessFlow> createState() => _ProcessFlowState();
@@ -1063,12 +694,12 @@ class ProcessFlow extends StatefulWidget {
 class _ProcessFlowState extends State<ProcessFlow> {
   final _formKey = GlobalKey<FormState>();
   final _resultsKey = GlobalKey();
-  final _lipid = TextEditingController(text: 'DMPC');
-  final _chip = TextEditingController(text: 'ZZ');
-  final _cholesterol = TextEditingController(text: '40');
-  final _peg = TextEditingController(text: '5');
-  final _flow = TextEditingController(text: '8');
-  final _ratio = TextEditingController(text: '1');
+  final _lipid = TextEditingController();
+  final _chip = TextEditingController();
+  final _cholesterol = TextEditingController();
+  final _peg = TextEditingController();
+  final _flow = TextEditingController();
+  final _ratio = TextEditingController();
   final _assay = TextEditingController();
   final Set<String> _targets = {'size', 'pdi', 'formation'};
   bool _loading = false;
@@ -1076,8 +707,18 @@ class _ProcessFlowState extends State<ProcessFlow> {
   String? _formError;
   Map<String, dynamic>? _result;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.useExample) _applyExample();
+  }
+
   void _loadExample() {
     _formKey.currentState!.reset();
+    setState(_applyExample);
+  }
+
+  void _applyExample() {
     _lipid.text = 'DMPC';
     _chip.text = 'ZZ';
     _cholesterol.text = '40';
@@ -1085,14 +726,12 @@ class _ProcessFlowState extends State<ProcessFlow> {
     _flow.text = '8';
     _ratio.text = '1';
     _assay.clear();
-    setState(() {
-      _targets
-        ..clear()
-        ..addAll(['size', 'pdi', 'formation']);
-      _result = null;
-      _error = null;
-      _formError = null;
-    });
+    _targets
+      ..clear()
+      ..addAll(['size', 'pdi', 'formation']);
+    _result = null;
+    _error = null;
+    _formError = null;
   }
 
   @override
@@ -1151,7 +790,7 @@ class _ProcessFlowState extends State<ProcessFlow> {
     };
     if (_assay.text.trim().isNotEmpty) payload['assay'] = _assay.text.trim();
     FocusManager.instance.primaryFocus?.unfocus();
-    _revealReport(context, _resultsKey);
+    _revealReport(_resultsKey);
     setState(() {
       _loading = true;
       _error = null;
@@ -1177,7 +816,7 @@ class _ProcessFlowState extends State<ProcessFlow> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, bounds) {
-        final wide = bounds.maxWidth >= 900;
+        final wide = bounds.maxWidth >= 810;
         final form = _formCard();
         final output = AssessmentPanel(
           key: _resultsKey,
@@ -1196,7 +835,7 @@ class _ProcessFlowState extends State<ProcessFlow> {
             children: [
               Expanded(flex: 5, child: form),
               const SizedBox(width: 18),
-              Expanded(flex: 6, child: output),
+              Expanded(flex: 7, child: output),
             ],
           );
         return Column(children: [form, const SizedBox(height: 16), output]);
@@ -1213,7 +852,7 @@ class _ProcessFlowState extends State<ProcessFlow> {
           children: [
             const _CardHeading(
               eyebrow: 'EUGSTER MICROFLUIDIC COHORT',
-              title: 'Set liposome process inputs',
+              title: 'Process inputs',
               icon: Icons.water_drop_outlined,
               accent: _indigo,
             ),
@@ -1316,11 +955,11 @@ class _ProcessFlowState extends State<ProcessFlow> {
                       }),
                       side: BorderSide(
                         color: _targets.contains(item.$1)
-                            ? const Color(0xFFC4C9EA)
+                            ? const Color(0xFFD6C9F0)
                             : _line,
                       ),
                       backgroundColor: Colors.white,
-                      selectedColor: const Color(0xFFEBEDFA),
+                      selectedColor: const Color(0xFFF0EBFA),
                       labelStyle: TextStyle(
                         fontSize: 12,
                         color: _targets.contains(item.$1) ? _teal : _muted,
@@ -1461,24 +1100,30 @@ class AssessmentPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _CardShell(
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        child: loading
-            ? const _LoadingState(key: ValueKey('loading'))
-            : error != null
-                ? _ErrorState(
-                    key: const ValueKey('error'),
-                    error: error!,
-                    onRetry: onRetry,
-                  )
-                : result == null
-                    ? _EmptyState(
-                        accent: accent,
-                        key: const ValueKey('empty'),
-                        title: emptyTitle,
-                        hint: emptyHint,
-                      )
-                    : _ResultView(key: const ValueKey('result'), data: result!),
+      child: Semantics(
+        liveRegion: true,
+        child: AnimatedSwitcher(
+          duration: MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : const Duration(milliseconds: 180),
+          child: loading
+              ? const _LoadingState(key: ValueKey('loading'))
+              : error != null
+                  ? _ErrorState(
+                      key: const ValueKey('error'),
+                      error: error!,
+                      onRetry: onRetry,
+                    )
+                  : result == null
+                      ? _EmptyState(
+                          accent: accent,
+                          key: const ValueKey('empty'),
+                          title: emptyTitle,
+                          hint: emptyHint,
+                        )
+                      : _ResultView(
+                          key: const ValueKey('result'), data: result!),
+        ),
       ),
     );
   }
@@ -1492,54 +1137,114 @@ class _ResultView extends StatelessWidget {
   Widget build(BuildContext context) {
     final results = Map<String, dynamic>.from(data['results'] as Map? ?? {});
     final request = Map<String, dynamic>.from(data['request'] as Map? ?? {});
+    final ready = results.values
+        .whereType<Map>()
+        .where(
+          (result) => ['model_estimate', 'literature_candidate']
+              .contains(result['decision']),
+        )
+        .length;
+    final conflicts = results.values
+        .whereType<Map>()
+        .where(
+          (result) => result['decision'] == 'conflicting_evidence',
+        )
+        .length;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        const _CardHeading(
+          eyebrow: 'ASSESSMENT REPORT',
+          title: 'Results overview',
+          icon: Icons.fact_check_outlined,
+        ),
+        const SizedBox(height: 14),
+        _SubmittedContext(request: request),
+        const SizedBox(height: 15),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
           children: [
-            const Expanded(
-              child: _CardHeading(
-                eyebrow: 'ASSESSMENT REPORT',
-                title: 'Endpoint results',
-                icon: Icons.fact_check_outlined,
-              ),
-            ),
             _Pill(
-              label: 'API ${data['api_version'] ?? '—'}',
-              color: const Color(0xFFF0F3F4),
-              textColor: _muted,
-            ),
+                label: '${results.length} endpoints',
+                color: _soft,
+                textColor: _ink,
+                icon: Icons.checklist_rounded),
+            _Pill(
+                label: '$ready supported',
+                color: const Color(0xFFE6F5ED),
+                textColor: const Color(0xFF166446),
+                icon: Icons.check_circle_outline),
+            _Pill(
+                label: '${results.length - ready - conflicts} unresolved',
+                color: _soft,
+                textColor: _muted,
+                icon: Icons.help_outline),
+            if (conflicts > 0)
+              _Pill(
+                  label: '$conflicts to review',
+                  color: const Color(0xFFFFF2DE),
+                  textColor: const Color(0xFF9A5D1B),
+                  icon: Icons.warning_amber),
           ],
         ),
-        const SizedBox(height: 12),
-        _SubmittedContext(request: request),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
+        const _SectionLabel('ENDPOINTS'),
+        const SizedBox(height: 7),
         for (final entry in results.entries) ...[
           _EndpointCard(
+            key: ValueKey('${data['request_id']}:${entry.key}'),
             name: entry.key,
             report: Map<String, dynamic>.from(entry.value as Map),
           ),
-          const SizedBox(height: 11),
+          const SizedBox(height: 8),
         ],
         const SizedBox(height: 5),
-        Text(
-          'Request ${data['request_id'] ?? '—'}',
-          style: const TextStyle(fontSize: 10, color: _muted),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: OutlinedButton.icon(
+            onPressed: () => _downloadAssessment(data),
+            icon: const Icon(Icons.download_outlined, size: 18),
+            label: const Text('Download report (JSON)'),
+          ),
         ),
-        const SizedBox(height: 5),
-        Text(
-          'Model ${data['model_release'] ?? '—'}  ·  Corpus ${data['corpus_release'] ?? '—'}',
-          style: const TextStyle(fontSize: 10, color: _muted),
-        ),
-        const SizedBox(height: 9),
-        Text(
-          '${data['method'] ?? ''}',
-          style: const TextStyle(fontSize: 11, color: _muted, height: 1.45),
+        const SizedBox(height: 6),
+        ExpansionTile(
+          shape: const Border(),
+          collapsedShape: const Border(),
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: const EdgeInsets.only(bottom: 8),
+          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+          title: const Text('Run metadata',
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+          children: [
+            SelectableText(
+              'Request: ${data['request_id'] ?? '—'}\nAPI: ${data['api_version'] ?? '—'}\nModel: ${data['model_release'] ?? '—'}\nCorpus: ${data['corpus_release'] ?? '—'}',
+              style: const TextStyle(fontSize: 12, color: _muted, height: 1.5),
+            ),
+            const SizedBox(height: 6),
+            Text('${data['method'] ?? ''}',
+                style:
+                    const TextStyle(color: _muted, fontSize: 12, height: 1.45)),
+          ],
         ),
       ],
     );
   }
+}
+
+void _downloadAssessment(Map<String, dynamic> data) {
+  final bytes = const JsonEncoder.withIndent('  ').convert(data);
+  final url = html.Url.createObjectUrlFromBlob(
+    html.Blob([bytes], 'application/json'),
+  );
+  final request = '${data['request_id'] ?? 'report'}'
+      .replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '');
+  html.AnchorElement(href: url)
+    ..download = 'smartnano-${request.isEmpty ? 'report' : request}.json'
+    ..click();
+  Future<void>.delayed(
+      const Duration(seconds: 1), () => html.Url.revokeObjectUrl(url));
 }
 
 class _SubmittedContext extends StatelessWidget {
@@ -1613,7 +1318,7 @@ class _SubmittedContext extends StatelessWidget {
 }
 
 class _EndpointCard extends StatelessWidget {
-  const _EndpointCard({required this.name, required this.report});
+  const _EndpointCard({super.key, required this.name, required this.report});
   final String name;
   final Map<String, dynamic> report;
 
@@ -1626,37 +1331,66 @@ class _EndpointCard extends StatelessWidget {
         .map((item) => Map<String, dynamic>.from(item))
         .toList();
     final (label, color, background, icon) = _decisionAppearance(decision);
+    final value = model['value'];
+    final observations = <String>[];
+    for (final item in evidence) {
+      // Only matched study measurements are promoted to the overview.
+      if (item['applicability'] != 'matched_drug_and_route') continue;
+      final measurements = item['measurements'];
+      final metric = measurements is Map ? measurements[name] : null;
+      if (metric is Map && metric['value'] != null) {
+        observations.add(
+            '${metric['value']}${metric['unit'] == '%' ? '' : ' '}${metric['unit'] ?? ''}');
+      }
+    }
     return Container(
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        color: _surface,
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: _line),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      child: ExpansionTile(
+        shape: const Border(),
+        collapsedShape: const Border(),
+        tilePadding: const EdgeInsets.fromLTRB(13, 6, 9, 6),
+        childrenPadding: const EdgeInsets.fromLTRB(13, 0, 13, 13),
+        expandedCrossAxisAlignment: CrossAxisAlignment.start,
+        title: Text(
+          name == 'pdi' ? 'PDI' : _titleCase(name),
+          style: const TextStyle(
+              color: _ink, fontSize: 15, fontWeight: FontWeight.w800),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Wrap(
+            spacing: 7,
+            runSpacing: 5,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Expanded(
-                child: Text(
-                  _titleCase(name),
-                  style: const TextStyle(
-                    color: _ink,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
               _Pill(
-                label: label,
-                color: background,
-                textColor: color,
-                icon: icon,
-              ),
+                  label: label,
+                  color: background,
+                  textColor: color,
+                  icon: icon),
+              if (value != null)
+                Text(
+                  'Model: $value ${model['unit'] ?? ''}',
+                  style: const TextStyle(
+                      color: _ink, fontWeight: FontWeight.w700, fontSize: 13),
+                ),
+              if (observations.isNotEmpty)
+                Text(
+                  'Published: ${observations.toSet().join(' · ')}',
+                  style: const TextStyle(
+                      color: Color(0xFF176446),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13),
+                ),
             ],
           ),
-          const SizedBox(height: 9),
+        ),
+        children: [
+          const Divider(color: _line),
           Text(
             '${report['rationale'] ?? ''}',
             style: const TextStyle(color: _muted, fontSize: 14, height: 1.5),
@@ -1664,9 +1398,7 @@ class _EndpointCard extends StatelessWidget {
           const SizedBox(height: 12),
           _ModelReport(model: model, endpoint: name),
           if (evidence.isNotEmpty) ...[
-            const SizedBox(height: 11),
-            const Divider(height: 1, color: _line),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             const _SectionLabel('LITERATURE REPORT'),
             const SizedBox(height: 8),
             for (final item in evidence)
@@ -2016,7 +1748,7 @@ class _EmptyState extends StatelessWidget {
         title: title,
         body: hint,
         footer: const _Pill(
-          label: 'READY FOR INPUT',
+          label: 'AWAITING SUBMISSION',
           color: Color(0xFFEFF5F5),
           textColor: _teal,
         ),
@@ -2160,11 +1892,11 @@ class _CardShell extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: _surface,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(color: _line),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x080B2531),
+              color: Color(0x080F2245),
               blurRadius: 18,
               offset: Offset(0, 5),
             ),
@@ -2295,8 +2027,7 @@ class _InlineNote extends StatelessWidget {
       );
 }
 
-void _revealReport(BuildContext context, GlobalKey key) {
-  if (MediaQuery.sizeOf(context).width >= 960) return;
+void _revealReport(GlobalKey key) {
   WidgetsBinding.instance.addPostFrameCallback((_) {
     final report = key.currentContext;
     if (report == null || !TickerMode.of(report)) return;
@@ -2352,8 +2083,10 @@ Future<Map<String, dynamic>> _postJson(
 }
 
 void _openUrl(String url) {
-  if (Uri.tryParse(url)?.hasScheme ?? false)
+  final uri = Uri.tryParse(url);
+  if (uri != null && (uri.scheme == 'https' || uri.scheme == 'http')) {
     html.window.open(url, '_blank', 'noopener,noreferrer');
+  }
 }
 
 String _titleCase(String input) =>
@@ -2373,8 +2106,8 @@ String _humanStatus(String status) => switch (status) {
     switch (decision) {
       'model_estimate' => (
           'MODEL ESTIMATE',
-          _teal,
-          const Color(0xFFE8F4F1),
+          const Color(0xFF166446),
+          const Color(0xFFE6F5ED),
           Icons.auto_graph_rounded,
         ),
       'literature_candidate' => (
