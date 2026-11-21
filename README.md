@@ -1,6 +1,6 @@
-# SmartNanoFormulator
+# NanoPredict Lab
 
-SmartNanoFormulator is a research prototype with a FastAPI service and a Flutter Web client. The backend wraps the supplied `Hybrid(root).answer(request)` engine. It reports the model and literature branches separately and retains the engine's field-by-field decision rules.
+NanoPredict Lab is a research prototype with a FastAPI service and a Flutter Web client. The backend wraps the supplied `Hybrid(root).answer(request)` engine. It reports the model and literature branches separately and retains the engine's field-by-field decision rules.
 
 - [Production Flutter app](https://smartnanoformulator.web.app)
 - [GitHub source](https://github.com/alihamdy135/smartnanoformulator)
