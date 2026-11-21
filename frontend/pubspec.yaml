@@ -1,5 +1,5 @@
-name: smart_nano_formulator
-description: Research interface for evidence screening and microfluidic liposome assessment.
+name: nanopredict_lab
+description: NanoPredict Lab research interface for evidence screening and microfluidic liposome assessment.
 publish_to: "none"
 version: 0.1.0+1
 
