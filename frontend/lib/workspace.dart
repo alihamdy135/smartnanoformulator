@@ -3,30 +3,26 @@ part of 'main.dart';
 const _nav = Color(0xFF111C33);
 const _navMuted = Color(0xFFAAB7D1);
 
-enum _WorkspaceSection { overview, formulation, process, guide }
+enum _WorkspaceSection { overview, formulation, process }
 
 extension on _WorkspaceSection {
   String get title => switch (this) {
         _WorkspaceSection.overview => 'Overview',
         _WorkspaceSection.formulation => 'Formulation evidence',
         _WorkspaceSection.process => 'Microfluidic process',
-        _WorkspaceSection.guide => 'Result guide',
       };
   IconData get icon => switch (this) {
         _WorkspaceSection.overview => Icons.space_dashboard_outlined,
         _WorkspaceSection.formulation => Icons.biotech_outlined,
         _WorkspaceSection.process => Icons.hub_outlined,
-        _WorkspaceSection.guide => Icons.menu_book_outlined,
       };
   String get description => switch (this) {
         _WorkspaceSection.overview =>
           'Evaluate formulation evidence and benchmark microfluidic liposome processes in one workspace.',
         _WorkspaceSection.formulation =>
-          'Find relevant published batches and see which endpoints the evidence can support.',
+          'Build a drug delivery brief and review cited evidence, model scope, and unresolved outcomes.',
         _WorkspaceSection.process =>
           'Check formation, particle size, and PDI for settings covered by the Eugster cohort.',
-        _WorkspaceSection.guide =>
-          'Understand each output and the limits of the underlying research.',
       };
 }
 
@@ -128,8 +124,6 @@ class _WorkspacePageState extends State<WorkspacePage> {
                                     useExample: _processVersion > 0,
                                   ),
                                 ),
-                                if (_section == _WorkspaceSection.guide)
-                                  const _ResultGuide(),
                                 const SizedBox(height: 24),
                                 const _ScopeFooter(),
                               ],
@@ -223,41 +217,6 @@ class _Navigation extends StatelessWidget {
                     ),
                   ),
                 ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 17),
-                child: Divider(height: 1, color: Color(0xFF30405E)),
-              ),
-              const _NavLabel('REFERENCE'),
-              ListTile(
-                onTap: () => onSelect(_WorkspaceSection.guide),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-                selected: selected == _WorkspaceSection.guide,
-                selectedTileColor: const Color(0xFF263D72),
-                selectedColor: Colors.white,
-                iconColor: _navMuted,
-                textColor: _navMuted,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                horizontalTitleGap: 9,
-                minLeadingWidth: 20,
-                leading: Icon(_WorkspaceSection.guide.icon, size: 19),
-                title: const Text('Result guide',
-                    style:
-                        TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
-              ),
-              ListTile(
-                onTap: () => _openUrl('$_apiBase/docs'),
-                iconColor: _navMuted,
-                textColor: _navMuted,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                horizontalTitleGap: 9,
-                minLeadingWidth: 20,
-                leading: const Icon(Icons.code_rounded, size: 19),
-                trailing: const Icon(Icons.north_east_rounded, size: 13),
-                title: const Text('API documentation',
-                    style:
-                        TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
-              ),
             ],
           ),
         ),
@@ -448,6 +407,195 @@ class _Overview extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 20),
+          const _EvidenceLandscape(),
+        ],
+      );
+}
+
+class _EvidenceLandscape extends StatelessWidget {
+  const _EvidenceLandscape();
+
+  @override
+  Widget build(BuildContext context) => _CardShell(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _SectionLabel('DATA & VALIDATION SNAPSHOT'),
+            const SizedBox(height: 6),
+            const Text('What the prototype can support',
+                style: TextStyle(fontSize: 21, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 5),
+            const Text(
+              'The full catalogue spans several carrier types; numerical validation is narrower and applies only to the screened Eugster microfluidic liposome cohort.',
+              style: TextStyle(color: _muted, fontSize: 12, height: 1.45),
+            ),
+            const SizedBox(height: 13),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: const [
+                _ScopeMetric(value: '2,641', label: 'catalogue records'),
+                _ScopeMetric(value: '5', label: 'carrier families'),
+                _ScopeMetric(value: '928', label: 'screened Eugster runs'),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const _MaeComparison(
+              title: 'Particle size · grouped CV MAE',
+              unit: 'nm',
+              baseline: 46.35,
+              model: 17.42,
+              baselineText: '46.35',
+              modelText: '17.42',
+            ),
+            const SizedBox(height: 15),
+            const _MaeComparison(
+              title: 'PDI · grouped CV MAE',
+              unit: 'unitless',
+              baseline: 0.0518,
+              model: 0.0376,
+              baselineText: '0.0518',
+              modelText: '0.0376',
+            ),
+            const SizedBox(height: 9),
+            const _InlineNote(
+              text:
+                  'Cohort-level retrospective errors are benchmarks, not uncertainty ranges for a new recipe. Drug-loaded models did not beat median baselines; the merged catalogue is not a live cross-carrier predictor.',
+            ),
+          ],
+        ),
+      );
+}
+
+class _ScopeMetric extends StatelessWidget {
+  const _ScopeMetric({required this.value, required this.label});
+  final String value, label;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        constraints: const BoxConstraints(minWidth: 132),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF4F7FC),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: _line),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(value,
+                style: const TextStyle(
+                    color: _teal, fontSize: 20, fontWeight: FontWeight.w800)),
+            Text(label,
+                style: const TextStyle(
+                    color: _muted, fontSize: 10, fontWeight: FontWeight.w600)),
+          ],
+        ),
+      );
+}
+
+class _MaeComparison extends StatelessWidget {
+  const _MaeComparison({
+    required this.title,
+    required this.unit,
+    required this.baseline,
+    required this.model,
+    required this.baselineText,
+    required this.modelText,
+  });
+  final String title, unit, baselineText, modelText;
+  final double baseline, model;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: const TextStyle(
+                  color: _ink, fontSize: 13, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 7),
+          Row(
+            children: [
+              const _ChartLegend(
+                  color: Color(0xFFB6C0D0), label: 'Median baseline'),
+              const SizedBox(width: 12),
+              const _ChartLegend(color: _teal, label: 'Fitted model'),
+              const Spacer(),
+              Text(unit, style: const TextStyle(color: _muted, fontSize: 10)),
+            ],
+          ),
+          const SizedBox(height: 7),
+          _BarLine(
+              label: 'Baseline',
+              value: baselineText,
+              fill: 1,
+              color: const Color(0xFFB6C0D0)),
+          const SizedBox(height: 5),
+          _BarLine(
+              label: 'Model',
+              value: modelText,
+              fill: model / baseline,
+              color: _teal),
+        ],
+      );
+}
+
+class _ChartLegend extends StatelessWidget {
+  const _ChartLegend({required this.color, required this.label});
+  final Color color;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          const SizedBox(width: 4),
+          Text(label, style: const TextStyle(color: _muted, fontSize: 9)),
+        ],
+      );
+}
+
+class _BarLine extends StatelessWidget {
+  const _BarLine(
+      {required this.label,
+      required this.value,
+      required this.fill,
+      required this.color});
+  final String label, value;
+  final double fill;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: [
+          SizedBox(
+              width: 56,
+              child: Text(label,
+                  style: const TextStyle(color: _muted, fontSize: 10))),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: LinearProgressIndicator(
+                value: fill,
+                minHeight: 8,
+                backgroundColor: const Color(0xFFF0F2F6),
+                color: color,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 48,
+            child: Text(value,
+                textAlign: TextAlign.end,
+                style: const TextStyle(
+                    color: _ink, fontSize: 10, fontWeight: FontWeight.w700)),
+          ),
         ],
       );
 }
@@ -534,70 +682,5 @@ class _ExampleRow extends StatelessWidget {
             onTap: onTap,
           ),
         ],
-      );
-}
-
-class _ResultGuide extends StatelessWidget {
-  const _ResultGuide();
-
-  @override
-  Widget build(BuildContext context) => _CardShell(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Reading an assessment',
-                style: TextStyle(fontSize: 21, fontWeight: FontWeight.w800)),
-            const SizedBox(height: 14),
-            for (final (icon, title, description) in const [
-              (
-                Icons.query_stats_rounded,
-                'Model estimate',
-                'Numerical formation, size, and PDI estimates are available only within the Eugster process scope. Formation is an uncalibrated score. Historical errors are cohort benchmarks.'
-              ),
-              (
-                Icons.menu_book_outlined,
-                'Published observation',
-                'A measurement from a specific study batch. Open endpoint details to see the source, citation, and evidence limitations.'
-              ),
-              (
-                Icons.flag_outlined,
-                'Your target',
-                'A value you enter for the assessment. It stays separate from model estimates and published observations.'
-              ),
-              (
-                Icons.warning_amber_rounded,
-                'Unresolved or conflicting evidence',
-                'The report explains when evidence is missing, estimates are withheld, or a comparison needs review.'
-              ),
-            ])
-              Padding(
-                padding: const EdgeInsets.only(bottom: 18),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _IconTile(
-                        icon: icon,
-                        foreground: _teal,
-                        background: const Color(0xFFEAF0FF)),
-                    const SizedBox(width: 11),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(title,
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w800)),
-                          const SizedBox(height: 4),
-                          Text(description,
-                              style: const TextStyle(
-                                  color: _muted, fontSize: 14, height: 1.45)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
       );
 }
