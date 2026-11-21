@@ -334,7 +334,7 @@ class _WorkspaceHeading extends StatelessWidget {
         children: [
           _SectionLabel(section == _WorkspaceSection.overview
               ? 'RESEARCH CONSOLE'
-              : 'SMARTNANO WORKSPACE'),
+              : 'NANOPREDICT LAB WORKSPACE'),
           const SizedBox(height: 7),
           Semantics(
             header: true,
