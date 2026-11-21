@@ -1241,7 +1241,7 @@ void _downloadAssessment(Map<String, dynamic> data) {
   final request = '${data['request_id'] ?? 'report'}'
       .replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '');
   html.AnchorElement(href: url)
-    ..download = 'smartnano-${request.isEmpty ? 'report' : request}.json'
+    ..download = 'nanopredict-lab-${request.isEmpty ? 'report' : request}.json'
     ..click();
   Future<void>.delayed(
       const Duration(seconds: 1), () => html.Url.revokeObjectUrl(url));
