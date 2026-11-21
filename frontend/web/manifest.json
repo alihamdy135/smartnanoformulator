@@ -1,10 +1,10 @@
 {
-  "name": "SmartNanoFormulator",
-  "short_name": "NanoFormulator",
+  "name": "NanoPredict Lab",
+  "short_name": "NanoPredict Lab",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f1f4f9",
   "theme_color": "#f1f4f9",
-  "description": "Evidence-aware formulation screening and microfluidic liposome benchmarking",
+  "description": "Evidence-aware formulation screening and microfluidic liposome benchmarking from NanoPredict Lab",
   "orientation": "any"
 }
