@@ -19,10 +19,10 @@ const _line = Color(0xFFDCE3EF);
 const _surface = Color(0xFFFFFFFF);
 const _soft = Color(0xFFF0F4FA);
 
-void main() => runApp(const SmartNanoFormulatorApp());
+void main() => runApp(const NanoPredictLabApp());
 
-class SmartNanoFormulatorApp extends StatelessWidget {
-  const SmartNanoFormulatorApp({super.key});
+class NanoPredictLabApp extends StatelessWidget {
+  const NanoPredictLabApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class SmartNanoFormulatorApp extends StatelessWidget {
       surface: _surface,
     );
     return MaterialApp(
-      title: 'SmartNanoFormulator',
+      title: 'NanoPredict Lab',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: scheme,
