@@ -174,12 +174,12 @@ class _Navigation extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('SmartNano',
+                          Text('NanoPredict Lab',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w800)),
-                          Text('FORMULATOR',
+                          Text('RESEARCH WORKSPACE',
                               style: TextStyle(
                                   color: _navMuted,
                                   fontSize: 10,
