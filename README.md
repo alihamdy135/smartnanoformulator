@@ -2,9 +2,9 @@
 
 NanoPredict Lab is a research prototype with a FastAPI service and a Flutter Web client. The backend wraps the supplied `Hybrid(root).answer(request)` engine. It reports the model and literature branches separately and retains the engine's field-by-field decision rules.
 
-- [Production Flutter app](https://smartnanoformulator.web.app)
+- [Production Flutter app](https://nanopredict-lab.web.app)
 - [GitHub source](https://github.com/alihamdy135/smartnanoformulator)
-- [Production API documentation](https://smartnanoformulator-api-alihatab.vercel.app/docs)
+- [Production API documentation](https://nanopredict-lab-api-alihatab.vercel.app/docs)
 
 ## Scientific scope
 
@@ -51,16 +51,17 @@ Build Flutter Web with the HTTPS API origin:
 cd frontend
 flutter build web --release \
   --pwa-strategy=none --no-web-resources-cdn \
-  --dart-define=NANOPREDICT_API_BASE_URL=https://smartnanoformulator-api-alihatab.vercel.app
+  --dart-define=NANOPREDICT_API_BASE_URL=https://nanopredict-lab-api-alihatab.vercel.app
 cd ..
 ```
 
-Firebase Hosting serves `frontend/build/web` using the configuration in `firebase.json`. Deploy to the `smartnanoformulator` project from the repository root using the pinned Firebase CLI:
+Firebase Hosting serves `frontend/build/web` at `https://nanopredict-lab.web.app` and keeps the legacy `https://smartnanoformulator.web.app` site current. Both sites are deployed from the `smartnanoformulator` Firebase project ID using the configuration in `firebase.json`:
 
 ```bash
 npm ci --prefix tools/firebase-cli
 ./tools/firebase-cli/node_modules/.bin/firebase login
 ./tools/firebase-cli/node_modules/.bin/firebase projects:list
+./tools/firebase-cli/node_modules/.bin/firebase hosting:sites:get nanopredict-lab --project smartnanoformulator >/dev/null 2>&1 || ./tools/firebase-cli/node_modules/.bin/firebase hosting:sites:create nanopredict-lab --project smartnanoformulator
 ./tools/firebase-cli/node_modules/.bin/firebase deploy --only hosting --project smartnanoformulator
 ```
 
@@ -78,7 +79,7 @@ The workflow uses [Google Cloud Workload Identity Federation](https://docs.cloud
 
 Run the workflow from the Actions tab on `main` to verify a new identity configuration.
 
-The `alihatab/smartnanoformulator-api` Vercel project uses the GitHub repository root for FastAPI builds. Pushes to the production branch, `main`, trigger backend builds. The Flutter workflow defaults to `smartnanoformulator-api-alihatab.vercel.app`.
+The `nanopredict-lab-api` Vercel project uses the GitHub repository root for FastAPI builds. Pushes to the production branch, `main`, trigger backend builds. The Flutter workflow defaults to `nanopredict-lab-api-alihatab.vercel.app`.
 
 ## Configuration names
 
