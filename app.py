@@ -1,4 +1,4 @@
-"""FastAPI transport layer around the supplied SmartNanoFormulator engine."""
+"""NanoPredict Lab API around the supplied SmartNanoFormulator engine."""
 
 from __future__ import annotations
 
@@ -239,7 +239,7 @@ def ready_engine() -> Hybrid:
                         raise ValueError("The Eugster process cohort is empty.")
                     _engine = candidate_engine
                 except Exception as error:
-                    logger.exception("SmartNanoFormulator runtime failed readiness check")
+                    logger.exception("NanoPredict Lab inference engine failed readiness check")
                     raise EngineUnavailable("Required model or evidence assets are unavailable.") from error
     return _engine
 
@@ -254,7 +254,7 @@ def _assessment(request_id: str, engine_request: dict[str, Any]) -> dict[str, An
     except EngineUnavailable:
         raise
     except Exception as error:
-        logger.exception("SmartNanoFormulator inference failed", extra={"request_id": request_id})
+        logger.exception("NanoPredict Lab inference failed", extra={"request_id": request_id})
         raise EngineUnavailable("The assessment could not be completed because the inference engine failed.") from error
     return {
         "request_id": request_id,
@@ -268,7 +268,7 @@ def _assessment(request_id: str, engine_request: dict[str, Any]) -> dict[str, An
 
 
 app = FastAPI(
-    title="SmartNanoFormulator API",
+    title="NanoPredict Lab API",
     version=API_VERSION,
     description=(
         "Research prototype for evidence screening and Eugster-scope microfluidic liposome "
