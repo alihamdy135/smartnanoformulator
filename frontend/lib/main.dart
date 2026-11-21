@@ -21,6 +21,150 @@ const _soft = Color(0xFFF0F4FA);
 
 void main() => runApp(const NanoPredictLabApp());
 
+class _InputSectionHeading extends StatelessWidget {
+  const _InputSectionHeading({
+    required this.number,
+    required this.title,
+    required this.subtitle,
+  });
+  final String number, title, subtitle;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEAF0FF),
+              borderRadius: BorderRadius.circular(9),
+            ),
+            child: Text(number,
+                style: const TextStyle(
+                    color: _teal, fontSize: 11, fontWeight: FontWeight.w800)),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: const TextStyle(
+                        color: _ink,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800)),
+                const SizedBox(height: 2),
+                Text(subtitle,
+                    style: const TextStyle(
+                        color: _muted, fontSize: 11, height: 1.4)),
+              ],
+            ),
+          ),
+        ],
+      );
+}
+
+class _TargetPreview extends StatelessWidget {
+  const _TargetPreview({required this.percent, required this.hours});
+  final double? percent, hours;
+
+  @override
+  Widget build(BuildContext context) {
+    final entered = percent != null && hours != null;
+    final value = entered ? (percent! / 100).clamp(0.0, 1.0) : 0.0;
+    final targetText = entered
+        ? 'YOUR TARGET  ' +
+            percent!.toStringAsFixed(percent! % 1 == 0 ? 0 : 1) +
+            '% at ' +
+            hours!.toStringAsFixed(hours! % 1 == 0 ? 0 : 1) +
+            ' h'
+        : 'YOUR TARGET  Add a percent and time to set a target point';
+    return Container(
+      padding: const EdgeInsets.all(11),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF8E9),
+        borderRadius: BorderRadius.circular(11),
+        border: Border.all(color: const Color(0xFFF0E1BB)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.flag_outlined,
+                  size: 16, color: Color(0xFF946915)),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(targetText,
+                    style: const TextStyle(
+                        color: Color(0xFF795D22),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 9),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: LinearProgressIndicator(
+              value: value,
+              minHeight: 7,
+              backgroundColor: const Color(0xFFEFE5CE),
+              color: const Color(0xFFB17A1C),
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+              'User-entered design goal · not a prediction or observation',
+              style: TextStyle(color: _muted, fontSize: 10)),
+        ],
+      ),
+    );
+  }
+}
+
+class _OutputPreview extends StatelessWidget {
+  const _OutputPreview();
+
+  @override
+  Widget build(BuildContext context) {
+    const items = [
+      (Icons.bubble_chart_outlined, 'Carrier & excipients'),
+      (Icons.tune_rounded, 'Ratios & batches'),
+      (Icons.straighten_rounded, 'Size · PDI · zeta'),
+      (Icons.science_outlined, 'Entrapment & release'),
+    ];
+    return Wrap(
+      spacing: 7,
+      runSpacing: 7,
+      children: [
+        for (final (icon, label) in items)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
+            decoration: BoxDecoration(
+                color: const Color(0xFFF4F7FC),
+                borderRadius: BorderRadius.circular(9),
+                border: Border.all(color: _line)),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 15, color: _teal),
+                const SizedBox(width: 6),
+                Text(label,
+                    style: const TextStyle(
+                        color: _ink,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700)),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class NanoPredictLabApp extends StatelessWidget {
   const NanoPredictLabApp({super.key});
 
@@ -103,10 +247,8 @@ class _FormulationFlowState extends State<FormulationFlow> {
   final _formKey = GlobalKey<FormState>();
   final _resultsKey = GlobalKey();
   final _drug = TextEditingController();
-  final _drugForm = TextEditingController();
   final _route = TextEditingController();
   final _tissue = TextEditingController();
-  final _assay = TextEditingController();
   final _hours = TextEditingController();
   final _percent = TextEditingController();
   final _mw = TextEditingController();
@@ -115,33 +257,21 @@ class _FormulationFlowState extends State<FormulationFlow> {
   final _solubility = TextEditingController();
   final _solubilityConditions = TextEditingController();
   final _stability = TextEditingController();
-  final Set<String> _targets = {
-    'carrier',
-    'excipients',
-    'entrapment',
-    'release',
-  };
-  String? _carrier;
-  Key _carrierFieldKey = const ValueKey('initial-carrier');
-  final _details = ExpansibleController();
   bool _loading = false;
   String? _error;
   String? _formError;
   Map<String, dynamic>? _result;
 
   static const _allTargets = [
-    ('carrier', 'Carrier'),
-    ('excipients', 'Excipients'),
-    ('ratios', 'Ratios'),
-    ('batches', 'Batches'),
-    ('size', 'Size'),
-    ('pdi', 'PDI'),
-    ('zeta', 'Zeta'),
-    ('entrapment', 'Entrapment'),
-    ('release', 'Release'),
-    ('tissue', 'Tissue'),
-    ('stability', 'Stability'),
-    ('bioavailability', 'Bioavailability'),
+    'carrier',
+    'excipients',
+    'ratios',
+    'batches',
+    'size',
+    'pdi',
+    'zeta',
+    'entrapment',
+    'release',
   ];
 
   @override
@@ -159,8 +289,6 @@ class _FormulationFlowState extends State<FormulationFlow> {
   void _applyExample(String example) {
     final gap = example == 'gap';
     for (final controller in [
-      _drugForm,
-      _assay,
       _mw,
       _logp,
       _pka,
@@ -175,13 +303,6 @@ class _FormulationFlowState extends State<FormulationFlow> {
     _tissue.text = gap ? 'brain' : 'skin';
     _hours.text = gap ? '' : '24';
     _percent.text = gap ? '' : '65';
-    _carrier = gap ? 'phytosome' : null;
-    _carrierFieldKey = UniqueKey();
-    _targets
-      ..clear()
-      ..addAll(gap
-          ? ['ratios', 'release', 'tissue']
-          : ['carrier', 'excipients', 'entrapment', 'release']);
     _result = null;
     _error = null;
     _formError = null;
@@ -191,10 +312,8 @@ class _FormulationFlowState extends State<FormulationFlow> {
   void dispose() {
     for (final controller in [
       _drug,
-      _drugForm,
       _route,
       _tissue,
-      _assay,
       _hours,
       _percent,
       _mw,
@@ -206,7 +325,6 @@ class _FormulationFlowState extends State<FormulationFlow> {
     ]) {
       controller.dispose();
     }
-    _details.dispose();
     super.dispose();
   }
 
@@ -240,35 +358,15 @@ class _FormulationFlowState extends State<FormulationFlow> {
   Future<void> _submit() async {
     if (_loading) return;
     if (!_formKey.currentState!.validate()) {
-      if (_optionalNumber(_mw.text, positive: true) != null ||
-          _optionalNumber(_logp.text) != null ||
-          _optionalNumber(_pka.text) != null ||
-          _optionalNumber(_solubility.text, nonNegative: true) != null ||
-          [_drugForm, _assay, _solubilityConditions]
-              .any((c) => c.text.length > 200) ||
-          _stability.text.length > 500) {
-        _details.expand();
-      }
-      return;
-    }
-    if (_targets.isEmpty) {
-      setState(() => _formError = 'Select at least one output to assess.');
       return;
     }
     final payload = <String, dynamic>{
       'drug': _drug.text.trim(),
       'route': _route.text.trim(),
       'tissue': _tissue.text.trim(),
-      'targets': _allTargets
-          .where((item) => _targets.contains(item.$1))
-          .map((item) => item.$1)
-          .toList(),
+      'targets': _allTargets,
     };
-    if (_drugForm.text.trim().isNotEmpty)
-      payload['drug_form'] = _drugForm.text.trim();
-    if (_assay.text.trim().isNotEmpty) payload['assay'] = _assay.text.trim();
-    if (_carrier != null) payload['carrier'] = _carrier;
-    if (_targets.contains('release') && _hasReleaseTarget) {
+    if (_hasReleaseTarget) {
       payload['desired_release'] = {
         'hours': double.parse(_hours.text),
         'percent': double.parse(_percent.text),
@@ -328,7 +426,8 @@ class _FormulationFlowState extends State<FormulationFlow> {
           accent: _teal,
           emptyTitle: 'Your evidence review will appear here',
           emptyHint:
-              'Enter the drug, route, tissue, and endpoints you want to screen.',
+              'Enter the drug profile, route, tissue, and optional release target to build an evidence-led brief.',
+          formulation: true,
         );
         if (wide)
           return Row(
@@ -352,145 +451,124 @@ class _FormulationFlowState extends State<FormulationFlow> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _CardHeading(
-              eyebrow: 'FORMULATION SCREEN',
-              title: 'Assessment inputs',
+              eyebrow: 'FORMULATION DESIGN BRIEF',
+              title: 'Describe the delivery need',
               icon: Icons.biotech_outlined,
             ),
-            const SizedBox(height: 10),
-            PopupMenuButton<String>(
-              enabled: !_loading,
-              onSelected: _loadExample,
-              tooltip: 'Load a reference example',
-              itemBuilder: (context) => const [
-                PopupMenuItem(
-                    value: 'celecoxib', child: Text('Topical celecoxib')),
-                PopupMenuItem(
-                    value: 'gap', child: Text('Intranasal quercetin')),
-              ],
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 11, horizontal: 6),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.science_outlined, color: _teal, size: 18),
-                    SizedBox(width: 7),
-                    Text('Load example',
-                        style: TextStyle(
-                            color: _teal, fontWeight: FontWeight.w700)),
-                    Icon(Icons.expand_more_rounded, color: _teal, size: 17),
-                  ],
+            const SizedBox(height: 7),
+            const Text(
+              'A focused brief is screened against the current literature and model evidence.',
+              style: TextStyle(color: _muted, fontSize: 13, height: 1.45),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: PopupMenuButton<String>(
+                enabled: !_loading,
+                onSelected: _loadExample,
+                tooltip: 'Load a reference case',
+                itemBuilder: (context) => const [
+                  PopupMenuItem(
+                      value: 'celecoxib', child: Text('Topical celecoxib')),
+                  PopupMenuItem(
+                      value: 'gap', child: Text('Intranasal quercetin')),
+                ],
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 9, horizontal: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.science_outlined, color: _teal, size: 17),
+                      SizedBox(width: 6),
+                      Text('Try a reference case',
+                          style: TextStyle(
+                              color: _teal,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12)),
+                      Icon(Icons.expand_more_rounded, color: _teal, size: 17),
+                    ],
+                  ),
                 ),
               ),
             ),
+            const SizedBox(height: 5),
+            const _InputSectionHeading(
+              number: '01',
+              title: 'Drug profile',
+              subtitle:
+                  'Add known physicochemical properties; unknown values can stay blank.',
+            ),
             const SizedBox(height: 10),
-            _field(_drug, 'Drug', required: true, hint: 'e.g. celecoxib'),
-            const SizedBox(height: 13),
+            _field(_drug, 'Drug name or identifier',
+                required: true, hint: 'e.g. celecoxib'),
+            const SizedBox(height: 10),
             _FieldGroup(
               children: [
-                _field(
-                  _route,
-                  'Administration route',
-                  required: true,
-                  hint: 'e.g. topical',
-                ),
-                _field(
-                  _tissue,
-                  'Target tissue',
-                  required: true,
-                  hint: 'e.g. skin',
-                ),
+                _field(_mw, 'Molecular weight',
+                    suffix: 'Da',
+                    validator: (v) => _optionalNumber(v, positive: true),
+                    keyboard:
+                        const TextInputType.numberWithOptions(decimal: true)),
+                _field(_logp, 'LogP',
+                    validator: _optionalNumber,
+                    keyboard:
+                        const TextInputType.numberWithOptions(decimal: true)),
+                _field(_pka, 'pKa',
+                    validator: _optionalNumber,
+                    keyboard:
+                        const TextInputType.numberWithOptions(decimal: true)),
               ],
             ),
-            const SizedBox(height: 13),
-            DropdownButtonFormField<String?>(
-              key: _carrierFieldKey,
-              value: _carrier,
-              isExpanded: true,
-              decoration: const InputDecoration(
-                labelText: 'Carrier filter',
-                helperText: 'Search all carrier types or narrow by one.',
-                helperMaxLines: 2,
-              ),
-              items: const [
-                DropdownMenuItem<String?>(
-                  value: null,
-                  child: Text('Any carrier'),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'liposome',
-                  child: Text('Liposome'),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'niosome',
-                  child: Text('Niosome'),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'transfersome',
-                  child: Text('Transfersome'),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'ethosome',
-                  child: Text('Ethosome'),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'phytosome',
-                  child: Text('Phytosome'),
-                ),
+            const SizedBox(height: 10),
+            _FieldGroup(
+              children: [
+                _field(_solubility, 'Solubility',
+                    suffix: 'mg/mL',
+                    validator: (v) => _optionalNumber(v, nonNegative: true),
+                    keyboard:
+                        const TextInputType.numberWithOptions(decimal: true)),
+                _field(_solubilityConditions, 'Solubility conditions',
+                    hint: 'Optional · solvent, pH, temperature'),
               ],
-              onChanged: (value) => setState(() => _carrier = value),
+            ),
+            const SizedBox(height: 10),
+            _field(_stability, 'Stability notes',
+                hint: 'Optional · known sensitivity or storage conditions',
+                maxLines: 2),
+            const SizedBox(height: 18),
+            const _InputSectionHeading(
+              number: '02',
+              title: 'Delivery context',
+              subtitle:
+                  'Tell us where and how the formulation should be administered.',
+            ),
+            const SizedBox(height: 10),
+            _FieldGroup(
+              children: [
+                _field(_route, 'Route of administration',
+                    required: true, hint: 'e.g. topical'),
+                _field(_tissue, 'Target organ or tissue',
+                    required: true, hint: 'e.g. skin'),
+              ],
             ),
             const SizedBox(height: 18),
-            const _SectionLabel('OUTPUTS TO SCREEN'),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: _allTargets
-                  .map(
-                    (entry) => FilterChip(
-                      label: Text(entry.$2),
-                      selected: _targets.contains(entry.$1),
-                      onSelected: (selected) => setState(() {
-                        selected
-                            ? _targets.add(entry.$1)
-                            : _targets.remove(entry.$1);
-                      }),
-                      showCheckmark: true,
-                      side: BorderSide(
-                        color: _targets.contains(entry.$1)
-                            ? const Color(0xFFC2D0F8)
-                            : _line,
-                      ),
-                      backgroundColor: Colors.white,
-                      selectedColor: const Color(0xFFEAF0FF),
-                      labelStyle: TextStyle(
-                        fontSize: 12,
-                        color: _targets.contains(entry.$1) ? _teal : _muted,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  )
-                  .toList(),
+            const _InputSectionHeading(
+              number: '03',
+              title: 'Desired release profile',
+              subtitle:
+                  'Optional target point; it is never treated as a measured or predicted value.',
             ),
-            if (_targets.contains('release')) ...[
-              const SizedBox(height: 15),
-              const _SectionLabel('RELEASE TARGET (OPTIONAL)'),
-              const SizedBox(height: 9),
-              _FieldGroup(
-                children: [
-                  _field(
-                    _percent,
-                    'Target release',
+            const SizedBox(height: 10),
+            _FieldGroup(
+              children: [
+                _field(_percent, 'Target released',
                     suffix: '%',
+                    onChanged: (_) => setState(() {}),
                     validator: _percentValidator,
-                    keyboard: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                  ),
-                  _field(
-                    _hours,
-                    'At time',
+                    keyboard:
+                        const TextInputType.numberWithOptions(decimal: true)),
+                _field(_hours, 'At time',
                     suffix: 'hours',
+                    onChanged: (_) => setState(() {}),
                     validator: (value) {
                       if (!_hasReleaseTarget) return null;
                       final error = _optionalNumber(value, positive: true);
@@ -499,121 +577,37 @@ class _FormulationFlowState extends State<FormulationFlow> {
                         return 'Enter a time.';
                       return null;
                     },
-                    keyboard: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                'Leave both fields blank to screen without a target. Entered values are kept separate from measurements.',
-                style: TextStyle(color: _muted, fontSize: 11, height: 1.4),
-              ),
-            ],
-            const SizedBox(height: 12),
-            Theme(
-              data: Theme.of(
-                context,
-              ).copyWith(dividerColor: Colors.transparent),
-              child: ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                childrenPadding: const EdgeInsets.only(bottom: 8),
-                controller: _details,
-                maintainState: true,
-                title: const Text(
-                  'Optional formulation details',
-                  style: TextStyle(
-                    color: _ink,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
-                ),
-                subtitle: const Text(
-                  'Drug form, assay, and physicochemical descriptors',
-                  style: TextStyle(fontSize: 11, color: _muted),
-                ),
-                children: [
-                  _field(
-                    _drugForm,
-                    'Drug form',
-                    hint: 'Optional · salt, hydrate, polymorph',
-                  ),
-                  const SizedBox(height: 13),
-                  _field(
-                    _assay,
-                    'Assay context',
-                    hint: 'Optional · specify method or medium',
-                  ),
-                  const SizedBox(height: 8),
-                  _FieldGroup(
-                    children: [
-                      _field(
-                        _mw,
-                        'Molecular weight',
-                        suffix: 'Da',
-                        validator: (v) => _optionalNumber(v, positive: true),
-                        keyboard: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                      ),
-                      _field(
-                        _logp,
-                        'LogP',
-                        validator: _optionalNumber,
-                        keyboard: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                      ),
-                      _field(
-                        _pka,
-                        'pKa',
-                        validator: _optionalNumber,
-                        keyboard: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  _field(
-                    _solubility,
-                    'Solubility',
-                    suffix: 'mg/mL',
-                    validator: (v) => _optionalNumber(v, nonNegative: true),
-                    keyboard: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _field(
-                    _solubilityConditions,
-                    'Solubility conditions',
-                    hint: 'Optional · medium, pH, temperature',
-                  ),
-                  const SizedBox(height: 10),
-                  _field(
-                    _stability,
-                    'Stability notes',
-                    hint: 'Optional',
-                    maxLines: 2,
-                  ),
-                ],
-              ),
+                    keyboard:
+                        const TextInputType.numberWithOptions(decimal: true)),
+              ],
             ),
-            const SizedBox(height: 13),
+            const SizedBox(height: 9),
+            _TargetPreview(
+              percent: double.tryParse(_percent.text),
+              hours: double.tryParse(_hours.text),
+            ),
+            const SizedBox(height: 18),
+            const _InputSectionHeading(
+              number: '04',
+              title: 'What the evidence screen returns',
+              subtitle:
+                  'A fixed report keeps every requested outcome visible, including gaps.',
+            ),
+            const SizedBox(height: 10),
+            const _OutputPreview(),
+            const SizedBox(height: 11),
+            const _InlineNote(
+              text:
+                  'Current drug-specific numeric models are withheld after study-held-out validation. Literature retrieval can surface cited candidates; it does not generate or validate new ratios or batches. Use the separate Eugster workflow for in-scope microfluidic liposome estimates.',
+            ),
             if (_formError != null)
-              Semantics(
-                liveRegion: true,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Text(
-                    _formError!,
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(_formError!,
                     style:
-                        TextStyle(color: Theme.of(context).colorScheme.error),
-                  ),
-                ),
+                        TextStyle(color: Theme.of(context).colorScheme.error)),
               ),
+            const SizedBox(height: 13),
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
@@ -623,22 +617,17 @@ class _FormulationFlowState extends State<FormulationFlow> {
                         width: 17,
                         height: 17,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
+                            strokeWidth: 2, color: Colors.white))
                     : const Icon(Icons.manage_search_rounded, size: 19),
-                label: Text(
-                  _loading ? 'Reviewing evidence…' : 'Run evidence screen',
-                ),
+                label: Text(_loading
+                    ? 'Reviewing evidence…'
+                    : 'Build formulation brief'),
                 style: FilledButton.styleFrom(
                   backgroundColor: _teal,
                   foregroundColor: Colors.white,
-                  minimumSize: const Size(0, 48),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: const Size(0, 49),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadius.circular(12)),
                 ),
               ),
             ),
@@ -654,6 +643,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
     bool required = false,
     String? hint,
     String? suffix,
+    void Function(String)? onChanged,
     int maxLines = 1,
     TextInputType? keyboard,
     String? Function(String?)? validator,
@@ -665,6 +655,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
           : TextInputAction.next,
       keyboardType: keyboard,
       maxLines: maxLines,
+      onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
@@ -1088,6 +1079,7 @@ class AssessmentPanel extends StatelessWidget {
     required this.accent,
     required this.emptyTitle,
     required this.emptyHint,
+    this.formulation = false,
   });
   final Map<String, dynamic>? result;
   final String? error;
@@ -1096,6 +1088,7 @@ class AssessmentPanel extends StatelessWidget {
   final Color accent;
   final String emptyTitle;
   final String emptyHint;
+  final bool formulation;
 
   @override
   Widget build(BuildContext context) {
@@ -1121,12 +1114,193 @@ class AssessmentPanel extends StatelessWidget {
                           title: emptyTitle,
                           hint: emptyHint,
                         )
-                      : _ResultView(
-                          key: const ValueKey('result'), data: result!),
+                      : formulation
+                          ? _FormulationResultView(
+                              key: const ValueKey('formulation-result'),
+                              data: result!,
+                            )
+                          : _ResultView(
+                              key: const ValueKey('result'), data: result!),
         ),
       ),
     );
   }
+}
+
+class _FormulationResultView extends StatelessWidget {
+  const _FormulationResultView({super.key, required this.data});
+  final Map<String, dynamic> data;
+
+  @override
+  Widget build(BuildContext context) {
+    final results = Map<String, dynamic>.from(data['results'] as Map? ?? {});
+    final request = Map<String, dynamic>.from(data['request'] as Map? ?? {});
+    final reports = results.values.whereType<Map>();
+    final estimates = reports
+        .where((item) => (item['model'] as Map?)?['value'] != null)
+        .length;
+    final candidates = reports
+        .where((item) => item['decision'] == 'literature_candidate')
+        .length;
+    final conflicts = reports
+        .where((item) => item['decision'] == 'conflicting_evidence')
+        .length;
+    final unresolved = results.length - estimates - candidates;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const _CardHeading(
+          eyebrow: 'EVIDENCE-LED FORMULATION BRIEF',
+          title: 'Assessment output',
+          icon: Icons.auto_awesome_outlined,
+        ),
+        const SizedBox(height: 13),
+        _SubmittedContext(request: request),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            _BriefMetric(
+              count: estimates,
+              label: 'Model estimates',
+              icon: Icons.auto_graph_rounded,
+              color: _teal,
+              fill: const Color(0xFFEAF5F2),
+            ),
+            _BriefMetric(
+              count: candidates,
+              label: 'Literature candidates',
+              icon: Icons.menu_book_outlined,
+              color: const Color(0xFF3A5DAA),
+              fill: const Color(0xFFEAF0FF),
+            ),
+            _BriefMetric(
+              count: unresolved,
+              label: 'Unresolved',
+              icon: Icons.help_outline_rounded,
+              color: _muted,
+              fill: const Color(0xFFF0F2F6),
+            ),
+            _BriefMetric(
+              count: conflicts,
+              label: 'Conflicts to review',
+              icon: Icons.warning_amber_rounded,
+              color: const Color(0xFF9A5D1B),
+              fill: const Color(0xFFFFF2DE),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Counts describe this report only; they are not confidence scores.',
+          style: TextStyle(color: _muted, fontSize: 10),
+        ),
+        const SizedBox(height: 17),
+        for (final group in const <(String, List<String>)>[
+          ('CARRIER & EXCIPIENT EVIDENCE', ['carrier', 'excipients']),
+          ('RATIOS & PROPOSED BATCHES', ['ratios', 'batches']),
+          (
+            'PARTICLE AND LOADING OUTCOMES',
+            ['size', 'pdi', 'zeta', 'entrapment']
+          ),
+          ('RELEASE PROFILE', ['release']),
+        ]) ...[
+          if (group.$2.any(results.containsKey)) ...[
+            _SectionLabel(group.$1),
+            const SizedBox(height: 7),
+            for (final name in group.$2)
+              if (results.containsKey(name)) ...[
+                _EndpointCard(
+                  key: ValueKey(
+                      (data['request_id'] ?? '').toString() + ':' + name),
+                  name: name,
+                  report: Map<String, dynamic>.from(results[name] as Map),
+                ),
+                const SizedBox(height: 8),
+              ],
+            const SizedBox(height: 6),
+          ],
+        ],
+        const _InlineNote(
+          text:
+              'Serving method: TF-IDF ranking over a small curated literature corpus with rule-based adjudication; no generative RAG model is connected. The 2,641-record catalogue is not loaded as a validated cross-carrier predictor. Drug-specific numerical predictions, ratios, and generated batches remain withheld pending stronger validation.',
+        ),
+        const SizedBox(height: 7),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: OutlinedButton.icon(
+            onPressed: () => _downloadAssessment(data),
+            icon: const Icon(Icons.download_outlined, size: 18),
+            label: const Text('Download evidence report'),
+          ),
+        ),
+        ExpansionTile(
+          shape: const Border(),
+          collapsedShape: const Border(),
+          tilePadding: EdgeInsets.zero,
+          title: const Text('Release metadata',
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+          children: [
+            SelectableText(
+              'Request: ' +
+                  (data['request_id'] ?? '—').toString() +
+                  '\nAPI: ' +
+                  (data['api_version'] ?? '—').toString() +
+                  '\nModel: ' +
+                  (data['model_release'] ?? '—').toString() +
+                  '\nCorpus: ' +
+                  (data['corpus_release'] ?? '—').toString(),
+              style: const TextStyle(color: _muted, fontSize: 11, height: 1.5),
+            ),
+            const SizedBox(height: 5),
+            Text((data['method'] ?? '').toString(),
+                style:
+                    const TextStyle(color: _muted, fontSize: 11, height: 1.45)),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _BriefMetric extends StatelessWidget {
+  const _BriefMetric({
+    required this.count,
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.fill,
+  });
+  final int count;
+  final String label;
+  final IconData icon;
+  final Color color, fill;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        constraints: const BoxConstraints(minWidth: 132),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+        decoration: BoxDecoration(
+            color: fill,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: color.withValues(alpha: 0.12))),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: 17),
+            const SizedBox(width: 7),
+            Text(count.toString(),
+                style: TextStyle(
+                    color: color, fontSize: 18, fontWeight: FontWeight.w800)),
+            const SizedBox(width: 6),
+            Text(label,
+                style: TextStyle(
+                    color: color, fontSize: 10, fontWeight: FontWeight.w700)),
+          ],
+        ),
+      );
 }
 
 class _ResultView extends StatelessWidget {
@@ -1259,6 +1433,9 @@ class _SubmittedContext extends StatelessWidget {
     final candidate = Map<String, dynamic>.from(
       request['candidate'] as Map? ?? {},
     );
+    final descriptors = Map<String, dynamic>.from(
+      request['descriptors'] as Map? ?? {},
+    );
     final label = candidate.isNotEmpty
         ? '${candidate['primary_lipid']} · ${candidate['chip']}  |  ${candidate['cholesterol_pct']}% cholesterol, ${candidate['peg_pct']}% PEG  |  ${candidate['tfr_ml_min']} mL/min, FRR ${candidate['aqueous_to_organic_frr']}'
         : '${request['drug'] ?? '—'} · ${request['route'] ?? '—'} · ${request['tissue'] ?? '—'}';
@@ -1283,6 +1460,30 @@ class _SubmittedContext extends StatelessWidget {
               height: 1.4,
             ),
           ),
+          if (descriptors.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 5,
+              runSpacing: 5,
+              children: [
+                for (final entry in descriptors.entries)
+                  _Pill(
+                    label: entry.key == 'mw_da'
+                        ? 'MW ' + entry.value.toString() + ' Da'
+                        : entry.key == 'solubility_mg_ml'
+                            ? 'Solubility ' + entry.value.toString() + ' mg/mL'
+                            : entry.key == 'solubility_conditions'
+                                ? 'Solubility context: ' +
+                                    entry.value.toString()
+                                : entry.key == 'stability_notes'
+                                    ? 'Stability: ' + entry.value.toString()
+                                    : entry.key + ' ' + entry.value.toString(),
+                    color: Colors.white,
+                    textColor: _muted,
+                  ),
+              ],
+            ),
+          ],
           if (desired.isNotEmpty) ...[
             const SizedBox(height: 7),
             Wrap(
