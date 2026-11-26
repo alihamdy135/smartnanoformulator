@@ -12,13 +12,13 @@ const _apiBase = String.fromEnvironment(
   defaultValue: 'http://127.0.0.1:8000',
 );
 
-const _ink = Color(0xFF142039);
-const _indigo = Color(0xFF6240B3);
-const _muted = Color(0xFF52617A);
-const _teal = Color(0xFF2756D5);
-const _line = Color(0xFFDCE3EF);
+const _ink = Color(0xFF183329);
+const _indigo = Color(0xFF71856F);
+const _muted = Color(0xFF66776B);
+const _teal = Color(0xFF34745A);
+const _line = Color(0xFFDCE6DD);
 const _surface = Color(0xFFFFFFFF);
-const _soft = Color(0xFFF0F4FA);
+const _soft = Color(0xFFF0F5F0);
 
 void main() => runApp(const NanoPredictLabApp());
 
@@ -39,7 +39,7 @@ class _InputSectionHeading extends StatelessWidget {
             height: 30,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: const Color(0xFFEAF0FF),
+              color: const Color(0xFFE7F0E6),
               borderRadius: BorderRadius.circular(9),
             ),
             child: Text(number,
@@ -145,7 +145,7 @@ class _OutputPreview extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
             decoration: BoxDecoration(
-                color: const Color(0xFFF4F7FC),
+                color: const Color(0xFFF1F6F0),
                 borderRadius: BorderRadius.circular(9),
                 border: Border.all(color: _line)),
             child: Row(
@@ -180,7 +180,7 @@ class _PropertyCoverage extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.all(11),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F8FD),
+              color: const Color(0xFFF3F7F1),
               borderRadius: BorderRadius.circular(11),
               border: Border.all(color: _line),
             ),
@@ -220,7 +220,7 @@ class _PropertyCoverage extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: controllers[i].text.trim().isNotEmpty
                                 ? _teal
-                                : const Color(0xFFDCE3EF),
+                                : const Color(0xFFDCE6DD),
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
@@ -260,8 +260,8 @@ class _CarrierFamilyStrip extends StatelessWidget {
         for (final family in families)
           _Pill(
             label: family,
-            color: const Color(0xFFF0F5FC),
-            textColor: const Color(0xFF385176),
+            color: const Color(0xFFEEF4EC),
+            textColor: const Color(0xFF3E5C43),
             icon: Icons.circle,
           ),
       ],
@@ -289,7 +289,7 @@ class _CompositionPreview extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF7F9FD),
+              color: const Color(0xFFF6F9F4),
               borderRadius: BorderRadius.circular(11),
               border: Border.all(color: _line),
             ),
@@ -333,17 +333,17 @@ class _CompositionPreview extends StatelessWidget {
                   runSpacing: 5,
                   children: [
                     _CompositionLegend(
-                      color: const Color(0xFF315ED2),
+                      color: const Color(0xFF34745A),
                       label: 'Cholesterol ' +
                           cholesterolPct.toStringAsFixed(1) +
                           '%',
                     ),
                     _CompositionLegend(
-                      color: const Color(0xFF16A6A1),
+                      color: const Color(0xFF9AAE78),
                       label: 'PEG ' + pegPct.toStringAsFixed(1) + '%',
                     ),
                     _CompositionLegend(
-                      color: const Color(0xFFDDE4EF),
+                      color: const Color(0xFFDCE6DD),
                       label: 'Remaining ' + remaining.toStringAsFixed(1) + '%',
                     ),
                   ],
@@ -366,9 +366,9 @@ class _CompositionPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final base = Paint()..color = const Color(0xFFDDE4EF);
-    final cholesterolPaint = Paint()..color = const Color(0xFF315ED2);
-    final pegPaint = Paint()..color = const Color(0xFF16A6A1);
+    final base = Paint()..color = const Color(0xFFDCE6DD);
+    final cholesterolPaint = Paint()..color = const Color(0xFF34745A);
+    final pegPaint = Paint()..color = const Color(0xFF9AAE78);
     canvas.drawRect(Offset.zero & size, base);
     final cholesterolWidth = size.width * cholesterol;
     final pegWidth = size.width * peg;
@@ -414,19 +414,19 @@ class _ProcessOutputPreview extends StatelessWidget {
         'SIZE',
         'cohort estimate · nm',
         Icons.straighten_rounded,
-        Color(0xFF315ED2)
+        Color(0xFF34745A)
       ),
       (
         'PDI',
         'cohort estimate · unitless',
         Icons.blur_on_rounded,
-        Color(0xFF16A6A1)
+        Color(0xFF8FA276)
       ),
       (
         'FORMATION',
         'uncalibrated score',
         Icons.bubble_chart_outlined,
-        Color(0xFF7051B5)
+        Color(0xFFB2761E)
       ),
       ('ZETA', 'not modeled here', Icons.electric_bolt_outlined, _muted),
       ('ENTRAPMENT', 'not modeled here', Icons.science_outlined, _muted),
@@ -485,7 +485,7 @@ class NanoPredictLabApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: scheme,
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFF1F4F9),
+        scaffoldBackgroundColor: const Color(0xFFF4F7F2),
         textTheme: const TextTheme(
           headlineMedium: TextStyle(
             color: _ink,
@@ -505,7 +505,7 @@ class NanoPredictLabApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: const Color(0xFFFAFBFD),
+          fillColor: const Color(0xFFFAFCF9),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 14,
@@ -1461,7 +1461,7 @@ class _FormulationResultView extends StatelessWidget {
               label: 'Literature candidates',
               icon: Icons.menu_book_outlined,
               color: const Color(0xFF3A5DAA),
-              fill: const Color(0xFFEAF0FF),
+              fill: const Color(0xFFE7F0E6),
             ),
             _BriefMetric(
               count: unresolved,
@@ -2338,7 +2338,7 @@ class _ScopeFooter extends StatelessWidget {
             SizedBox(width: 9),
             Expanded(
               child: Text(
-                'Research use. Evidence relevance is not calibrated confidence. Drug-loaded estimates, cross-carrier rankings, ratio optimization, and tissue delivery predictions are not released by this prototype.',
+                'For research use. Evidence relevance is not a calibrated confidence score. Drug-loaded estimates, cross-carrier rankings, ratio optimization, and tissue delivery predictions are not available in this release.',
                 style: TextStyle(color: _muted, fontSize: 11, height: 1.45),
               ),
             ),
