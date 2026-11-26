@@ -1866,6 +1866,11 @@ Future<void> _downloadFormulationPdf(
       ..click();
     Future<void>.delayed(
         const Duration(seconds: 2), () => html.Url.revokeObjectUrl(objectUrl));
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('PDF report generated. Your download is starting.')),
+      );
+    }
   } catch (_) {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
