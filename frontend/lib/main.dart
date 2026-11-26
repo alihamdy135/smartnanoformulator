@@ -4,6 +4,8 @@ import 'dart:math' as math;
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 part 'workspace.dart';
 
@@ -1518,9 +1520,9 @@ class _FormulationResultView extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: OutlinedButton.icon(
-            onPressed: () => _downloadAssessment(data),
+            onPressed: () => _downloadFormulationPdf(context, data),
             icon: const Icon(Icons.download_outlined, size: 18),
-            label: const Text('Download evidence report'),
+            label: const Text('Download PDF report'),
           ),
         ),
         ExpansionTile(
@@ -1706,6 +1708,395 @@ void _downloadAssessment(Map<String, dynamic> data) {
     ..click();
   Future<void>.delayed(
       const Duration(seconds: 1), () => html.Url.revokeObjectUrl(url));
+}
+
+const _pdfForest = PdfColor(0.082, 0.239, 0.188);
+const _pdfSage = PdfColor(0.902, 0.933, 0.898);
+const _pdfPaper = PdfColor(0.965, 0.976, 0.957);
+const _pdfInk = PdfColor(0.141, 0.208, 0.176);
+const _pdfMuted = PdfColor(0.365, 0.427, 0.392);
+const _pdfLine = PdfColor(0.835, 0.878, 0.839);
+
+Future<void> _downloadFormulationPdf(
+  BuildContext context,
+  Map<String, dynamic> data,
+) async {
+  try {
+    final request = Map<String, dynamic>.from(data['request'] as Map? ?? {});
+    final results = Map<String, dynamic>.from(data['results'] as Map? ?? {});
+    final descriptors =
+        Map<String, dynamic>.from(request['descriptors'] as Map? ?? {});
+    final release =
+        Map<String, dynamic>.from(request['desired_release'] as Map? ?? {});
+    final requestId = (data['request_id'] ?? 'report').toString();
+    final pdf = pw.Document();
+
+    final requestRows = <List<String>>[
+      ['Drug', _pdfSafe(request['drug'])],
+      if (_pdfHas(request['drug_form']))
+        ['Drug form', _pdfSafe(request['drug_form'])],
+      ['Administration route', _pdfSafe(request['route'])],
+      ['Target organ or tissue', _pdfSafe(request['tissue'])],
+      if (_pdfHas(descriptors['mw_da']))
+        ['Molecular weight', '${_pdfSafe(descriptors['mw_da'])} Da'],
+      if (_pdfHas(descriptors['logp'])) ['LogP', _pdfSafe(descriptors['logp'])],
+      if (_pdfHas(descriptors['pka'])) ['pKa', _pdfSafe(descriptors['pka'])],
+      if (_pdfHas(descriptors['solubility_mg_ml']))
+        [
+          'Solubility',
+          '${_pdfSafe(descriptors['solubility_mg_ml'])} mg/mL'
+              '${_pdfHas(descriptors['solubility_conditions']) ? ' (${_pdfSafe(descriptors['solubility_conditions'])})' : ''}',
+        ],
+      if (_pdfHas(descriptors['stability_notes']))
+        ['Stability notes', _pdfSafe(descriptors['stability_notes'])],
+      if (release.isNotEmpty)
+        [
+          'User release target',
+          '${_pdfSafe(release['percent'])}% at ${_pdfSafe(release['hours'])} hours (user goal, not a prediction)',
+        ],
+      if (request['targets'] is List)
+        ['Requested endpoints', (request['targets'] as List).map(_pdfSafe).join(', ')],
+    ];
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.fromLTRB(38, 42, 38, 42),
+        header: (page) => pw.Container(
+          padding: const pw.EdgeInsets.only(bottom: 8),
+          decoration: const pw.BoxDecoration(
+            border: pw.Border(bottom: pw.BorderSide(color: _pdfLine, width: 0.8)),
+          ),
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text('NANOPREDICT LAB  /  NANOVESICLE-AI',
+                  style: pw.TextStyle(
+                      color: _pdfForest,
+                      fontSize: 8,
+                      fontWeight: pw.FontWeight.bold)),
+              pw.Text('FORMULATION EVIDENCE REPORT',
+                  style: const pw.TextStyle(color: _pdfMuted, fontSize: 7.5)),
+            ],
+          ),
+        ),
+        footer: (page) => pw.Container(
+          padding: const pw.EdgeInsets.only(top: 8),
+          decoration: const pw.BoxDecoration(
+            border: pw.Border(top: pw.BorderSide(color: _pdfLine, width: 0.8)),
+          ),
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text('Research use | Request ${_pdfSafe(requestId)}',
+                  style: const pw.TextStyle(color: _pdfMuted, fontSize: 7)),
+              pw.Text('Page ${page.pageNumber} of ${page.pagesCount}',
+                  style: const pw.TextStyle(color: _pdfMuted, fontSize: 7)),
+            ],
+          ),
+        ),
+        build: (page) => [
+          pw.Container(
+            width: double.infinity,
+            padding: const pw.EdgeInsets.all(16),
+            decoration: const pw.BoxDecoration(
+              color: _pdfForest,
+              borderRadius: pw.BorderRadius.all(pw.Radius.circular(12)),
+            ),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text('Evidence-led formulation brief',
+                    style: pw.TextStyle(
+                        color: PdfColors.white,
+                        fontSize: 20,
+                        fontWeight: pw.FontWeight.bold)),
+                pw.SizedBox(height: 5),
+                pw.Text(
+                    'A cited evidence assessment for ${_pdfSafe(request['drug'])}',
+                    style: const pw.TextStyle(
+                        color: PdfColors.white, fontSize: 10)),
+              ],
+            ),
+          ),
+          pw.SizedBox(height: 16),
+          _pdfSectionTitle('Submitted design context'),
+          _pdfKeyValueTable(requestRows),
+          pw.SizedBox(height: 15),
+          _pdfSectionTitle('Endpoint-by-endpoint assessment'),
+          pw.Text(
+              'Each endpoint retains its decision, model status, rationale, and applicable evidence. A published measurement belongs to the cited study batch; it is not a prediction for a new formulation.',
+              style: const pw.TextStyle(color: _pdfMuted, fontSize: 9, lineSpacing: 2)),
+          pw.SizedBox(height: 9),
+          for (final entry in results.entries)
+            _pdfEndpointCard(entry.key, Map<String, dynamic>.from(entry.value as Map)),
+          pw.SizedBox(height: 12),
+          _pdfSectionTitle('Method and scientific scope'),
+          pw.Text(
+              _pdfSafe(data['method'] ?? 'Evidence retrieval and rule-based adjudication.'),
+              style: const pw.TextStyle(color: _pdfInk, fontSize: 9, lineSpacing: 2)),
+          pw.SizedBox(height: 6),
+          pw.Container(
+            padding: const pw.EdgeInsets.all(10),
+            decoration: const pw.BoxDecoration(
+              color: _pdfPaper,
+              borderRadius: pw.BorderRadius.all(pw.Radius.circular(7)),
+            ),
+            child: pw.Text(
+                'Research use. Current drug-specific numerical predictions, cross-carrier rankings, excipient-ratio optimization, and generated batches are not validated in this release. Evidence relevance is not a calibrated confidence score. Historical validation errors are cohort benchmarks, not individual prediction intervals.',
+                style: const pw.TextStyle(color: _pdfMuted, fontSize: 8.5, lineSpacing: 2)),
+          ),
+          pw.SizedBox(height: 12),
+          _pdfSectionTitle('Release metadata'),
+          pw.Text(
+              'Request ID: ${_pdfSafe(requestId)}  |  API: ${_pdfSafe(data['api_version'])}  |  Model: ${_pdfSafe(data['model_release'])}  |  Evidence corpus: ${_pdfSafe(data['corpus_release'])}',
+              style: const pw.TextStyle(color: _pdfMuted, fontSize: 8)),
+        ],
+      ),
+    );
+
+    final bytes = await pdf.save();
+    final objectUrl = html.Url.createObjectUrlFromBlob(
+      html.Blob([bytes], 'application/pdf'),
+    );
+    final safeRequestId = requestId.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '');
+    html.AnchorElement(href: objectUrl)
+      ..download =
+          'nanopredict-lab-formulation-${safeRequestId.isEmpty ? 'report' : safeRequestId}.pdf'
+      ..click();
+    Future<void>.delayed(
+        const Duration(seconds: 2), () => html.Url.revokeObjectUrl(objectUrl));
+  } catch (_) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not create the PDF report. Please try again.')),
+      );
+    }
+  }
+}
+
+pw.Widget _pdfSectionTitle(String title) => pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 7),
+      child: pw.Text(title,
+          style: pw.TextStyle(
+              color: _pdfForest, fontSize: 12, fontWeight: pw.FontWeight.bold)),
+    );
+
+pw.Widget _pdfKeyValueTable(List<List<String>> rows) => pw.Table(
+      border: pw.TableBorder.all(color: _pdfLine, width: 0.5),
+      columnWidths: const {
+        0: pw.FlexColumnWidth(0.31),
+        1: pw.FlexColumnWidth(0.69),
+      },
+      children: [
+        for (var i = 0; i < rows.length; i++)
+          pw.TableRow(
+            decoration: pw.BoxDecoration(color: i.isEven ? _pdfPaper : PdfColors.white),
+            children: [
+              _pdfTableCell(rows[i][0], bold: true),
+              _pdfTableCell(rows[i][1]),
+            ],
+          ),
+      ],
+    );
+
+pw.Widget _pdfTableCell(String value, {bool bold = false}) => pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      child: pw.Text(value,
+          style: pw.TextStyle(
+              color: bold ? _pdfForest : _pdfInk,
+              fontSize: 8.5,
+              fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal)),
+    );
+
+pw.Widget _pdfEndpointCard(String name, Map<String, dynamic> report) {
+  final model = Map<String, dynamic>.from(report['model'] as Map? ?? {});
+  final evidence = report['evidence'] is List
+      ? (report['evidence'] as List).whereType<Map>().toList()
+      : const <Map>[];
+  final decision = _pdfDecisionLabel(report['decision']);
+  final modelValue = model['value'];
+  final benchmark = model['benchmark'] is List
+      ? (model['benchmark'] as List).whereType<Map>().toList()
+      : const <Map>[];
+
+  return pw.Container(
+    margin: const pw.EdgeInsets.only(bottom: 9),
+    padding: const pw.EdgeInsets.all(10),
+    decoration: pw.BoxDecoration(
+      color: PdfColors.white,
+      border: pw.Border.all(color: _pdfLine, width: 0.7),
+      borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
+    ),
+    child: pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Expanded(
+              child: pw.Text(_pdfHumanize(name),
+                  style: pw.TextStyle(
+                      color: _pdfForest,
+                      fontSize: 11,
+                      fontWeight: pw.FontWeight.bold)),
+            ),
+            pw.Container(
+              padding: const pw.EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+              decoration: const pw.BoxDecoration(
+                color: _pdfSage,
+                borderRadius: pw.BorderRadius.all(pw.Radius.circular(8)),
+              ),
+              child: pw.Text(decision,
+                  style: pw.TextStyle(
+                      color: _pdfForest,
+                      fontSize: 7.5,
+                      fontWeight: pw.FontWeight.bold)),
+            ),
+          ],
+        ),
+        pw.SizedBox(height: 5),
+        pw.Text(_pdfSafe(report['rationale']),
+            style: const pw.TextStyle(color: _pdfInk, fontSize: 8.5, lineSpacing: 1.5)),
+        pw.SizedBox(height: 5),
+        if (modelValue != null)
+          pw.Text(
+              'Model estimate: ${_pdfSafe(modelValue)} ${_pdfSafe(model['unit'])}',
+              style: pw.TextStyle(
+                  color: _pdfForest,
+                  fontSize: 8.5,
+                  fontWeight: pw.FontWeight.bold))
+        else ...[
+          pw.Text('Model status: ${_pdfHumanize(_pdfSafe(model['status']))}',
+              style: pw.TextStyle(
+                  color: _pdfForest,
+                  fontSize: 8.2,
+                  fontWeight: pw.FontWeight.bold)),
+          if (_pdfHas(model['reason']))
+            pw.Text(_pdfSafe(model['reason']),
+                style: const pw.TextStyle(color: _pdfMuted, fontSize: 8, lineSpacing: 1.5)),
+        ],
+        if (_pdfHas(model['support']))
+          pw.Text('Support: ${_pdfSafe(model['support'])}',
+              style: const pw.TextStyle(color: _pdfMuted, fontSize: 8)),
+        if (_pdfHas(model['grouped_cv_mae']))
+          pw.Text(
+              'Grouped-CV MAE: ${_pdfSafe(model['grouped_cv_mae'])} ${_pdfSafe(model['unit'])}; cohort benchmark, not an individual prediction interval.',
+              style: const pw.TextStyle(color: _pdfMuted, fontSize: 8)),
+        if (_pdfHas(model['limitation']))
+          pw.Text(_pdfSafe(model['limitation']),
+              style: const pw.TextStyle(color: _pdfMuted, fontSize: 8, lineSpacing: 1.5)),
+        if (benchmark.isNotEmpty) ...[
+          pw.SizedBox(height: 5),
+          pw.Text('Validation benchmarks (not predictions)',
+              style: pw.TextStyle(
+                  color: _pdfForest,
+                  fontSize: 8,
+                  fontWeight: pw.FontWeight.bold)),
+          for (final row in benchmark)
+            pw.Text(
+                '${_pdfHumanize(_pdfSafe(row['grouping']))}: MAE ${_pdfSafe(row['mae'])} vs median ${_pdfSafe(row['median_mae'])}; n=${_pdfSafe(row['n'])}',
+                style: const pw.TextStyle(color: _pdfMuted, fontSize: 7.5)),
+        ],
+        if (evidence.isNotEmpty) ...[
+          pw.SizedBox(height: 7),
+          pw.Text('Cited evidence',
+              style: pw.TextStyle(
+                  color: _pdfForest,
+                  fontSize: 8.5,
+                  fontWeight: pw.FontWeight.bold)),
+          for (final source in evidence)
+            _pdfEvidenceCard(name, Map<String, dynamic>.from(source)),
+        ] else
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(top: 5),
+            child: pw.Text('No applicable source was returned for this endpoint.',
+                style: const pw.TextStyle(color: _pdfMuted, fontSize: 8)),
+          ),
+      ],
+    ),
+  );
+}
+
+pw.Widget _pdfEvidenceCard(String endpoint, Map<String, dynamic> source) {
+  final title = _pdfSafe(source['title']);
+  final url = _pdfSafe(source['url']);
+  final measurements =
+      Map<String, dynamic>.from(source['measurements'] as Map? ?? {});
+  final measurement =
+      Map<String, dynamic>.from(measurements[endpoint] as Map? ?? {});
+  final locator = _pdfSafe(source['locator']);
+  return pw.Container(
+    width: double.infinity,
+    margin: const pw.EdgeInsets.only(top: 5),
+    padding: const pw.EdgeInsets.all(7),
+    decoration: const pw.BoxDecoration(
+      color: _pdfPaper,
+      borderRadius: pw.BorderRadius.all(pw.Radius.circular(5)),
+    ),
+    child: pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Text(title,
+            style: pw.TextStyle(
+                color: _pdfInk, fontSize: 8, fontWeight: pw.FontWeight.bold)),
+        if (url.startsWith('http'))
+          pw.UrlLink(
+            destination: url,
+            child: pw.Text(url,
+                style: const pw.TextStyle(color: _pdfForest, fontSize: 7.5)),
+          ),
+        pw.Text(
+            'Source: ${_pdfHumanize(_pdfSafe(source['kind']))} | Applicability: ${_pdfHumanize(_pdfSafe(source['applicability']))}',
+            style: const pw.TextStyle(color: _pdfMuted, fontSize: 7.3)),
+        if (_pdfHas(source['text']))
+          pw.Text(_pdfSafe(source['text']),
+              style: const pw.TextStyle(color: _pdfInk, fontSize: 7.8, lineSpacing: 1.2)),
+        if (measurement.isNotEmpty)
+          pw.Text(
+              'Published observation: ${_pdfSafe(measurement['value'])} ${_pdfSafe(measurement['unit'])}${locator.isEmpty ? '' : ' | $locator'}',
+              style: pw.TextStyle(
+                  color: _pdfForest,
+                  fontSize: 7.8,
+                  fontWeight: pw.FontWeight.bold)),
+        if (locator.isNotEmpty && measurement.isEmpty)
+          pw.Text('Citation locator: $locator',
+              style: const pw.TextStyle(color: _pdfMuted, fontSize: 7.3)),
+        if (_pdfHas(source['limitation']))
+          pw.Text('Limitation: ${_pdfSafe(source['limitation'])}',
+              style: const pw.TextStyle(color: _pdfMuted, fontSize: 7.3, lineSpacing: 1.2)),
+      ],
+    ),
+  );
+}
+
+bool _pdfHas(dynamic value) => value != null && value.toString().trim().isNotEmpty;
+
+String _pdfSafe(dynamic value) {
+  if (value == null) return 'not provided';
+  return value
+      .toString()
+      .replaceAll('\u2013', '-')
+      .replaceAll('\u2014', '-')
+      .replaceAll('\u2212', '-')
+      .replaceAll('\u2018', "'")
+      .replaceAll('\u2019', "'")
+      .replaceAll('\u201c', '"')
+      .replaceAll('\u201d', '"')
+      .replaceAll('\u2022', '-')
+      .replaceAll('\u00b5', 'micro')
+      .replaceAll('\u00d7', 'x');
+}
+
+String _pdfHumanize(String value) {
+  if (value.isEmpty) return 'Assessment report';
+  return value
+      .replaceAll('_', ' ')
+      .split(' ')
+      .where((word) => word.isNotEmpty)
+      .map((word) => '${word[0].toUpperCase()}${word.substring(1)}')
+      .join(' ');
 }
 
 class _SubmittedContext extends StatelessWidget {
