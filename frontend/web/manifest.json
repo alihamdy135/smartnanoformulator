@@ -3,8 +3,8 @@
   "short_name": "NanoPredict Lab",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#f1f4f9",
-  "theme_color": "#f1f4f9",
-  "description": "Evidence-aware formulation screening and microfluidic liposome benchmarking from NanoPredict Lab",
+  "background_color": "#f4f7f2",
+  "theme_color": "#f4f7f2",
+  "description": "Evidence-guided nanopharmaceutical formulation design and microfluidic liposome process assessment from NanoPredict Lab",
   "orientation": "any"
 }
