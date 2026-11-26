@@ -8,8 +8,8 @@ enum _WorkspaceSection { overview, formulation, process }
 extension on _WorkspaceSection {
   String get title => switch (this) {
         _WorkspaceSection.overview => 'Overview',
-        _WorkspaceSection.formulation => 'Formulation evidence',
-        _WorkspaceSection.process => 'Microfluidic process',
+        _WorkspaceSection.formulation => 'Evidence-led designer',
+        _WorkspaceSection.process => 'Process model',
       };
   IconData get icon => switch (this) {
         _WorkspaceSection.overview => Icons.space_dashboard_outlined,
@@ -18,11 +18,11 @@ extension on _WorkspaceSection {
       };
   String get description => switch (this) {
         _WorkspaceSection.overview =>
-          'Evaluate formulation evidence and benchmark microfluidic liposome processes in one workspace.',
+          'Intelligent nanopharmaceutical formulation design, grounded in cited evidence and model scope.',
         _WorkspaceSection.formulation =>
-          'Build a drug delivery brief and review cited evidence, model scope, and unresolved outcomes.',
+          'Describe the drug profile, route, tissue, and release target. Review cited candidates and evidence gaps.',
         _WorkspaceSection.process =>
-          'Check formation, particle size, and PDI for settings covered by the Eugster cohort.',
+          'Use the fitted Eugster models for particle size and PDI within supported microfluidic liposome settings.',
       };
 }
 
@@ -173,7 +173,7 @@ class _Navigation extends StatelessWidget {
                                   color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w800)),
-                          Text('RESEARCH WORKSPACE',
+                          Text('NANOVESICLE-AI DESIGNER',
                               style: TextStyle(
                                   color: _navMuted,
                                   fontSize: 10,
@@ -292,14 +292,14 @@ class _WorkspaceHeading extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _SectionLabel(section == _WorkspaceSection.overview
-              ? 'RESEARCH CONSOLE'
-              : 'NANOPREDICT LAB WORKSPACE'),
+              ? 'NANOPREDICT LAB · DESIGN STUDIO'
+              : 'NANOVESICLE-AI WORKSPACE'),
           const SizedBox(height: 7),
           Semantics(
             header: true,
             child: Text(
               section == _WorkspaceSection.overview
-                  ? 'Research overview'
+                  ? 'NanoVesicle-AI'
                   : section.title,
               style: TextStyle(
                   fontSize: MediaQuery.sizeOf(context).width >= 950 ? 37 : 29,
@@ -312,6 +312,12 @@ class _WorkspaceHeading extends StatelessWidget {
           const SizedBox(height: 8),
           Text(section.description,
               style: const TextStyle(color: _muted, fontSize: 14, height: 1.5)),
+          if (section == _WorkspaceSection.overview) ...[
+            const SizedBox(height: 3),
+            const Text('Intelligent Nanopharmaceutical Formulation Designer',
+                style: TextStyle(
+                    color: _teal, fontSize: 13, fontWeight: FontWeight.w700)),
+          ],
         ],
       );
 }
@@ -357,12 +363,12 @@ class _Overview extends StatelessWidget {
                   children: [
                     _LaunchCard(
                       section: _WorkspaceSection.formulation,
-                      tag: 'LITERATURE SCREENING',
+                      tag: 'MODEL 01 · LITERATURE EVIDENCE',
                       onOpen: () => onSelect(_WorkspaceSection.formulation),
                     ),
                     _LaunchCard(
                       section: _WorkspaceSection.process,
-                      tag: 'EUGSTER COHORT',
+                      tag: 'MODEL 02 · EUGSTER PROCESS',
                       onOpen: () => onSelect(_WorkspaceSection.process),
                     ),
                   ],
@@ -437,6 +443,7 @@ class _EvidenceLandscape extends StatelessWidget {
               children: const [
                 _ScopeMetric(value: '2,641', label: 'catalogue records'),
                 _ScopeMetric(value: '5', label: 'carrier families'),
+                _ScopeMetric(value: '3', label: 'process outputs released'),
                 _ScopeMetric(value: '928', label: 'screened Eugster runs'),
               ],
             ),
@@ -612,6 +619,15 @@ class _LaunchCard extends StatelessWidget {
     final process = section == _WorkspaceSection.process;
     final accent = process ? _indigo : _teal;
     final tint = process ? const Color(0xFFF0EBFA) : const Color(0xFFEAF0FF);
+    final inputSummary = process
+        ? 'Primary lipid · chip · cholesterol · PEG · flow · FRR'
+        : 'Drug ID + MW · LogP · pKa · solubility · stability · route · tissue · release target';
+    final outputSummary = process
+        ? 'Size · PDI · uncalibrated formation score'
+        : 'Cited carrier/excipient candidates · evidence status for ratios, batches, and endpoints';
+    final methodSummary = process
+        ? 'Fitted cohort models · grouped-CV benchmarks'
+        : 'TF-IDF source retrieval + rules · no generative RAG';
     return DecoratedBox(
       decoration: BoxDecoration(
         color: const Color(0xFFFAFBFE),
@@ -634,6 +650,12 @@ class _LaunchCard extends StatelessWidget {
             Text(section.description,
                 style:
                     const TextStyle(color: _muted, fontSize: 13, height: 1.45)),
+            const SizedBox(height: 10),
+            _ModelFlowRow(label: 'INPUT', text: inputSummary, color: accent),
+            const SizedBox(height: 5),
+            _ModelFlowRow(label: 'OUTPUT', text: outputSummary, color: accent),
+            const SizedBox(height: 5),
+            _ModelFlowRow(label: 'METHOD', text: methodSummary, color: accent),
             const SizedBox(height: 11),
             FilledButton(
               style: FilledButton.styleFrom(
@@ -652,6 +674,36 @@ class _LaunchCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ModelFlowRow extends StatelessWidget {
+  const _ModelFlowRow({
+    required this.label,
+    required this.text,
+    required this.color,
+  });
+  final String label, text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 47,
+            child: Text(label,
+                style: TextStyle(
+                    color: color,
+                    fontSize: 9,
+                    letterSpacing: 0.5,
+                    fontWeight: FontWeight.w800)),
+          ),
+          Expanded(
+            child: Text(text,
+                style: const TextStyle(color: _ink, fontSize: 10, height: 1.4)),
+          ),
+        ],
+      );
 }
 
 class _ExampleRow extends StatelessWidget {
