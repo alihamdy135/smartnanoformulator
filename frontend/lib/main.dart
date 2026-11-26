@@ -2099,6 +2099,14 @@ String _pdfHumanize(String value) {
       .join(' ');
 }
 
+String _pdfDecisionLabel(dynamic value) => switch (value) {
+      'model_estimate' => 'MODEL ESTIMATE',
+      'literature_candidate' => 'LITERATURE CANDIDATE',
+      'conflicting_evidence' => 'REVIEW CONFLICT',
+      'background_only' => 'BACKGROUND ONLY',
+      _ => _pdfHumanize(_pdfSafe(value)).toUpperCase(),
+    };
+
 class _SubmittedContext extends StatelessWidget {
   const _SubmittedContext({required this.request});
   final Map<String, dynamic> request;
