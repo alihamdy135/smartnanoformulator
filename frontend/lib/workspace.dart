@@ -1,15 +1,15 @@
 part of 'main.dart';
 
-const _nav = Color(0xFF111C33);
-const _navMuted = Color(0xFFAAB7D1);
+const _nav = Color(0xFF142B22);
+const _navMuted = Color(0xFFB5C8BB);
 
 enum _WorkspaceSection { overview, formulation, process }
 
 extension on _WorkspaceSection {
   String get title => switch (this) {
         _WorkspaceSection.overview => 'Overview',
-        _WorkspaceSection.formulation => 'Evidence-led designer',
-        _WorkspaceSection.process => 'Process model',
+        _WorkspaceSection.formulation => 'Formulation design',
+        _WorkspaceSection.process => 'Process assessment',
       };
   IconData get icon => switch (this) {
         _WorkspaceSection.overview => Icons.space_dashboard_outlined,
@@ -18,11 +18,11 @@ extension on _WorkspaceSection {
       };
   String get description => switch (this) {
         _WorkspaceSection.overview =>
-          'Intelligent nanopharmaceutical formulation design, grounded in cited evidence and model scope.',
+          'Evidence-guided nanopharmaceutical formulation design with clear, source-linked assessments.',
         _WorkspaceSection.formulation =>
-          'Describe the drug profile, route, tissue, and release target. Review cited candidates and evidence gaps.',
+          'Explore cited formulation candidates and endpoint evidence for your drug, route, tissue, and release goal.',
         _WorkspaceSection.process =>
-          'Use the fitted Eugster models for particle size and PDI within supported microfluidic liposome settings.',
+          'Assess particle size, PDI, and formation for supported Eugster microfluidic liposome settings.',
       };
 }
 
@@ -34,16 +34,12 @@ class WorkspacePage extends StatefulWidget {
 }
 
 class _WorkspacePageState extends State<WorkspacePage> {
-  final _scaffold = GlobalKey<ScaffoldState>();
   final _scroll = ScrollController();
   _WorkspaceSection _section = _WorkspaceSection.overview;
   String? _example;
   int _formulationVersion = 0, _processVersion = 0;
 
   void _select(_WorkspaceSection section, {String? example}) {
-    if (_scaffold.currentState?.isDrawerOpen ?? false) {
-      _scaffold.currentState?.closeDrawer();
-    }
     if (section == _section && example == null) return;
     FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
@@ -73,23 +69,44 @@ class _WorkspacePageState extends State<WorkspacePage> {
       onSelect: _select,
     );
     return Scaffold(
-      key: _scaffold,
-      drawer: desktop ? null : Drawer(backgroundColor: _nav, child: sidebar),
+      bottomNavigationBar: desktop
+          ? null
+          : NavigationBar(
+              selectedIndex: _section.index,
+              onDestinationSelected: (index) =>
+                  _select(_WorkspaceSection.values[index]),
+              height: 66,
+              backgroundColor: Colors.white,
+              indicatorColor: const Color(0xFFE6F0E6),
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.home_outlined),
+                  selectedIcon: Icon(Icons.home_rounded),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.biotech_outlined),
+                  selectedIcon: Icon(Icons.biotech_rounded),
+                  label: 'Formulation',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.water_drop_outlined),
+                  selectedIcon: Icon(Icons.water_drop_rounded),
+                  label: 'Process',
+                ),
+              ],
+            ),
       body: SafeArea(
         child: Row(
           children: [
             if (desktop) SizedBox(width: 224, child: sidebar),
             Expanded(
               child: Container(
-                color: const Color(0xFFF3F5FB),
+                color: const Color(0xFFF4F7F2),
                 child: Column(
                   children: [
-                    _ConsoleTop(
-                      section: _section,
-                      onMenu: desktop
-                          ? null
-                          : () => _scaffold.currentState?.openDrawer(),
-                    ),
+                    _ConsoleTop(section: _section),
                     Expanded(
                       child: Scrollbar(
                         controller: _scroll,
@@ -166,9 +183,9 @@ class _Navigation extends StatelessWidget {
                 child: Row(
                   children: [
                     _IconTile(
-                        icon: Icons.blur_on_rounded,
+                        icon: Icons.spa_outlined,
                         foreground: Colors.white,
-                        background: Color(0xFF335DE0)),
+                        background: Color(0xFF5F8663)),
                     SizedBox(width: 9),
                     Expanded(
                       child: Column(
@@ -208,7 +225,7 @@ class _Navigation extends StatelessWidget {
                       horizontalTitleGap: 9,
                       minLeadingWidth: 20,
                       selected: selected == section,
-                      selectedTileColor: const Color(0xFF263D72),
+                      selectedTileColor: const Color(0xFF294A37),
                       selectedColor: Colors.white,
                       iconColor: _navMuted,
                       textColor: _navMuted,
@@ -218,7 +235,7 @@ class _Navigation extends StatelessWidget {
                               fontSize: 13, fontWeight: FontWeight.w700)),
                       trailing: selected == section
                           ? const Icon(Icons.circle,
-                              color: Color(0xFF91ADFF), size: 7)
+                              color: Color(0xFFB7D4AF), size: 7)
                           : null,
                     ),
                   ),
@@ -246,23 +263,18 @@ class _NavLabel extends StatelessWidget {
 }
 
 class _ConsoleTop extends StatelessWidget {
-  const _ConsoleTop({required this.section, this.onMenu});
+  const _ConsoleTop({required this.section});
   final _WorkspaceSection section;
-  final VoidCallback? onMenu;
 
   @override
   Widget build(BuildContext context) => Container(
         constraints: const BoxConstraints(minHeight: 60),
         decoration: const BoxDecoration(
             color: _surface, border: Border(bottom: BorderSide(color: _line))),
-        padding: EdgeInsets.symmetric(horizontal: onMenu == null ? 28 : 9),
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.sizeOf(context).width >= 950 ? 28 : 14),
         child: Row(
           children: [
-            if (onMenu != null)
-              IconButton(
-                  onPressed: onMenu,
-                  icon: const Icon(Icons.menu_rounded),
-                  tooltip: 'Open navigation'),
             Expanded(
               child: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
@@ -281,8 +293,8 @@ class _ConsoleTop extends StatelessWidget {
             ),
             if (MediaQuery.sizeOf(context).width >= 440)
               const _Pill(
-                  label: 'RESEARCH PROTOTYPE',
-                  color: Color(0xFFEAF0FF),
+                  label: 'FORMULATION WORKSPACE',
+                  color: Color(0xFFE6F0E6),
                   textColor: _teal),
           ],
         ),
@@ -298,7 +310,7 @@ class _WorkspaceHeading extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _SectionLabel(section == _WorkspaceSection.overview
-              ? 'NANOPREDICT LAB · DESIGN STUDIO'
+              ? 'NANOPREDICT LAB · FORMULATION DESIGN'
               : 'NANOVESICLE-AI WORKSPACE'),
           const SizedBox(height: 7),
           Semantics(
@@ -359,13 +371,12 @@ class _Overview extends StatelessWidget {
             onFormulation: () => onSelect(_WorkspaceSection.formulation),
             onProcess: () => onSelect(_WorkspaceSection.process),
           ),
-          const SizedBox(height: 16),
-          const _DashboardMetricGrid(),
-          const SizedBox(height: 23),
+          const SizedBox(height: 22),
           const _OverviewSectionTitle(
-            eyebrow: 'DESIGN WORKFLOWS',
-            title: 'Choose your assessment path',
-            detail: 'Each path reports only what its evidence can support.',
+            eyebrow: 'FORMULATION WORKSPACE',
+            title: 'Choose where to begin',
+            detail:
+                'Open a design flow and review its results on the same page.',
           ),
           const SizedBox(height: 11),
           _FieldGroup(
@@ -386,29 +397,27 @@ class _Overview extends StatelessWidget {
           LayoutBuilder(
             builder: (context, bounds) {
               final wide = bounds.maxWidth >= 900;
-              final benchmarks = const _EvidenceLandscape();
               final examples = _ReferenceCases(onSelect: onSelect);
+              const carriers = _CarrierLandscape();
               if (!wide) {
                 return Column(
                   children: [
-                    benchmarks,
-                    const SizedBox(height: 14),
                     examples,
+                    const SizedBox(height: 14),
+                    carriers,
                   ],
                 );
               }
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(flex: 7, child: benchmarks),
+                  Expanded(flex: 7, child: examples),
                   const SizedBox(width: 14),
-                  Expanded(flex: 5, child: examples),
+                  const Expanded(flex: 5, child: carriers),
                 ],
               );
             },
           ),
-          const SizedBox(height: 14),
-          const _CarrierLandscape(),
         ],
       );
 }
@@ -432,9 +441,9 @@ class _DashboardHero extends StatelessWidget {
                   border: Border.all(color: Colors.white.withValues(alpha: .2)),
                 ),
                 child: const Text(
-                  'NANOPREDICT LAB  /  RESEARCH DESIGN STUDIO',
+                  'NANOPREDICT LAB  /  NANOPHARMACEUTICAL DESIGN',
                   style: TextStyle(
-                    color: Color(0xFFDCE7FF),
+                    color: Color(0xFFDDEBDD),
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.05,
@@ -456,7 +465,7 @@ class _DashboardHero extends StatelessWidget {
               const Text(
                 'Intelligent Nanopharmaceutical Formulation Designer',
                 style: TextStyle(
-                  color: Color(0xFFE3EBFF),
+                  color: Color(0xFFE2EEE1),
                   fontSize: 13,
                   height: 1.4,
                   fontWeight: FontWeight.w600,
@@ -464,9 +473,9 @@ class _DashboardHero extends StatelessWidget {
               ),
               const SizedBox(height: 7),
               const Text(
-                'Screen formulation evidence or assess supported microfluidic liposome settings in one focused workspace.',
+                'Design with cited formulation evidence and assess supported microfluidic liposome settings in one focused workspace.',
                 style: TextStyle(
-                  color: Color(0xFFD0DBF5),
+                  color: Color(0xFFD2E3D1),
                   fontSize: 11,
                   height: 1.5,
                 ),
@@ -481,7 +490,7 @@ class _DashboardHero extends StatelessWidget {
                     icon: const Icon(Icons.biotech_outlined, size: 17),
                     label: const Text('Design formulation'),
                     style: FilledButton.styleFrom(
-                      foregroundColor: const Color(0xFF19376E),
+                      foregroundColor: const Color(0xFF173226),
                       backgroundColor: Colors.white,
                       minimumSize: const Size(0, 40),
                       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -512,14 +521,14 @@ class _DashboardHero extends StatelessWidget {
             padding: EdgeInsets.all(wide ? 24 : 18),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF15264A), Color(0xFF315ED2)],
+                colors: [Color(0xFF173226), Color(0xFF4A7B5B)],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
               borderRadius: BorderRadius.circular(18),
               boxShadow: const [
                 BoxShadow(
-                  color: Color(0x24315ED2),
+                  color: Color(0x243A6948),
                   blurRadius: 22,
                   offset: Offset(0, 9),
                 ),
@@ -533,7 +542,14 @@ class _DashboardHero extends StatelessWidget {
                       const Expanded(flex: 4, child: _NanoOrbitGraphic()),
                     ],
                   )
-                : copy,
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const _NanoOrbitGraphic(),
+                      const SizedBox(height: 4),
+                      copy,
+                    ],
+                  ),
           );
         },
       );
@@ -591,8 +607,8 @@ class _NanoOrbitPainter extends CustomPainter {
       ..color = Colors.white.withValues(alpha: .32)
       ..strokeWidth = 1.1
       ..style = PaintingStyle.stroke;
-    final bead = Paint()..color = const Color(0xFF9CE8E1);
-    final bead2 = Paint()..color = const Color(0xFFD9E5FF);
+    final bead = Paint()..color = const Color(0xFFB5D4AA);
+    final bead2 = Paint()..color = const Color(0xFFE5EFDE);
     canvas.drawCircle(center, 42, line);
     canvas.drawCircle(center, 61, line);
     canvas.drawCircle(
@@ -624,14 +640,14 @@ class _OrbitLabel extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
         decoration: BoxDecoration(
-          color: const Color(0xFF233F7D).withValues(alpha: .92),
+          color: const Color(0xFF254735).withValues(alpha: .94),
           borderRadius: BorderRadius.circular(9),
           border: Border.all(color: Colors.white.withValues(alpha: .2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: const Color(0xFF9CE8E1), size: 15),
+            Icon(icon, color: const Color(0xFFB5D4AA), size: 15),
             const SizedBox(width: 6),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -644,134 +660,8 @@ class _OrbitLabel extends StatelessWidget {
                         letterSpacing: .5)),
                 Text(value,
                     style:
-                        const TextStyle(color: Color(0xFFD8E3FF), fontSize: 9)),
+                        const TextStyle(color: Color(0xFFDDEBDD), fontSize: 9)),
               ],
-            ),
-          ],
-        ),
-      );
-}
-
-class _DashboardMetricGrid extends StatelessWidget {
-  const _DashboardMetricGrid();
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, bounds) {
-          final columns = bounds.maxWidth >= 980
-              ? 4
-              : bounds.maxWidth >= 480
-                  ? 2
-                  : 1;
-          return GridView(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: columns,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              mainAxisExtent: 91,
-            ),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: const [
-              _DashboardMetric(
-                value: '2,641',
-                label: 'FORMULATION RECORDS',
-                caption: 'Catalogue coverage',
-                icon: Icons.dataset_outlined,
-                color: Color(0xFF315ED2),
-                tint: Color(0xFFEAF0FF),
-              ),
-              _DashboardMetric(
-                value: '5',
-                label: 'CARRIER FAMILIES',
-                caption: 'Across the catalogue',
-                icon: Icons.bubble_chart_outlined,
-                color: Color(0xFF168F8A),
-                tint: Color(0xFFE7F7F5),
-              ),
-              _DashboardMetric(
-                value: '928',
-                label: 'SCREENED RUNS',
-                caption: 'Eugster liposome cohort',
-                icon: Icons.science_outlined,
-                color: Color(0xFF7051B5),
-                tint: Color(0xFFF1ECFB),
-              ),
-              _DashboardMetric(
-                value: '3',
-                label: 'PROCESS ENDPOINTS',
-                caption: 'Released in current scope',
-                icon: Icons.insights_outlined,
-                color: Color(0xFFB2761E),
-                tint: Color(0xFFFFF4E3),
-              ),
-            ],
-          );
-        },
-      );
-}
-
-class _DashboardMetric extends StatelessWidget {
-  const _DashboardMetric({
-    required this.value,
-    required this.label,
-    required this.caption,
-    required this.icon,
-    required this.color,
-    required this.tint,
-  });
-  final String value, label, caption;
-  final IconData icon;
-  final Color color, tint;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(13),
-          border: Border.all(color: _line),
-          boxShadow: const [
-            BoxShadow(
-                color: Color(0x080F2245), blurRadius: 12, offset: Offset(0, 3)),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                  color: tint, borderRadius: BorderRadius.circular(11)),
-              child: Icon(icon, color: color, size: 20),
-            ),
-            const SizedBox(width: 11),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(value,
-                      style: TextStyle(
-                          color: color,
-                          fontSize: 20,
-                          height: 1,
-                          fontWeight: FontWeight.w800)),
-                  const SizedBox(height: 4),
-                  Text(label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          color: _ink,
-                          fontSize: 8,
-                          letterSpacing: .55,
-                          fontWeight: FontWeight.w800)),
-                  Text(caption,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: _muted, fontSize: 9)),
-                ],
-              ),
             ),
           ],
         ),
@@ -891,176 +781,6 @@ class _CarrierLandscape extends StatelessWidget {
       );
 }
 
-class _EvidenceLandscape extends StatelessWidget {
-  const _EvidenceLandscape();
-
-  @override
-  Widget build(BuildContext context) => _CardShell(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _SectionLabel('VALIDATION SNAPSHOT'),
-                      SizedBox(height: 5),
-                      Text('Grouped-CV benchmarks',
-                          style: TextStyle(
-                              color: _ink,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800)),
-                    ],
-                  ),
-                ),
-                const _Pill(
-                  label: 'EUGSTER COHORT',
-                  color: Color(0xFFEAF0FF),
-                  textColor: Color(0xFF315ED2),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            const Text(
-              'Retrospective process-model error versus median baselines.',
-              style: TextStyle(color: _muted, fontSize: 11, height: 1.4),
-            ),
-            const SizedBox(height: 14),
-            const _MaeComparison(
-              title: 'Particle size',
-              unit: 'nm MAE',
-              baseline: 46.35,
-              model: 17.42,
-              baselineText: '46.35',
-              modelText: '17.42',
-            ),
-            const SizedBox(height: 13),
-            const _MaeComparison(
-              title: 'Polydispersity index',
-              unit: 'PDI MAE',
-              baseline: 0.0518,
-              model: 0.0376,
-              baselineText: '0.0518',
-              modelText: '0.0376',
-            ),
-            const SizedBox(height: 12),
-            const _InlineNote(
-              text:
-                  'Cohort benchmarks are not prediction intervals. Drug-loaded models did not beat median baselines, and the merged catalogue is not a live cross-carrier predictor.',
-            ),
-          ],
-        ),
-      );
-}
-
-class _MaeComparison extends StatelessWidget {
-  const _MaeComparison({
-    required this.title,
-    required this.unit,
-    required this.baseline,
-    required this.model,
-    required this.baselineText,
-    required this.modelText,
-  });
-  final String title, unit, baselineText, modelText;
-  final double baseline, model;
-
-  @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: const TextStyle(
-                  color: _ink, fontSize: 13, fontWeight: FontWeight.w800)),
-          const SizedBox(height: 7),
-          Row(
-            children: [
-              const _ChartLegend(
-                  color: Color(0xFFB6C0D0), label: 'Median baseline'),
-              const SizedBox(width: 12),
-              const _ChartLegend(color: _teal, label: 'Fitted model'),
-              const Spacer(),
-              Text(unit, style: const TextStyle(color: _muted, fontSize: 10)),
-            ],
-          ),
-          const SizedBox(height: 7),
-          _BarLine(
-              label: 'Baseline',
-              value: baselineText,
-              fill: 1,
-              color: const Color(0xFFB6C0D0)),
-          const SizedBox(height: 5),
-          _BarLine(
-              label: 'Model',
-              value: modelText,
-              fill: model / baseline,
-              color: _teal),
-        ],
-      );
-}
-
-class _ChartLegend extends StatelessWidget {
-  const _ChartLegend({required this.color, required this.label});
-  final Color color;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-          const SizedBox(width: 4),
-          Text(label, style: const TextStyle(color: _muted, fontSize: 9)),
-        ],
-      );
-}
-
-class _BarLine extends StatelessWidget {
-  const _BarLine(
-      {required this.label,
-      required this.value,
-      required this.fill,
-      required this.color});
-  final String label, value;
-  final double fill;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          SizedBox(
-              width: 56,
-              child: Text(label,
-                  style: const TextStyle(color: _muted, fontSize: 10))),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: LinearProgressIndicator(
-                value: fill,
-                minHeight: 8,
-                backgroundColor: const Color(0xFFF0F2F6),
-                color: color,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 48,
-            child: Text(value,
-                textAlign: TextAlign.end,
-                style: const TextStyle(
-                    color: _ink, fontSize: 10, fontWeight: FontWeight.w700)),
-          ),
-        ],
-      );
-}
-
 class _LaunchCard extends StatelessWidget {
   const _LaunchCard(
       {required this.section, required this.tag, required this.onOpen});
@@ -1071,39 +791,33 @@ class _LaunchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final process = section == _WorkspaceSection.process;
-    final accent = process ? _indigo : _teal;
-    final deepAccent =
-        process ? const Color(0xFF3D2C78) : const Color(0xFF173C91);
-    final inputSummary = process
-        ? 'Primary lipid · chip · cholesterol · PEG · flow · FRR'
-        : 'Drug ID + MW · LogP · pKa · solubility · stability · route · tissue · release target';
-    final outputSummary = process
-        ? 'Size · PDI · uncalibrated formation score'
-        : 'Cited carrier/excipient candidates · evidence status for ratios, batches, and endpoints';
-    final methodSummary = process
-        ? 'Fitted cohort models · grouped-CV benchmarks'
-        : 'TF-IDF source retrieval + rules · no generative RAG';
+    final accent = process ? const Color(0xFF71856F) : const Color(0xFF34745A);
+    final dark = process ? const Color(0xFF334B38) : const Color(0xFF173226);
+    final tint = process ? const Color(0xFFEEF2E9) : const Color(0xFFE7F0E6);
+    final summary = process
+        ? 'Assess supported microfluidic liposome settings with cohort-scoped size and PDI estimates and a clearly marked formation score.'
+        : 'Review cited carrier and excipient candidates alongside evidence for ratios, batches, and each requested outcome.';
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(17),
         border: Border.all(color: _line),
         boxShadow: const [
           BoxShadow(
-              color: Color(0x080F2245), blurRadius: 14, offset: Offset(0, 4)),
+              color: Color(0x0D1B3527), blurRadius: 16, offset: Offset(0, 5)),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(15, 14, 15, 14),
+            padding: const EdgeInsets.fromLTRB(16, 17, 16, 17),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [deepAccent, accent],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
+                colors: [dark, accent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
             child: Column(
@@ -1112,75 +826,97 @@ class _LaunchCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 36,
-                      height: 36,
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: .16),
-                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white.withValues(alpha: .15),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                             color: Colors.white.withValues(alpha: .24)),
                       ),
-                      child: Icon(section.icon, color: Colors.white, size: 20),
+                      child: Icon(section.icon, color: Colors.white, size: 22),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(tag,
-                              style: const TextStyle(
-                                  color: Color(0xFFDCE7FF),
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: .65)),
-                          const SizedBox(height: 3),
-                          Text(section.title,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 17)),
-                        ],
-                      ),
-                    ),
-                    const Icon(Icons.arrow_outward_rounded,
-                        color: Colors.white, size: 18),
+                    const Spacer(),
+                    Icon(Icons.arrow_outward_rounded,
+                        color: Colors.white.withValues(alpha: .8), size: 19),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Text(section.description,
+                const SizedBox(height: 13),
+                Text(tag,
                     style: const TextStyle(
-                        color: Color(0xFFE4EBFF), fontSize: 11, height: 1.4)),
+                        color: Color(0xFFDCEBDD),
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: .8)),
+                const SizedBox(height: 4),
+                Text(
+                  process
+                      ? 'Microfluidic process assessment'
+                      : 'Formulation evidence screening',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 19,
+                    height: 1.15,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -.3,
+                  ),
+                ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _ModelFlowRow(
-                    label: 'INPUT', text: inputSummary, color: accent),
-                const SizedBox(height: 6),
-                _ModelFlowRow(
-                    label: 'OUTPUT', text: outputSummary, color: accent),
-                const SizedBox(height: 6),
-                _ModelFlowRow(
-                    label: 'METHOD', text: methodSummary, color: accent),
-                const SizedBox(height: 13),
+                Text(summary,
+                    style: const TextStyle(
+                        color: _muted, fontSize: 12, height: 1.5)),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 7,
+                  runSpacing: 7,
+                  children: process
+                      ? [
+                          _Pill(
+                              label: 'SIZE + PDI',
+                              color: tint,
+                              textColor: dark,
+                              icon: Icons.straighten_rounded),
+                          _Pill(
+                              label: 'FORMATION SCREEN',
+                              color: tint,
+                              textColor: dark,
+                              icon: Icons.bubble_chart_outlined),
+                        ]
+                      : [
+                          _Pill(
+                              label: 'LITERATURE CITATIONS',
+                              color: tint,
+                              textColor: dark,
+                              icon: Icons.menu_book_outlined),
+                          _Pill(
+                              label: 'ENDPOINT EVIDENCE',
+                              color: tint,
+                              textColor: dark,
+                              icon: Icons.fact_check_outlined),
+                        ],
+                ),
+                const SizedBox(height: 14),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
                     style: FilledButton.styleFrom(
                       backgroundColor: accent,
-                      minimumSize: const Size(0, 42),
+                      minimumSize: const Size(0, 44),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9)),
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                     onPressed: onOpen,
                     icon: const Icon(Icons.arrow_forward_rounded, size: 17),
                     label: Text(process
                         ? 'Open process assessment'
-                        : 'Open evidence screening'),
+                        : 'Start evidence screening'),
                   ),
                 ),
               ],
@@ -1190,36 +926,6 @@ class _LaunchCard extends StatelessWidget {
       ),
     );
   }
-}
-
-class _ModelFlowRow extends StatelessWidget {
-  const _ModelFlowRow({
-    required this.label,
-    required this.text,
-    required this.color,
-  });
-  final String label, text;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 47,
-            child: Text(label,
-                style: TextStyle(
-                    color: color,
-                    fontSize: 9,
-                    letterSpacing: 0.5,
-                    fontWeight: FontWeight.w800)),
-          ),
-          Expanded(
-            child: Text(text,
-                style: const TextStyle(color: _ink, fontSize: 10, height: 1.4)),
-          ),
-        ],
-      );
 }
 
 class _ExampleRow extends StatelessWidget {
