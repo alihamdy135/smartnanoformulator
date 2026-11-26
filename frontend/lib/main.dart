@@ -165,6 +165,309 @@ class _OutputPreview extends StatelessWidget {
   }
 }
 
+class _PropertyCoverage extends StatelessWidget {
+  const _PropertyCoverage({required this.controllers});
+  final List<TextEditingController> controllers;
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: Listenable.merge(controllers),
+        builder: (context, _) {
+          final filled = controllers
+              .where((controller) => controller.text.trim().isNotEmpty)
+              .length;
+          return Container(
+            padding: const EdgeInsets.all(11),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF5F8FD),
+              borderRadius: BorderRadius.circular(11),
+              border: Border.all(color: _line),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.tune_rounded, size: 16, color: _teal),
+                    const SizedBox(width: 6),
+                    const Expanded(
+                      child: Text('DRUG PROFILE DETAILS',
+                          style: TextStyle(
+                              color: _ink,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5)),
+                    ),
+                    Text(
+                        filled.toString() +
+                            ' / ' +
+                            controllers.length.toString() +
+                            ' added',
+                        style: const TextStyle(
+                            color: _teal,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    for (var i = 0; i < controllers.length; i++) ...[
+                      Expanded(
+                        child: Container(
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: controllers[i].text.trim().isNotEmpty
+                                ? _teal
+                                : const Color(0xFFDCE3EF),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                      if (i < controllers.length - 1) const SizedBox(width: 5),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 7),
+                const Text(
+                  'Context only in this release; these fields do not drive validated drug-specific predictions.',
+                  style: TextStyle(color: _muted, fontSize: 10, height: 1.4),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+}
+
+class _CarrierFamilyStrip extends StatelessWidget {
+  const _CarrierFamilyStrip();
+
+  @override
+  Widget build(BuildContext context) {
+    const families = [
+      'Liposome',
+      'Niosome',
+      'Transfersome',
+      'Ethosome',
+      'Phytosome'
+    ];
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (final family in families)
+          _Pill(
+            label: family,
+            color: const Color(0xFFF0F5FC),
+            textColor: const Color(0xFF385176),
+            icon: Icons.circle,
+          ),
+      ],
+    );
+  }
+}
+
+class _CompositionPreview extends StatelessWidget {
+  const _CompositionPreview({
+    required this.cholesterol,
+    required this.peg,
+  });
+  final TextEditingController cholesterol, peg;
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: Listenable.merge([cholesterol, peg]),
+        builder: (context, _) {
+          final cholesterolPct =
+              (double.tryParse(cholesterol.text) ?? 0).clamp(0.0, 100.0);
+          final pegPct = (double.tryParse(peg.text) ?? 0)
+              .clamp(0.0, 100.0 - cholesterolPct);
+          final remaining = 100 - cholesterolPct - pegPct;
+          final combined = cholesterolPct + pegPct;
+          return Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF7F9FD),
+              borderRadius: BorderRadius.circular(11),
+              border: Border.all(color: _line),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text('COMPOSITION CHECK',
+                          style: TextStyle(
+                              color: _ink,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.6)),
+                    ),
+                    Text(combined.toStringAsFixed(1) + '% specified',
+                        style: const TextStyle(
+                            color: _muted,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700)),
+                  ],
+                ),
+                const SizedBox(height: 9),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(7),
+                  child: SizedBox(
+                    height: 10,
+                    child: CustomPaint(
+                      painter: _CompositionPainter(
+                        cholesterol: cholesterolPct / 100,
+                        peg: pegPct / 100,
+                      ),
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 9),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 5,
+                  children: [
+                    _CompositionLegend(
+                      color: const Color(0xFF315ED2),
+                      label: 'Cholesterol ' +
+                          cholesterolPct.toStringAsFixed(1) +
+                          '%',
+                    ),
+                    _CompositionLegend(
+                      color: const Color(0xFF16A6A1),
+                      label: 'PEG ' + pegPct.toStringAsFixed(1) + '%',
+                    ),
+                    _CompositionLegend(
+                      color: const Color(0xFFDDE4EF),
+                      label: 'Remaining ' + remaining.toStringAsFixed(1) + '%',
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Visual balance only. Confirm ingredient percentage basis against the source method.',
+                  style: TextStyle(color: _muted, fontSize: 9, height: 1.35),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+}
+
+class _CompositionPainter extends CustomPainter {
+  const _CompositionPainter({required this.cholesterol, required this.peg});
+  final double cholesterol, peg;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final base = Paint()..color = const Color(0xFFDDE4EF);
+    final cholesterolPaint = Paint()..color = const Color(0xFF315ED2);
+    final pegPaint = Paint()..color = const Color(0xFF16A6A1);
+    canvas.drawRect(Offset.zero & size, base);
+    final cholesterolWidth = size.width * cholesterol;
+    final pegWidth = size.width * peg;
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, cholesterolWidth, size.height), cholesterolPaint);
+    canvas.drawRect(
+        Rect.fromLTWH(cholesterolWidth, 0, pegWidth, size.height), pegPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _CompositionPainter oldDelegate) =>
+      oldDelegate.cholesterol != cholesterol || oldDelegate.peg != peg;
+}
+
+class _CompositionLegend extends StatelessWidget {
+  const _CompositionLegend({required this.color, required this.label});
+  final Color color;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          const SizedBox(width: 5),
+          Text(label,
+              style: const TextStyle(
+                  color: _muted, fontSize: 9, fontWeight: FontWeight.w600)),
+        ],
+      );
+}
+
+class _ProcessOutputPreview extends StatelessWidget {
+  const _ProcessOutputPreview();
+
+  @override
+  Widget build(BuildContext context) {
+    const items = [
+      (
+        'SIZE',
+        'cohort estimate · nm',
+        Icons.straighten_rounded,
+        Color(0xFF315ED2)
+      ),
+      (
+        'PDI',
+        'cohort estimate · unitless',
+        Icons.blur_on_rounded,
+        Color(0xFF16A6A1)
+      ),
+      (
+        'FORMATION',
+        'uncalibrated score',
+        Icons.bubble_chart_outlined,
+        Color(0xFF7051B5)
+      ),
+      ('ZETA', 'not modeled here', Icons.electric_bolt_outlined, _muted),
+      ('ENTRAPMENT', 'not modeled here', Icons.science_outlined, _muted),
+    ];
+    return Wrap(
+      spacing: 7,
+      runSpacing: 7,
+      children: [
+        for (final (label, unit, icon, color) in items)
+          Container(
+            constraints: const BoxConstraints(minWidth: 106),
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 9),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: _line),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 16, color: color),
+                const SizedBox(width: 6),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label,
+                        style: TextStyle(
+                            color: color,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800)),
+                    Text(unit,
+                        style: const TextStyle(color: _muted, fontSize: 9)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class NanoPredictLabApp extends StatelessWidget {
   const NanoPredictLabApp({super.key});
 
@@ -374,20 +677,22 @@ class _FormulationFlowState extends State<FormulationFlow> {
     }
     final descriptors = <String, dynamic>{};
     for (final entry in [
-      ('mw_da', _mw, true),
-      ('logp', _logp, false),
-      ('pka', _pka, false),
-      ('solubility_mg_ml', _solubility, true),
+      ('mw_da', _mw),
+      ('logp', _logp),
+      ('pka', _pka),
+      ('solubility_mg_ml', _solubility),
     ]) {
-      if (entry.$2.text.trim().isNotEmpty)
+      if (entry.$2.text.trim().isNotEmpty) {
         descriptors[entry.$1] = double.parse(entry.$2.text.trim());
+      }
     }
-    if (_solubilityConditions.text.trim().isNotEmpty)
+    if (_solubilityConditions.text.trim().isNotEmpty) {
       descriptors['solubility_conditions'] = _solubilityConditions.text.trim();
-    if (_stability.text.trim().isNotEmpty)
+    }
+    if (_stability.text.trim().isNotEmpty) {
       descriptors['stability_notes'] = _stability.text.trim();
+    }
     if (descriptors.isNotEmpty) payload['descriptors'] = descriptors;
-
     FocusManager.instance.primaryFocus?.unfocus();
     _revealReport(_resultsKey);
     setState(() {
@@ -451,8 +756,8 @@ class _FormulationFlowState extends State<FormulationFlow> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _CardHeading(
-              eyebrow: 'FORMULATION DESIGN BRIEF',
-              title: 'Describe the delivery need',
+              eyebrow: 'NANOVESICLE-AI · MODEL 01',
+              title: 'Build a formulation brief',
               icon: Icons.biotech_outlined,
             ),
             const SizedBox(height: 7),
@@ -534,6 +839,10 @@ class _FormulationFlowState extends State<FormulationFlow> {
             _field(_stability, 'Stability notes',
                 hint: 'Optional · known sensitivity or storage conditions',
                 maxLines: 2),
+            const SizedBox(height: 9),
+            _PropertyCoverage(
+              controllers: [_mw, _logp, _pka, _solubility, _stability],
+            ),
             const SizedBox(height: 18),
             const _InputSectionHeading(
               number: '02',
@@ -595,6 +904,10 @@ class _FormulationFlowState extends State<FormulationFlow> {
             ),
             const SizedBox(height: 10),
             const _OutputPreview(),
+            const SizedBox(height: 11),
+            const _SectionLabel('CARRIER FAMILIES IN THE CATALOGUE'),
+            const SizedBox(height: 7),
+            const _CarrierFamilyStrip(),
             const SizedBox(height: 11),
             const _InlineNote(
               text:
@@ -691,8 +1004,6 @@ class _ProcessFlowState extends State<ProcessFlow> {
   final _peg = TextEditingController();
   final _flow = TextEditingController();
   final _ratio = TextEditingController();
-  final _assay = TextEditingController();
-  final Set<String> _targets = {'size', 'pdi', 'formation'};
   bool _loading = false;
   String? _error;
   String? _formError;
@@ -716,10 +1027,6 @@ class _ProcessFlowState extends State<ProcessFlow> {
     _peg.text = '5';
     _flow.text = '8';
     _ratio.text = '1';
-    _assay.clear();
-    _targets
-      ..clear()
-      ..addAll(['size', 'pdi', 'formation']);
     _result = null;
     _error = null;
     _formError = null;
@@ -734,7 +1041,6 @@ class _ProcessFlowState extends State<ProcessFlow> {
       _peg,
       _flow,
       _ratio,
-      _assay,
     ]) {
       controller.dispose();
     }
@@ -757,10 +1063,6 @@ class _ProcessFlowState extends State<ProcessFlow> {
 
   Future<void> _submit() async {
     if (_loading || !_formKey.currentState!.validate()) return;
-    if (_targets.isEmpty) {
-      setState(() => _formError = 'Select at least one process output.');
-      return;
-    }
     if (double.parse(_cholesterol.text) + double.parse(_peg.text) > 100) {
       setState(
         () => _formError =
@@ -769,7 +1071,7 @@ class _ProcessFlowState extends State<ProcessFlow> {
       return;
     }
     final payload = <String, dynamic>{
-      'targets': ['size', 'pdi', 'formation'].where(_targets.contains).toList(),
+      'targets': ['size', 'pdi', 'formation'],
       'candidate': {
         'primary_lipid': _lipid.text.trim(),
         'chip': _chip.text.trim(),
@@ -779,7 +1081,6 @@ class _ProcessFlowState extends State<ProcessFlow> {
         'aqueous_to_organic_frr': double.parse(_ratio.text),
       },
     };
-    if (_assay.text.trim().isNotEmpty) payload['assay'] = _assay.text.trim();
     FocusManager.instance.primaryFocus?.unfocus();
     _revealReport(_resultsKey);
     setState(() {
@@ -842,8 +1143,8 @@ class _ProcessFlowState extends State<ProcessFlow> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _CardHeading(
-              eyebrow: 'EUGSTER MICROFLUIDIC COHORT',
-              title: 'Process inputs',
+              eyebrow: 'NANOVESICLE-AI · MODEL 02',
+              title: 'Eugster process model',
               icon: Icons.water_drop_outlined,
               accent: _indigo,
             ),
@@ -862,6 +1163,13 @@ class _ProcessFlowState extends State<ProcessFlow> {
               ),
             ),
             const SizedBox(height: 9),
+            const _InputSectionHeading(
+              number: '01',
+              title: 'Vesicle recipe',
+              subtitle:
+                  'Primary lipid, chip geometry, and supporting components.',
+            ),
+            const SizedBox(height: 10),
             _FieldGroup(
               children: [
                 _field(
@@ -896,12 +1204,19 @@ class _ProcessFlowState extends State<ProcessFlow> {
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            const Text(
-              'Cholesterol + PEG must not exceed 100%.',
-              style: TextStyle(color: _muted, fontSize: 11),
+            const SizedBox(height: 9),
+            _CompositionPreview(
+              cholesterol: _cholesterol,
+              peg: _peg,
             ),
-            const SizedBox(height: 13),
+            const SizedBox(height: 18),
+            const _InputSectionHeading(
+              number: '02',
+              title: 'Microfluidic process settings',
+              subtitle:
+                  'Enter total flow rate and aqueous-to-organic flow ratio.',
+            ),
+            const SizedBox(height: 10),
             _FieldGroup(
               children: [
                 _field(
@@ -924,47 +1239,18 @@ class _ProcessFlowState extends State<ProcessFlow> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
-            const _SectionLabel('OUTPUTS'),
-            const SizedBox(height: 7),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                ('size', 'Particle size · nm'),
-                ('pdi', 'PDI · unitless'),
-                ('formation', 'Formation score'),
-              ]
-                  .map(
-                    (item) => FilterChip(
-                      label: Text(item.$2),
-                      selected: _targets.contains(item.$1),
-                      onSelected: (selected) => setState(() {
-                        selected
-                            ? _targets.add(item.$1)
-                            : _targets.remove(item.$1);
-                      }),
-                      side: BorderSide(
-                        color: _targets.contains(item.$1)
-                            ? const Color(0xFFD6C9F0)
-                            : _line,
-                      ),
-                      backgroundColor: Colors.white,
-                      selectedColor: const Color(0xFFF0EBFA),
-                      labelStyle: TextStyle(
-                        fontSize: 12,
-                        color: _targets.contains(item.$1) ? _teal : _muted,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  )
-                  .toList(),
+            const SizedBox(height: 18),
+            const _InputSectionHeading(
+              number: '03',
+              title: 'Model output',
+              subtitle:
+                  'All supported process endpoints are assessed together.',
             ),
-            const SizedBox(height: 13),
-            _field(
-              _assay,
-              'Assay context',
-              hint: 'Optional · for comparison checks',
+            const SizedBox(height: 10),
+            const _ProcessOutputPreview(),
+            const SizedBox(height: 9),
+            const Text(
+              'Zeta potential and entrapment efficiency are outside this process model; screen published formulation evidence in the other workflow. Formation is an uncalibrated score, not a probability.',
             ),
             const SizedBox(height: 16),
             Container(
