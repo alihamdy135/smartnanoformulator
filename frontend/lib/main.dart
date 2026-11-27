@@ -606,24 +606,28 @@ class _FormulationFlowState extends State<FormulationFlow> {
         _tissue.text = 'brain';
         _hours.clear();
         _percent.clear();
+        break;
       case 'oral-quercetin':
         _drug.text = 'quercetin';
         _route.text = 'oral';
         _tissue.text = 'systemic absorption';
         _hours.clear();
         _percent.clear();
+        break;
       case 'caffeine':
         _drug.text = 'caffeine';
         _route.text = 'topical';
         _tissue.text = 'skin';
         _hours.clear();
         _percent.clear();
+        break;
       default:
         _drug.text = 'celecoxib';
         _route.text = 'topical';
         _tissue.text = 'skin';
         _hours.text = '24';
         _percent.text = '65';
+        break;
     }
     _result = null;
     _error = null;
@@ -1846,26 +1850,37 @@ class _BriefMetric extends StatelessWidget {
   Widget build(BuildContext context) => Tooltip(
         message: explanation,
         child: Container(
-        constraints: const BoxConstraints(minWidth: 132),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-        decoration: BoxDecoration(
+          constraints: const BoxConstraints(minWidth: 132),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+          decoration: BoxDecoration(
             color: fill,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: color.withValues(alpha: 0.12))),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 17),
-            const SizedBox(width: 7),
-            Text(count.toString(),
+            border: Border.all(color: color.withValues(alpha: 0.12)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: color, size: 17),
+              const SizedBox(width: 7),
+              Text(
+                count.toString(),
                 style: TextStyle(
-                    color: color, fontSize: 18, fontWeight: FontWeight.w800)),
-            const SizedBox(width: 6),
-            Text(label,
+                  color: color,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                label,
                 style: TextStyle(
-                    color: color, fontSize: 10, fontWeight: FontWeight.w700)),
-          ],
-        ),
+                  color: color,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
         ),
       );
 }
