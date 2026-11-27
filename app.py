@@ -45,7 +45,7 @@ Percentage = Annotated[JsonNumber, Field(ge=0, le=100)]
 NonNegativeNumber = Annotated[JsonNumber, Field(ge=0)]
 
 FormulationTarget = Literal[
-    "carrier", "excipients", "ratios", "batches", "size", "pdi", "zeta",
+    "carrier", "excipients", "ratios", "size", "pdi",
     "entrapment", "release", "tissue", "stability", "bioavailability",
 ]
 ProcessTarget = Literal["size", "pdi", "formation"]
