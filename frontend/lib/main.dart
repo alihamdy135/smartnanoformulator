@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math' as math;
 // ignore: deprecated_member_use
 import 'dart:html' as html;
 
@@ -759,7 +758,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _CardHeading(
-              eyebrow: 'NANOVESICLE-AI · MODEL 01',
+              eyebrow: 'NANOVESICLE-AI · EVIDENCE SCREENING',
               title: 'Build a formulation brief',
               icon: Icons.biotech_outlined,
             ),
@@ -1146,7 +1145,7 @@ class _ProcessFlowState extends State<ProcessFlow> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _CardHeading(
-              eyebrow: 'NANOVESICLE-AI · MODEL 02',
+              eyebrow: 'NANOVESICLE-AI · MICROFLUIDIC PROCESS',
               title: 'Eugster process model',
               icon: Icons.water_drop_outlined,
               accent: _indigo,
