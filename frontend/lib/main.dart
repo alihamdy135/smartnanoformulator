@@ -589,7 +589,6 @@ class _FormulationFlowState extends State<FormulationFlow> {
   }
 
   void _applyExample(String example) {
-    final gap = example == 'gap';
     for (final controller in [
       _mw,
       _logp,
@@ -600,11 +599,32 @@ class _FormulationFlowState extends State<FormulationFlow> {
     ]) {
       controller.clear();
     }
-    _drug.text = gap ? 'quercetin' : 'celecoxib';
-    _route.text = gap ? 'intranasal' : 'topical';
-    _tissue.text = gap ? 'brain' : 'skin';
-    _hours.text = gap ? '' : '24';
-    _percent.text = gap ? '' : '65';
+    switch (example) {
+      case 'gap':
+        _drug.text = 'quercetin';
+        _route.text = 'intranasal';
+        _tissue.text = 'brain';
+        _hours.clear();
+        _percent.clear();
+      case 'oral-quercetin':
+        _drug.text = 'quercetin';
+        _route.text = 'oral';
+        _tissue.text = 'systemic absorption';
+        _hours.clear();
+        _percent.clear();
+      case 'caffeine':
+        _drug.text = 'caffeine';
+        _route.text = 'topical';
+        _tissue.text = 'skin';
+        _hours.clear();
+        _percent.clear();
+      default:
+        _drug.text = 'celecoxib';
+        _route.text = 'topical';
+        _tissue.text = 'skin';
+        _hours.text = '24';
+        _percent.text = '65';
+    }
     _result = null;
     _error = null;
     _formError = null;
@@ -772,9 +792,21 @@ class _FormulationFlowState extends State<FormulationFlow> {
                 tooltip: 'Load a reference case',
                 itemBuilder: (context) => const [
                   PopupMenuItem(
-                      value: 'celecoxib', child: Text('Topical celecoxib')),
+                    value: 'celecoxib',
+                    child: Text('Celecoxib · topical study'),
+                  ),
                   PopupMenuItem(
-                      value: 'gap', child: Text('Intranasal quercetin')),
+                    value: 'oral-quercetin',
+                    child: Text('Quercetin · oral absorption'),
+                  ),
+                  PopupMenuItem(
+                    value: 'caffeine',
+                    child: Text('Caffeine · topical analogue'),
+                  ),
+                  PopupMenuItem(
+                    value: 'gap',
+                    child: Text('Quercetin · intranasal evidence gap'),
+                  ),
                 ],
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 9, horizontal: 4),
@@ -794,7 +826,14 @@ class _FormulationFlowState extends State<FormulationFlow> {
                 ),
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 8),
+            const _GuideCallout(
+              title: 'What changes this report?',
+              body:
+                  'Drug name, route, and target tissue are required and control which sources can match. Changing them can change the citations and endpoint status. MW, LogP, pKa, solubility, and stability are saved as context only in this release. A release goal is shown separately; it does not change retrieval or become a prediction.',
+              accent: _teal,
+            ),
+            const SizedBox(height: 13),
             const _InputSectionHeading(
               number: '01',
               title: 'Drug profile',
@@ -809,14 +848,17 @@ class _FormulationFlowState extends State<FormulationFlow> {
               children: [
                 _field(_mw, 'Molecular weight',
                     suffix: 'Da',
+                    hint: 'e.g. 381.4',
                     validator: (v) => _optionalNumber(v, positive: true),
                     keyboard:
                         const TextInputType.numberWithOptions(decimal: true)),
                 _field(_logp, 'LogP',
+                    hint: 'e.g. 3.5',
                     validator: _optionalNumber,
                     keyboard:
                         const TextInputType.numberWithOptions(decimal: true)),
                 _field(_pka, 'pKa',
+                    hint: 'e.g. 11.1',
                     validator: _optionalNumber,
                     keyboard:
                         const TextInputType.numberWithOptions(decimal: true)),
@@ -827,6 +869,7 @@ class _FormulationFlowState extends State<FormulationFlow> {
               children: [
                 _field(_solubility, 'Solubility',
                     suffix: 'mg/mL',
+                    hint: 'e.g. 0.02',
                     validator: (v) => _optionalNumber(v, nonNegative: true),
                     keyboard:
                         const TextInputType.numberWithOptions(decimal: true)),
@@ -853,9 +896,9 @@ class _FormulationFlowState extends State<FormulationFlow> {
             _FieldGroup(
               children: [
                 _field(_route, 'Route of administration',
-                    required: true, hint: 'e.g. topical'),
+                    required: true, hint: 'e.g. topical, oral, intranasal'),
                 _field(_tissue, 'Target organ or tissue',
-                    required: true, hint: 'e.g. skin'),
+                    required: true, hint: 'e.g. skin, lung, brain'),
               ],
             ),
             const SizedBox(height: 18),
@@ -871,11 +914,13 @@ class _FormulationFlowState extends State<FormulationFlow> {
                 _field(_percent, 'Target released',
                     suffix: '%',
                     onChanged: (_) => setState(() {}),
+                    hint: 'e.g. 65',
                     validator: _percentValidator,
                     keyboard:
                         const TextInputType.numberWithOptions(decimal: true)),
                 _field(_hours, 'At time',
                     suffix: 'hours',
+                    hint: 'e.g. 24',
                     onChanged: (_) => setState(() {}),
                     validator: (value) {
                       if (!_hasReleaseTarget) return null;
@@ -912,6 +957,8 @@ class _FormulationFlowState extends State<FormulationFlow> {
               text:
                   'Current drug-specific numeric models are withheld after study-held-out validation. Literature retrieval can surface cited candidates; it does not generate or validate new ratios or batches. Use the separate Eugster workflow for in-scope microfluidic liposome estimates.',
             ),
+            const SizedBox(height: 8),
+            const _ReferenceLibrary(),
             if (_formError != null)
               Padding(
                 padding: const EdgeInsets.only(top: 10),
@@ -1152,6 +1199,13 @@ class _ProcessFlowState extends State<ProcessFlow> {
               'Model scope is limited to supported lipid and chip pairings and observed process ranges.',
               style: TextStyle(color: _muted, fontSize: 12, height: 1.45),
             ),
+            const SizedBox(height: 9),
+            const _GuideCallout(
+              title: 'What changes these results?',
+              body:
+                  'All six process settings are model inputs. Change the lipid/chip pair, composition, total flow, or aqueous-to-organic ratio to assess a different setting. The app only releases numbers for pairings and value ranges represented in the Eugster cohort; other settings are marked out of scope.',
+              accent: _indigo,
+            ),
             Align(
               alignment: Alignment.centerLeft,
               child: TextButton.icon(
@@ -1160,6 +1214,10 @@ class _ProcessFlowState extends State<ProcessFlow> {
                 label: const Text('Load cohort example'),
                 icon: const Icon(Icons.science_outlined, size: 18),
               ),
+            ),
+            const _InlineNote(
+              text:
+                  'The example pre-fills DMPC/ZZ, 40% cholesterol, 5% PEG, 8 mL/min total flow, and FRR 1. Submit it to see the cohort assessment.',
             ),
             const SizedBox(height: 9),
             const _InputSectionHeading(
@@ -1412,6 +1470,151 @@ class AssessmentPanel extends StatelessWidget {
   }
 }
 
+class _GuideCallout extends StatelessWidget {
+  const _GuideCallout({
+    required this.title,
+    required this.body,
+    required this.accent,
+  });
+
+  final String title, body;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: accent.withValues(alpha: 0.07),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: accent.withValues(alpha: 0.16)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.tips_and_updates_outlined, color: accent, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: accent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    body,
+                    style: const TextStyle(
+                      color: _muted,
+                      fontSize: 11,
+                      height: 1.45,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+class _ReferenceLibrary extends StatelessWidget {
+  const _ReferenceLibrary();
+
+  static const _references = <(String, String, String)>[
+    (
+      'USP–NF General Chapter 1154 · Liposome Drug Products',
+      'Pharmacopeial product-characterization guidance.',
+      'https://doi.org/10.31003/USPNF_M17435_02_01',
+    ),
+    (
+      'Drug Delivery through Liposomes · book chapter',
+      'Background on liposome structure and drug association.',
+      'https://doi.org/10.5772/intechopen.97727',
+    ),
+    (
+      'Eugster et al. (2024) · microfluidic liposomes',
+      'Source cohort for the process model; it does not validate drug loading or tissue delivery.',
+      'https://doi.org/10.1016/j.jconrel.2024.10.065',
+    ),
+    (
+      'Bragagni et al. (2012) · topical celecoxib',
+      'Comparative study; Batch F reports 54.4% entrapment for that published ethosome.',
+      'https://doi.org/10.3109/10717544.2012.724472',
+    ),
+    (
+      'Shahiwala et al. (2023) · donepezil niosomes',
+      'Drug- and carrier-specific experimental formulation study.',
+      'https://doi.org/10.1208/s12249-023-02547-2',
+    ),
+    (
+      'Ascenso et al. (2015) · skin-delivery vesicles',
+      'Transfersome/ethosome experiments with caffeine and vitamin E model actives.',
+      'https://pmc.ncbi.nlm.nih.gov/articles/PMC4583114/',
+    ),
+    (
+      'Riva et al. (2019) · oral quercetin phytosome',
+      'Oral absorption evidence; not a tissue-targeting or release prediction.',
+      'https://doi.org/10.1007/s13318-018-0517-3',
+    ),
+    (
+      'Yanes et al. (2025) · release-data methods',
+      'Release assay context; values from incompatible assays are not interchangeable.',
+      'https://doi.org/10.1016/j.ijpx.2025.100393',
+    ),
+    (
+      'FDA (2018) · Liposome Drug Products guidance',
+      'Regulatory context for characterization, manufacturing, and pharmacokinetics.',
+      'https://www.fda.gov/regulatory-information/search-fda-guidance-documents/liposome-drug-products-chemistry-manufacturing-and-controls-human-pharmacokinetics-and',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) => ExpansionTile(
+        shape: const Border(),
+        collapsedShape: const Border(),
+        tilePadding: EdgeInsets.zero,
+        leading: const Icon(Icons.menu_book_outlined, color: _teal),
+        title: const Text(
+          'Curated references · 9 sources',
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+        ),
+        subtitle: const Text(
+          'Open the papers and guidance behind this evidence library.',
+          style: TextStyle(color: _muted, fontSize: 11),
+        ),
+        children: [
+          for (final reference in _references)
+            ListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.only(left: 8, right: 4),
+              title: Text(
+                reference.$1,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+              ),
+              subtitle: Text(
+                reference.$2,
+                style: const TextStyle(fontSize: 10, height: 1.35),
+              ),
+              trailing: const Icon(Icons.open_in_new_rounded, size: 16),
+              onTap: () => _openUrl(reference.$3),
+            ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(8, 2, 8, 10),
+            child: Text(
+              'A source can be useful context without directly matching your drug, route, tissue, or requested endpoint. Check each result card for its applicability and limitations.',
+              style: TextStyle(color: _muted, fontSize: 10, height: 1.4),
+            ),
+          ),
+        ],
+      );
+}
+
 class _FormulationResultView extends StatelessWidget {
   const _FormulationResultView({super.key, required this.data});
   final Map<String, dynamic> data;
@@ -1422,7 +1625,7 @@ class _FormulationResultView extends StatelessWidget {
     final request = Map<String, dynamic>.from(data['request'] as Map? ?? {});
     final reports = results.values.whereType<Map>();
     final estimates = reports
-        .where((item) => (item['model'] as Map?)?['value'] != null)
+        .where((item) => item['decision'] == 'model_estimate')
         .length;
     final candidates = reports
         .where((item) => item['decision'] == 'literature_candidate')
@@ -1430,7 +1633,7 @@ class _FormulationResultView extends StatelessWidget {
     final conflicts = reports
         .where((item) => item['decision'] == 'conflicting_evidence')
         .length;
-    final unresolved = results.length - estimates - candidates;
+    final unresolved = results.length - estimates - candidates - conflicts;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1450,6 +1653,8 @@ class _FormulationResultView extends StatelessWidget {
             _BriefMetric(
               count: estimates,
               label: 'Model estimates',
+              explanation:
+                  'An endpoint with a released model value. Read its units and scope on the result card.',
               icon: Icons.auto_graph_rounded,
               color: _teal,
               fill: const Color(0xFFEAF5F2),
@@ -1457,6 +1662,8 @@ class _FormulationResultView extends StatelessWidget {
             _BriefMetric(
               count: candidates,
               label: 'Literature candidates',
+              explanation:
+                  'A cited study matches the requested drug and route. Its measurements belong to that published experiment, not a new batch.',
               icon: Icons.menu_book_outlined,
               color: const Color(0xFF3A5DAA),
               fill: const Color(0xFFE7F0E6),
@@ -1464,6 +1671,8 @@ class _FormulationResultView extends StatelessWidget {
             _BriefMetric(
               count: unresolved,
               label: 'Unresolved',
+              explanation:
+                  'No direct candidate or released model value answers this endpoint. Background-only, insufficient, and unsupported results are included.',
               icon: Icons.help_outline_rounded,
               color: _muted,
               fill: const Color(0xFFF0F2F6),
@@ -1471,6 +1680,8 @@ class _FormulationResultView extends StatelessWidget {
             _BriefMetric(
               count: conflicts,
               label: 'Conflicts to review',
+              explanation:
+                  'A comparable independent measurement and model result disagree under the release comparison rule. Review the study conditions.',
               icon: Icons.warning_amber_rounded,
               color: const Color(0xFF9A5D1B),
               fill: const Color(0xFFFFF2DE),
@@ -1479,9 +1690,76 @@ class _FormulationResultView extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         const Text(
-          'Counts describe this report only; they are not confidence scores.',
+          'The four counts are separate endpoint states. They describe this report, not confidence.',
           style: TextStyle(color: _muted, fontSize: 10),
         ),
+        ExpansionTile(
+          leading: const Icon(Icons.help_outline_rounded, color: _muted),
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: const EdgeInsets.only(left: 12, right: 4, bottom: 8),
+          title: const Text(
+            'What do these four counts mean?',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+          ),
+          children: [
+            for (final item in const <(String, String, IconData)>[
+              (
+                'Model estimates',
+                'The model released a value for this endpoint. The card shows units, scope, and limits.',
+                Icons.auto_graph_rounded,
+              ),
+              (
+                'Literature candidates',
+                'A cited study matches the requested drug and route. Its measurements describe the published experiment, not your proposed batch.',
+                Icons.menu_book_outlined,
+              ),
+              (
+                'Unresolved',
+                'There is no direct candidate or released model value. This includes background-only, insufficient-evidence, and unsupported results.',
+                Icons.help_outline_rounded,
+              ),
+              (
+                'Conflicts to review',
+                'Comparable model and independent study values disagree under the release review rule. Check the conditions; the flag does not decide which value is correct.',
+                Icons.warning_amber_rounded,
+              ),
+            ])
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(item.$3, size: 16, color: _muted),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.$1,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            item.$2,
+                            style: const TextStyle(
+                              color: _muted,
+                              fontSize: 11,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 10),
         const SizedBox(height: 17),
         for (final group in const <(String, List<String>)>[
           ('CARRIER & EXCIPIENT EVIDENCE', ['carrier', 'excipients']),
@@ -1554,17 +1832,20 @@ class _BriefMetric extends StatelessWidget {
   const _BriefMetric({
     required this.count,
     required this.label,
+    required this.explanation,
     required this.icon,
     required this.color,
     required this.fill,
   });
   final int count;
-  final String label;
+  final String label, explanation;
   final IconData icon;
   final Color color, fill;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => Tooltip(
+        message: explanation,
+        child: Container(
         constraints: const BoxConstraints(minWidth: 132),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
         decoration: BoxDecoration(
@@ -1584,6 +1865,7 @@ class _BriefMetric extends StatelessWidget {
                 style: TextStyle(
                     color: color, fontSize: 10, fontWeight: FontWeight.w700)),
           ],
+        ),
         ),
       );
 }
