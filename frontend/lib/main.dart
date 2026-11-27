@@ -1698,6 +1698,7 @@ class _FormulationResultView extends StatelessWidget {
           style: TextStyle(color: _muted, fontSize: 10),
         ),
         ExpansionTile(
+          initiallyExpanded: true,
           leading: const Icon(Icons.help_outline_rounded, color: _muted),
           tilePadding: EdgeInsets.zero,
           childrenPadding: const EdgeInsets.only(left: 12, right: 4, bottom: 8),
@@ -1944,7 +1945,68 @@ class _ResultView extends StatelessWidget {
                   icon: Icons.warning_amber),
           ],
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 4),
+        ExpansionTile(
+          initiallyExpanded: true,
+          shape: const Border(),
+          collapsedShape: const Border(),
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: const EdgeInsets.only(left: 12, right: 4, bottom: 8),
+          leading: const Icon(Icons.help_outline_rounded, color: _muted),
+          title: const Text(
+            'What do these result counts mean?',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+          ),
+          children: [
+            for (final item in const <(String, String)>[
+              (
+                'Endpoints',
+                'The number of requested process outputs in this report.',
+              ),
+              (
+                'Supported',
+                'A model returned an in-scope estimate. Size and PDI are conditional on the formation screen.',
+              ),
+              (
+                'Unresolved',
+                'No estimate was released because the setting is missing, unsupported, or outside the cohort scope.',
+              ),
+              (
+                'To review',
+                'A comparable independent measurement conflicts with the model result. Check the study conditions.',
+              ),
+            ])
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 82,
+                      child: Text(
+                        item.$1,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        item.$2,
+                        style: const TextStyle(
+                          color: _muted,
+                          fontSize: 11,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
         const _SectionLabel('ENDPOINTS'),
         const SizedBox(height: 7),
         for (final entry in results.entries) ...[
@@ -1959,9 +2021,9 @@ class _ResultView extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: OutlinedButton.icon(
-            onPressed: () => _downloadAssessment(data),
-            icon: const Icon(Icons.download_outlined, size: 18),
-            label: const Text('Download report (JSON)'),
+            onPressed: () => _downloadProcessAssessmentPdf(context, data),
+            icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
+            label: const Text('Download report (PDF)'),
           ),
         ),
         const SizedBox(height: 6),
@@ -1987,20 +2049,6 @@ class _ResultView extends StatelessWidget {
       ],
     );
   }
-}
-
-void _downloadAssessment(Map<String, dynamic> data) {
-  final bytes = const JsonEncoder.withIndent('  ').convert(data);
-  final url = html.Url.createObjectUrlFromBlob(
-    html.Blob([bytes], 'application/json'),
-  );
-  final request = '${data['request_id'] ?? 'report'}'
-      .replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '');
-  html.AnchorElement(href: url)
-    ..download = 'nanopredict-lab-${request.isEmpty ? 'report' : request}.json'
-    ..click();
-  Future<void>.delayed(
-      const Duration(seconds: 1), () => html.Url.revokeObjectUrl(url));
 }
 
 const _pdfForest = PdfColor(0.082, 0.239, 0.188);
@@ -2173,6 +2221,254 @@ Future<void> _downloadFormulationPdf(
   }
 }
 
+Future<void> _downloadProcessAssessmentPdf(
+  BuildContext context,
+  Map<String, dynamic> data,
+) async {
+  try {
+    final request = Map<String, dynamic>.from(data['request'] as Map? ?? {});
+    final candidate =
+        Map<String, dynamic>.from(request['candidate'] as Map? ?? {});
+    final results = Map<String, dynamic>.from(data['results'] as Map? ?? {});
+    final requestId = (data['request_id'] ?? 'report').toString();
+    final pdf = pw.Document();
+
+    final ready = results.values.whereType<Map>().where((result) {
+      return ['model_estimate', 'literature_candidate']
+          .contains(result['decision']);
+    }).length;
+    final conflicts = results.values.whereType<Map>().where((result) {
+      return result['decision'] == 'conflicting_evidence';
+    }).length;
+    final unresolved = results.length - ready - conflicts;
+    final inputRows = <List<String>>[
+      ['Primary lipid', _pdfSafe(candidate['primary_lipid'])],
+      ['Chip', _pdfSafe(candidate['chip'])],
+      ['Cholesterol', '${_pdfSafe(candidate['cholesterol_pct'])}%'],
+      ['PEG', '${_pdfSafe(candidate['peg_pct'])}%'],
+      ['Total flow rate', '${_pdfSafe(candidate['tfr_ml_min'])} mL/min'],
+      [
+        'Aqueous-to-organic flow ratio (FRR)',
+        _pdfSafe(candidate['aqueous_to_organic_frr']),
+      ],
+      if (request['targets'] is List)
+        [
+          'Requested endpoints',
+          (request['targets'] as List).map(_pdfSafe).join(', '),
+        ],
+    ];
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.fromLTRB(38, 42, 38, 42),
+        header: (page) => pw.Container(
+          padding: const pw.EdgeInsets.only(bottom: 8),
+          decoration: const pw.BoxDecoration(
+            border: pw.Border(bottom: pw.BorderSide(color: _pdfLine, width: 0.8)),
+          ),
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                'NANOPREDICT LAB  /  NANOVESICLE-AI',
+                style: pw.TextStyle(
+                  color: _pdfForest,
+                  fontSize: 8,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+              const pw.Text(
+                'MICROFLUIDIC LIPOSOME REPORT',
+                style: pw.TextStyle(color: _pdfMuted, fontSize: 7.5),
+              ),
+            ],
+          ),
+        ),
+        footer: (page) => pw.Container(
+          padding: const pw.EdgeInsets.only(top: 8),
+          decoration: const pw.BoxDecoration(
+            border: pw.Border(top: pw.BorderSide(color: _pdfLine, width: 0.8)),
+          ),
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                'Research use | Request ${_pdfSafe(requestId)}',
+                style: const pw.TextStyle(color: _pdfMuted, fontSize: 7),
+              ),
+              pw.Text(
+                'Page ${page.pageNumber} of ${page.pagesCount}',
+                style: const pw.TextStyle(color: _pdfMuted, fontSize: 7),
+              ),
+            ],
+          ),
+        ),
+        build: (page) => [
+          pw.Container(
+            width: double.infinity,
+            padding: const pw.EdgeInsets.all(16),
+            decoration: const pw.BoxDecoration(
+              color: _pdfForest,
+              borderRadius: pw.BorderRadius.all(pw.Radius.circular(12)),
+            ),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  'Eugster process assessment',
+                  style: pw.TextStyle(
+                    color: PdfColors.white,
+                    fontSize: 20,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                pw.SizedBox(height: 5),
+                pw.Text(
+                  '${_pdfSafe(candidate['primary_lipid'])} liposome process on ${_pdfSafe(candidate['chip'])} chip',
+                  style: const pw.TextStyle(
+                    color: PdfColors.white,
+                    fontSize: 10,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          pw.SizedBox(height: 16),
+          _pdfSectionTitle('Submitted process settings'),
+          _pdfKeyValueTable(inputRows),
+          pw.SizedBox(height: 12),
+          pw.Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              _pdfStatusPill('${results.length} endpoints', _pdfPaper),
+              _pdfStatusPill('$ready supported', _pdfSage),
+              _pdfStatusPill('$unresolved unresolved', _pdfPaper),
+              if (conflicts > 0)
+                _pdfStatusPill('$conflicts to review', PdfColor(1, 0.95, 0.87)),
+            ],
+          ),
+          pw.SizedBox(height: 4),
+          pw.Text(
+            'These counts describe this run. They are endpoint states, not confidence scores.',
+            style: const pw.TextStyle(color: _pdfMuted, fontSize: 8),
+          ),
+          pw.SizedBox(height: 14),
+          _pdfSectionTitle('Endpoint results'),
+          pw.Text(
+            'Each requested endpoint retains its decision, estimate or withholding reason, model support, and cited evidence.',
+            style: const pw.TextStyle(
+              color: _pdfMuted,
+              fontSize: 8.5,
+              lineSpacing: 1.5,
+            ),
+          ),
+          pw.SizedBox(height: 8),
+          for (final entry in results.entries)
+            _pdfEndpointCard(
+              entry.key,
+              Map<String, dynamic>.from(entry.value as Map),
+            ),
+          pw.SizedBox(height: 8),
+          _pdfSectionTitle('How to interpret these estimates'),
+          pw.Container(
+            width: double.infinity,
+            padding: const pw.EdgeInsets.all(10),
+            decoration: const pw.BoxDecoration(
+              color: _pdfPaper,
+              borderRadius: pw.BorderRadius.all(pw.Radius.circular(7)),
+            ),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  'Formation is an uncalibrated score, not a probability. Size and PDI estimates are released only when the formation score is at least 0.5.',
+                  style: const pw.TextStyle(
+                    color: _pdfInk,
+                    fontSize: 8.5,
+                    lineSpacing: 1.6,
+                  ),
+                ),
+                pw.SizedBox(height: 5),
+                pw.Text(
+                  'The models cover supported microfluidic liposome settings in the Eugster cohort. Grouped-CV MAE and historical absolute errors describe that cohort; they are not prediction intervals for this batch.',
+                  style: const pw.TextStyle(
+                    color: _pdfInk,
+                    fontSize: 8.5,
+                    lineSpacing: 1.6,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          pw.SizedBox(height: 12),
+          _pdfSectionTitle('Assessment method and release metadata'),
+          pw.Text(
+            _pdfSafe(data['method'] ??
+                'Fitted Eugster formation, size, and PDI models with rule-based scope checks.'),
+            style: const pw.TextStyle(
+              color: _pdfInk,
+              fontSize: 8.5,
+              lineSpacing: 1.5,
+            ),
+          ),
+          pw.SizedBox(height: 6),
+          pw.Text(
+            'Request ID: ${_pdfSafe(requestId)}  |  API: ${_pdfSafe(data['api_version'])}  |  Model: ${_pdfSafe(data['model_release'])}  |  Evidence corpus: ${_pdfSafe(data['corpus_release'])}',
+            style: const pw.TextStyle(color: _pdfMuted, fontSize: 7.5),
+          ),
+        ],
+      ),
+    );
+
+    final bytes = await pdf.save();
+    final objectUrl = html.Url.createObjectUrlFromBlob(
+      html.Blob([bytes], 'application/pdf'),
+    );
+    final safeRequestId = requestId.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '');
+    html.AnchorElement(href: objectUrl)
+      ..download =
+          'nanopredict-lab-process-${safeRequestId.isEmpty ? 'report' : safeRequestId}.pdf'
+      ..click();
+    Future<void>.delayed(
+      const Duration(seconds: 2),
+      () => html.Url.revokeObjectUrl(objectUrl),
+    );
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('PDF report created. Your download is starting.'),
+        ),
+      );
+    }
+  } catch (_) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not create the PDF report. Please try again.'),
+        ),
+      );
+    }
+  }
+}
+
+pw.Widget _pdfStatusPill(String text, PdfColor color) => pw.Container(
+      padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: pw.BoxDecoration(
+        color: color,
+        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
+      ),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          color: _pdfForest,
+          fontSize: 8,
+          fontWeight: pw.FontWeight.bold,
+        ),
+      ),
+    );
+
 pw.Widget _pdfSectionTitle(String title) => pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 7),
       child: pw.Text(title,
@@ -2278,9 +2574,17 @@ pw.Widget _pdfEndpointCard(String name, Map<String, dynamic> report) {
         if (_pdfHas(model['support']))
           pw.Text('Support: ${_pdfSafe(model['support'])}',
               style: const pw.TextStyle(color: _pdfMuted, fontSize: 8)),
+        if (_pdfHas(model['formation_score']))
+          pw.Text(
+              'Formation screen score: ${_pdfSafe(model['formation_score'])} (uncalibrated).',
+              style: const pw.TextStyle(color: _pdfMuted, fontSize: 8)),
         if (_pdfHas(model['grouped_cv_mae']))
           pw.Text(
               'Grouped-CV MAE: ${_pdfSafe(model['grouped_cv_mae'])} ${_pdfSafe(model['unit'])}; cohort benchmark, not an individual prediction interval.',
+              style: const pw.TextStyle(color: _pdfMuted, fontSize: 8)),
+        if (_pdfHas(model['grouped_cv_absolute_error_p90']))
+          pw.Text(
+              'Historical 90th-percentile absolute error: ${_pdfSafe(model['grouped_cv_absolute_error_p90'])} ${_pdfSafe(model['unit'])}; this is a cohort benchmark, not an individual interval.',
               style: const pw.TextStyle(color: _pdfMuted, fontSize: 8)),
         if (_pdfHas(model['limitation']))
           pw.Text(_pdfSafe(model['limitation']),
