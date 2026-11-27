@@ -1532,49 +1532,94 @@ class _ReferenceLibrary extends StatelessWidget {
 
   static const _references = <(String, String, String)>[
     (
-      'USP–NF General Chapter 1154 · Liposome Drug Products',
-      'Pharmacopeial product-characterization guidance.',
-      'https://doi.org/10.31003/USPNF_M17435_02_01',
+      "USP–NF General Chapter 1154 · Liposome Drug Products",
+      "Pharmacopeial product-characterization guidance.",
+      "https://doi.org/10.31003/USPNF_M17435_02_01",
     ),
     (
-      'Drug Delivery through Liposomes · book chapter',
-      'Background on liposome structure and drug association.',
-      'https://doi.org/10.5772/intechopen.97727',
+      "Drug Delivery through Liposomes · book chapter",
+      "Background on liposome structure and drug association.",
+      "https://doi.org/10.5772/intechopen.97727",
     ),
     (
-      'Eugster et al. (2024) · microfluidic liposomes',
-      'Source cohort for the process model; it does not validate drug loading or tissue delivery.',
-      'https://doi.org/10.1016/j.jconrel.2024.10.065',
+      "Liposome—A Comprehensive Approach for Researchers · book chapter",
+      "Open-access methods and characterization context, including size, PDI, zeta potential and entrapment.",
+      "https://doi.org/10.5772/intechopen.93256",
     ),
     (
-      'Bragagni et al. (2012) · topical celecoxib',
-      'Comparative study; Batch F reports 54.4% entrapment for that published ethosome.',
-      'https://doi.org/10.3109/10717544.2012.724472',
+      "Eugster et al. (2024) · microfluidic liposomes",
+      "Source cohort for the process model; it does not validate drug loading or tissue delivery.",
+      "https://doi.org/10.1016/j.jconrel.2024.10.065",
     ),
     (
-      'Shahiwala et al. (2023) · donepezil niosomes',
-      'Drug- and carrier-specific experimental formulation study.',
-      'https://doi.org/10.1208/s12249-023-02547-2',
+      "Bragagni et al. (2012) · topical celecoxib",
+      "Comparative study; Batch F reports 54.4% entrapment for that published ethosome.",
+      "https://doi.org/10.3109/10717544.2012.724472",
     ),
     (
-      'Ascenso et al. (2015) · skin-delivery vesicles',
-      'Transfersome/ethosome experiments with caffeine and vitamin E model actives.',
-      'https://pmc.ncbi.nlm.nih.gov/articles/PMC4583114/',
+      "Shahiwala et al. (2023) · donepezil niosomes",
+      "Drug- and carrier-specific experimental formulation study.",
+      "https://doi.org/10.1208/s12249-023-02547-2",
     ),
     (
-      'Riva et al. (2019) · oral quercetin phytosome',
-      'Oral absorption evidence; not a tissue-targeting or release prediction.',
-      'https://doi.org/10.1007/s13318-018-0517-3',
+      "Niosomes as Carrier in Dermal Drug Delivery · book chapter",
+      "Open-access dermal niosome formulation background; not a drug-specific prediction.",
+      "https://doi.org/10.5772/51729",
     ),
     (
-      'Yanes et al. (2025) · release-data methods',
-      'Release assay context; values from incompatible assays are not interchangeable.',
-      'https://doi.org/10.1016/j.ijpx.2025.100393',
+      "Ascenso et al. (2015) · skin-delivery vesicles",
+      "Transfersome/ethosome experiments with caffeine and vitamin E model actives.",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC4583114/",
     ),
     (
-      'FDA (2018) · Liposome Drug Products guidance',
-      'Regulatory context for characterization, manufacturing, and pharmacokinetics.',
-      'https://www.fda.gov/regulatory-information/search-fda-guidance-documents/liposome-drug-products-chemistry-manufacturing-and-controls-human-pharmacokinetics-and',
+      "Ethosomes: An Exciting and Promising Alcoholic Carrier System · book chapter",
+      "Ethanol/phospholipid composition, preparation, characterization and skin-delivery context.",
+      "https://doi.org/10.5772/intechopen.79807",
+    ),
+    (
+      "Hydrogels with Liposomes, Niosomes or Transfersomes · book chapter",
+      "Dermal/transdermal carrier and hydrogel-combination background.",
+      "https://doi.org/10.5772/intechopen.68158",
+    ),
+    (
+      "Riva et al. (2019) · oral quercetin phytosome",
+      "Oral absorption evidence; not a tissue-targeting or release prediction.",
+      "https://doi.org/10.1007/s13318-018-0517-3",
+    ),
+    (
+      "Phytosomes as a Novel Approach to Drug Delivery · book chapter",
+      "Phospholipid–phytochemical complex background; botanical results are not general drug predictions.",
+      "https://doi.org/10.5772/intechopen.113914",
+    ),
+    (
+      "Yanes et al. (2025) · release-data methods",
+      "Release assay context; values from incompatible assays are not interchangeable.",
+      "https://doi.org/10.1016/j.ijpx.2025.100393",
+    ),
+    (
+      "FDA (2018) · Liposome Drug Products guidance",
+      "Regulatory context for characterization, manufacturing, and pharmacokinetics.",
+      "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/liposome-drug-products-chemistry-manufacturing-and-controls-human-pharmacokinetics-and",
+    ),
+    (
+      "Benson et al. (2019) · topical and transdermal delivery review",
+      "Reviews skin-barrier pathways and distinct vesicle classes; not batch-level evidence.",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC6637104/",
+    ),
+    (
+      "Current Advances in Specialised Niosomal Drug Delivery · review",
+      "Manufacturing, characterization and application context for niosomes.",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC9455955/",
+    ),
+    (
+      "Lipid-Based Drug Delivery Systems · transdermal review",
+      "Cross-carrier formulation context; study measurements remain formulation- and assay-specific.",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC12430098/",
+    ),
+    (
+      "Phytosomal Delivery of Natural Bioactives · review",
+      "Recent formulation and characterization overview for phytosomes; not a drug-specific model.",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC13708521/",
     ),
   ];
 
@@ -1585,7 +1630,7 @@ class _ReferenceLibrary extends StatelessWidget {
         tilePadding: EdgeInsets.zero,
         leading: const Icon(Icons.menu_book_outlined, color: _teal),
         title: const Text(
-          'Curated references · 9 sources',
+          'Curated references · 18 sources',
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
         ),
         subtitle: const Text(
@@ -1627,17 +1672,15 @@ class _FormulationResultView extends StatelessWidget {
   Widget build(BuildContext context) {
     final results = Map<String, dynamic>.from(data['results'] as Map? ?? {});
     final request = Map<String, dynamic>.from(data['request'] as Map? ?? {});
-    final reports = results.values.whereType<Map>();
-    final estimates = reports
-        .where((item) => item['decision'] == 'model_estimate')
+    final evidenceBacked = results.values
+        .whereType<Map>()
+        .where((item) => ['model_estimate', 'literature_candidate']
+            .contains(item['decision']))
         .length;
-    final candidates = reports
-        .where((item) => item['decision'] == 'literature_candidate')
-        .length;
-    final conflicts = reports
+    final conflicts = results.values
+        .whereType<Map>()
         .where((item) => item['decision'] == 'conflicting_evidence')
         .length;
-    final unresolved = results.length - estimates - candidates - conflicts;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1655,37 +1698,27 @@ class _FormulationResultView extends StatelessWidget {
           runSpacing: 8,
           children: [
             _BriefMetric(
-              count: estimates,
-              label: 'Model estimates',
+              count: results.length,
+              label: 'Endpoints',
+              explanation: 'The number of formulation outcomes requested in this assessment.',
+              icon: Icons.checklist_rounded,
+              color: _ink,
+              fill: _soft,
+            ),
+            _BriefMetric(
+              count: evidenceBacked,
+              label: 'Evidence-backed',
               explanation:
-                  'An endpoint with a released model value. Read its units and scope on the result card.',
-              icon: Icons.auto_graph_rounded,
+                  'An endpoint with an in-scope model estimate, a directly matched published study, or both.',
+              icon: Icons.auto_awesome_rounded,
               color: _teal,
               fill: const Color(0xFFEAF5F2),
             ),
             _BriefMetric(
-              count: candidates,
-              label: 'Literature candidates',
-              explanation:
-                  'A cited study matches the requested drug and route. Its measurements belong to that published experiment, not a new batch.',
-              icon: Icons.menu_book_outlined,
-              color: const Color(0xFF3A5DAA),
-              fill: const Color(0xFFE7F0E6),
-            ),
-            _BriefMetric(
-              count: unresolved,
-              label: 'Unresolved',
-              explanation:
-                  'No direct candidate or released model value answers this endpoint. Background-only, insufficient, and unsupported results are included.',
-              icon: Icons.help_outline_rounded,
-              color: _muted,
-              fill: const Color(0xFFF0F2F6),
-            ),
-            _BriefMetric(
               count: conflicts,
-              label: 'Conflicts to review',
+              label: 'Review required',
               explanation:
-                  'A comparable independent measurement and model result disagree under the release comparison rule. Review the study conditions.',
+                  'A comparable study measurement and model result disagree under the release comparison rule. Review the study conditions.',
               icon: Icons.warning_amber_rounded,
               color: const Color(0xFF9A5D1B),
               fill: const Color(0xFFFFF2DE),
@@ -1694,77 +1727,9 @@ class _FormulationResultView extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         const Text(
-          'The four counts are separate endpoint states. They describe this report, not confidence.',
-          style: TextStyle(color: _muted, fontSize: 10),
+          'Model estimates and matching published measurements are brought together for each endpoint. Their sources stay clearly labeled; unsupported results are explained on the endpoint card.',
+          style: TextStyle(color: _muted, fontSize: 10, height: 1.45),
         ),
-        ExpansionTile(
-          initiallyExpanded: true,
-          leading: const Icon(Icons.help_outline_rounded, color: _muted),
-          tilePadding: EdgeInsets.zero,
-          childrenPadding: const EdgeInsets.only(left: 12, right: 4, bottom: 8),
-          title: const Text(
-            'What do these four counts mean?',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-          ),
-          children: [
-            for (final item in const <(String, String, IconData)>[
-              (
-                'Model estimates',
-                'The model released a value for this endpoint. The card shows units, scope, and limits.',
-                Icons.auto_graph_rounded,
-              ),
-              (
-                'Literature candidates',
-                'A cited study matches the requested drug and route. Its measurements describe the published experiment, not your proposed batch.',
-                Icons.menu_book_outlined,
-              ),
-              (
-                'Unresolved',
-                'There is no direct candidate or released model value. This includes background-only, insufficient-evidence, and unsupported results.',
-                Icons.help_outline_rounded,
-              ),
-              (
-                'Conflicts to review',
-                'Comparable model and independent study values disagree under the release review rule. Check the conditions; the flag does not decide which value is correct.',
-                Icons.warning_amber_rounded,
-              ),
-            ])
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(item.$3, size: 16, color: _muted),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.$1,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            item.$2,
-                            style: const TextStyle(
-                              color: _muted,
-                              fontSize: 11,
-                              height: 1.4,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(height: 10),
         const SizedBox(height: 17),
         for (final group in const <(String, List<String>)>[
           ('CARRIER & EXCIPIENT EVIDENCE', ['carrier', 'excipients']),
@@ -1894,18 +1859,14 @@ class _ResultView extends StatelessWidget {
   Widget build(BuildContext context) {
     final results = Map<String, dynamic>.from(data['results'] as Map? ?? {});
     final request = Map<String, dynamic>.from(data['request'] as Map? ?? {});
-    final ready = results.values
+    final evidenceBacked = results.values
         .whereType<Map>()
-        .where(
-          (result) => ['model_estimate', 'literature_candidate']
-              .contains(result['decision']),
-        )
+        .where((result) => ['model_estimate', 'literature_candidate']
+            .contains(result['decision']))
         .length;
     final conflicts = results.values
         .whereType<Map>()
-        .where(
-          (result) => result['decision'] == 'conflicting_evidence',
-        )
+        .where((result) => result['decision'] == 'conflicting_evidence')
         .length;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1928,83 +1889,21 @@ class _ResultView extends StatelessWidget {
                 textColor: _ink,
                 icon: Icons.checklist_rounded),
             _Pill(
-                label: '$ready supported',
+                label: '$evidenceBacked evidence-backed',
                 color: const Color(0xFFE6F5ED),
                 textColor: const Color(0xFF166446),
-                icon: Icons.check_circle_outline),
+                icon: Icons.auto_awesome_rounded),
             _Pill(
-                label: '${results.length - ready - conflicts} unresolved',
-                color: _soft,
-                textColor: _muted,
-                icon: Icons.help_outline),
-            if (conflicts > 0)
-              _Pill(
-                  label: '$conflicts to review',
-                  color: const Color(0xFFFFF2DE),
-                  textColor: const Color(0xFF9A5D1B),
-                  icon: Icons.warning_amber),
+                label: '$conflicts review required',
+                color: const Color(0xFFFFF2DE),
+                textColor: const Color(0xFF9A5D1B),
+                icon: Icons.warning_amber),
           ],
         ),
-        const SizedBox(height: 4),
-        ExpansionTile(
-          initiallyExpanded: true,
-          shape: const Border(),
-          collapsedShape: const Border(),
-          tilePadding: EdgeInsets.zero,
-          childrenPadding: const EdgeInsets.only(left: 12, right: 4, bottom: 8),
-          leading: const Icon(Icons.help_outline_rounded, color: _muted),
-          title: const Text(
-            'What do these result counts mean?',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-          ),
-          children: [
-            for (final item in const <(String, String)>[
-              (
-                'Endpoints',
-                'The number of requested process outputs in this report.',
-              ),
-              (
-                'Supported',
-                'A model returned an in-scope estimate. Size and PDI are conditional on the formation screen.',
-              ),
-              (
-                'Unresolved',
-                'No estimate was released because the setting is missing, unsupported, or outside the cohort scope.',
-              ),
-              (
-                'To review',
-                'A comparable independent measurement conflicts with the model result. Check the study conditions.',
-              ),
-            ])
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 82,
-                      child: Text(
-                        item.$1,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        item.$2,
-                        style: const TextStyle(
-                          color: _muted,
-                          fontSize: 11,
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
+        const SizedBox(height: 6),
+        const Text(
+          'Model estimates and relevant published measurements are assessed together for each endpoint. Their values remain labeled by source and are not averaged. The endpoint card explains any missing support or conflict.',
+          style: TextStyle(color: _muted, fontSize: 11, height: 1.45),
         ),
         const SizedBox(height: 8),
         const _SectionLabel('ENDPOINTS'),
@@ -2166,7 +2065,7 @@ Future<void> _downloadFormulationPdf(
           pw.SizedBox(height: 15),
           _pdfSectionTitle('Endpoint-by-endpoint assessment'),
           pw.Text(
-              'Each endpoint retains its decision, model status, rationale, and applicable evidence. A published measurement belongs to the cited study batch; it is not a prediction for a new formulation.',
+              'Model output and matching published evidence are reported together for each endpoint. Values retain their source: study measurements describe the cited batch and are not averaged with model estimates.',
               style: const pw.TextStyle(color: _pdfMuted, fontSize: 9, lineSpacing: 2)),
           pw.SizedBox(height: 9),
           for (final entry in results.entries)
@@ -2233,14 +2132,13 @@ Future<void> _downloadProcessAssessmentPdf(
     final requestId = (data['request_id'] ?? 'report').toString();
     final pdf = pw.Document();
 
-    final ready = results.values.whereType<Map>().where((result) {
+    final evidenceBacked = results.values.whereType<Map>().where((result) {
       return ['model_estimate', 'literature_candidate']
           .contains(result['decision']);
     }).length;
     final conflicts = results.values.whereType<Map>().where((result) {
       return result['decision'] == 'conflicting_evidence';
     }).length;
-    final unresolved = results.length - ready - conflicts;
     final inputRows = <List<String>>[
       ['Primary lipid', _pdfSafe(candidate['primary_lipid'])],
       ['Chip', _pdfSafe(candidate['chip'])],
@@ -2343,15 +2241,13 @@ Future<void> _downloadProcessAssessmentPdf(
             runSpacing: 6,
             children: [
               _pdfStatusPill('${results.length} endpoints', _pdfPaper),
-              _pdfStatusPill('$ready supported', _pdfSage),
-              _pdfStatusPill('$unresolved unresolved', _pdfPaper),
-              if (conflicts > 0)
-                _pdfStatusPill('$conflicts to review', PdfColor(1, 0.95, 0.87)),
+              _pdfStatusPill('$evidenceBacked evidence-backed', _pdfSage),
+              _pdfStatusPill('$conflicts review required', PdfColor(1, 0.95, 0.87)),
             ],
           ),
           pw.SizedBox(height: 4),
           pw.Text(
-            'These counts describe this run. They are endpoint states, not confidence scores.',
+            'Model estimates and matched published evidence are brought together per endpoint. Values remain labeled by source; study observations are not predictions for a new batch.',
             style: const pw.TextStyle(color: _pdfMuted, fontSize: 8),
           ),
           pw.SizedBox(height: 14),
@@ -2702,11 +2598,10 @@ String _pdfHumanize(String value) {
 }
 
 String _pdfDecisionLabel(dynamic value) => switch (value) {
-      'model_estimate' => 'MODEL ESTIMATE',
-      'literature_candidate' => 'LITERATURE CANDIDATE',
+      'model_estimate' || 'literature_candidate' => 'EVIDENCE AVAILABLE',
       'conflicting_evidence' => 'REVIEW CONFLICT',
       'background_only' => 'BACKGROUND ONLY',
-      _ => _pdfHumanize(_pdfSafe(value)).toUpperCase(),
+      _ => 'NO SUPPORTED RESULT',
     };
 
 class _SubmittedContext extends StatelessWidget {
@@ -2819,6 +2714,9 @@ class _EndpointCard extends StatelessWidget {
         .whereType<Map>()
         .map((item) => Map<String, dynamic>.from(item))
         .toList();
+    final hasDirectStudy = evidence.any(
+      (item) => item['applicability'] == 'matched_drug_and_route',
+    );
     final (label, color, background, icon) = _decisionAppearance(decision);
     final value = model['value'];
     final observations = <String>[];
@@ -2885,20 +2783,72 @@ class _EndpointCard extends StatelessWidget {
             style: const TextStyle(color: _muted, fontSize: 14, height: 1.5),
           ),
           const SizedBox(height: 12),
-          _ModelReport(model: model, endpoint: name),
-          if (evidence.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            const _SectionLabel('LITERATURE REPORT'),
-            const SizedBox(height: 8),
-            for (final item in evidence)
-              _EvidenceCard(item: item, endpoint: name),
-          ] else if (decision != 'model_estimate') ...[
-            const SizedBox(height: 10),
-            const _InlineNote(
-              text:
-                  'No applicable source was retrieved for this endpoint in the current curated corpus.',
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: _soft,
+              border: Border.all(color: _line),
+              borderRadius: BorderRadius.circular(12),
             ),
-          ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.auto_awesome_rounded, color: _teal, size: 16),
+                    SizedBox(width: 6),
+                    Text(
+                      'COMBINED EVIDENCE',
+                      style: TextStyle(
+                        color: _teal,
+                        letterSpacing: 0.7,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                const Text(
+                  'Model output and published study evidence are reviewed together. Each value keeps its source; study measurements are not new-batch predictions and are not averaged with model estimates.',
+                  style: TextStyle(color: _muted, fontSize: 11, height: 1.4),
+                ),
+                const SizedBox(height: 10),
+                _ModelReport(model: model, endpoint: name),
+                const SizedBox(height: 10),
+                const Row(
+                  children: [
+                    Icon(Icons.menu_book_outlined, color: _teal, size: 15),
+                    SizedBox(width: 6),
+                    Text(
+                      'PUBLISHED STUDIES',
+                      style: TextStyle(
+                        color: _teal,
+                        letterSpacing: 0.6,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 7),
+                if (evidence.isNotEmpty)
+                  for (final item in evidence)
+                    _EvidenceCard(item: item, endpoint: name)
+                else
+                  const _InlineNote(
+                    text:
+                        'No source was retrieved for this endpoint from the current curated corpus.',
+                  ),
+                if (!hasDirectStudy && evidence.isNotEmpty)
+                  const _InlineNote(
+                    text:
+                        'No study directly matched the requested drug and route. The listed sources are background context only.',
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -3593,17 +3543,11 @@ String _humanStatus(String status) => switch (status) {
 
 (String, Color, Color, IconData) _decisionAppearance(String decision) =>
     switch (decision) {
-      'model_estimate' => (
-          'MODEL ESTIMATE',
+      'model_estimate' || 'literature_candidate' => (
+          'EVIDENCE AVAILABLE',
           const Color(0xFF166446),
           const Color(0xFFE6F5ED),
-          Icons.auto_graph_rounded,
-        ),
-      'literature_candidate' => (
-          'LITERATURE CANDIDATE',
-          const Color(0xFF2F6981),
-          const Color(0xFFEAF3F7),
-          Icons.menu_book_outlined,
+          Icons.auto_awesome_rounded,
         ),
       'conflicting_evidence' => (
           'REVIEW CONFLICT',
@@ -3618,7 +3562,7 @@ String _humanStatus(String status) => switch (status) {
           Icons.info_outline_rounded,
         ),
       _ => (
-          'INSUFFICIENT EVIDENCE',
+          'NO SUPPORTED RESULT',
           _muted,
           const Color(0xFFF0F3F4),
           Icons.help_outline_rounded,
