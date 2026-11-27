@@ -159,5 +159,182 @@
     ],
     "text": "The guidance discusses liposome product characterization and separates chemistry, manufacturing and controls from pharmacokinetics and bioavailability evidence.",
     "limitation": "General guidance. It does not establish delivery to a target tissue for an untested formulation."
+  },
+  {
+    "id": "liposome-comprehensive-book",
+    "title": "Liposome—A Comprehensive Approach for Researchers",
+    "url": "https://doi.org/10.5772/intechopen.93256",
+    "kind": "book chapter",
+    "carrier": "liposome",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "size",
+      "pdi",
+      "zeta",
+      "entrapment",
+      "release",
+      "stability"
+    ],
+    "text": "This open-access chapter surveys liposome preparation and characterization. It identifies particle size, polydispersity, surface charge, encapsulation, solubility and lamellarity as formulation attributes that require measurement and method-specific interpretation.",
+    "limitation": "General preparation and characterization context only. It does not establish a drug-specific estimate or predict a new batch."
+  },
+  {
+    "id": "niosomes-dermal-book",
+    "title": "Niosomes as Carrier in Dermal Drug Delivery",
+    "url": "https://doi.org/10.5772/51729",
+    "kind": "book chapter",
+    "carrier": "niosome",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "size",
+      "pdi",
+      "entrapment",
+      "release",
+      "tissue"
+    ],
+    "text": "This open-access chapter describes dermal niosomes as non-ionic surfactant vesicles commonly combined with cholesterol. Hydrophilic and lipophilic compounds can associate with different vesicle regions; topical performance depends on the drug, composition and skin-barrier conditions.",
+    "limitation": "Review background for dermal formulation design. It supplies no validated prediction for a requested drug or batch."
+  },
+  {
+    "id": "ethosomes-book",
+    "title": "Ethosomes: An Exciting and Promising Alcoholic Carrier System for Treating Androgenic Alopecia",
+    "url": "https://doi.org/10.5772/intechopen.79807",
+    "kind": "book chapter",
+    "carrier": "ethosome",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "size",
+      "pdi",
+      "zeta",
+      "entrapment",
+      "release",
+      "tissue",
+      "stability"
+    ],
+    "text": "This open-access chapter reviews ethosomes made from phospholipids, ethanol and water, with optional co-solvents or modifiers. It discusses preparation and characterization and explains that ethanol, composition and drug properties can affect vesicle size and skin permeation.",
+    "limitation": "The reported examples and mechanisms are formulation-specific background. They do not support a celecoxib or other new-batch numerical prediction."
+  },
+  {
+    "id": "vesicle-hydrogel-book",
+    "title": "Hydrogels and Their Combination with Liposomes, Niosomes, or Transfersomes for Dermal and Transdermal Drug Delivery",
+    "url": "https://doi.org/10.5772/intechopen.68158",
+    "kind": "book chapter",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "size",
+      "pdi",
+      "entrapment",
+      "release",
+      "tissue",
+      "stability"
+    ],
+    "text": "This open-access chapter reviews liposomes, niosomes and transfersomes used alone or with hydrogel vehicles. It describes formulation-dependent skin permeation, local-depot and release considerations and emphasizes that the carrier and gel conditions define the experiment.",
+    "limitation": "Cross-carrier review context only. It does not validate a ranking, tissue-targeting estimate or release prediction for a new formulation."
+  },
+  {
+    "id": "phytosomes-book-2024",
+    "title": "Phytosomes as a Novel Approach to Drug Delivery System",
+    "url": "https://doi.org/10.5772/intechopen.113914",
+    "kind": "book chapter",
+    "carrier": "phytosome",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "entrapment",
+      "release",
+      "bioavailability",
+      "stability"
+    ],
+    "text": "This open-access chapter describes phytosomes as complexes formed between phospholipids and plant-derived constituents. It summarizes formulation and bioavailability context for selected botanical actives.",
+    "limitation": "Botanical phospholipid-complex background only. Results for a plant constituent do not establish a synthetic-drug estimate or formulation ratio."
+  },
+  {
+    "id": "topical-transdermal-review-2019",
+    "title": "Topical and Transdermal Drug Delivery: From Simple Potions to Smart Technologies",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6637104/",
+    "kind": "review",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "size",
+      "pdi",
+      "entrapment",
+      "release",
+      "tissue",
+      "stability"
+    ],
+    "text": "This review distinguishes topical and transdermal carrier classes, including transfersomes, ethosomes and niosomes, and discusses skin-barrier pathways. The delivery mechanism and outcome depend on carrier composition, drug properties and route conditions.",
+    "limitation": "Class-level review context, not a matched-drug observation or a quantitative tissue-delivery prediction."
+  },
+  {
+    "id": "specialised-niosomes-review-2022",
+    "title": "Current Advances in Specialised Niosomal Drug Delivery: Manufacture, Characterization and Drug Delivery Applications",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9455955/",
+    "kind": "review",
+    "carrier": "niosome",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "size",
+      "pdi",
+      "zeta",
+      "entrapment",
+      "release",
+      "stability"
+    ],
+    "text": "This review covers niosome manufacture, characterization and drug-delivery applications. It summarizes how surfactant choice, composition and preparation methods shape the properties measured for individual formulations.",
+    "limitation": "Review evidence is contextual; measurements from different drugs, recipes and assays are not interchangeable or predictions for a new batch."
+  },
+  {
+    "id": "lipid-transdermal-review-2025",
+    "title": "Lipid-Based Drug Delivery Systems: Concepts and Recent Advances in Transdermal Applications",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12430098/",
+    "kind": "review",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "size",
+      "pdi",
+      "entrapment",
+      "release",
+      "tissue",
+      "stability"
+    ],
+    "text": "This review surveys lipid-based topical and transdermal carriers and their formulation approaches. It presents carrier composition, preparation and reported outcomes as study-specific evidence rather than one transferable performance profile.",
+    "limitation": "A cross-carrier review cannot validate ranking or tissue targeting for an unseen drug; compare only measurements with compatible conditions and assays."
+  },
+  {
+    "id": "phytosomal-delivery-review-2026",
+    "title": "Phytosomal Delivery of Natural Bioactives: Advancing Bioavailability, Targeted Drug Delivery, and Clinical Translation",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13708521/",
+    "kind": "review",
+    "carrier": "phytosome",
+    "topics": [
+      "carrier",
+      "excipients",
+      "ratios",
+      "size",
+      "pdi",
+      "zeta",
+      "entrapment",
+      "release",
+      "stability",
+      "bioavailability",
+      "tissue"
+    ],
+    "text": "This recent review summarizes phytosome formulation and characterization for natural bioactives. It highlights variability in particle size, PDI, entrapment and release across compounds, compositions and preparation methods.",
+    "limitation": "Review-level botanical evidence only. It does not establish a drug-specific numerical estimate or prove tissue targeting for another formulation."
   }
 ]
