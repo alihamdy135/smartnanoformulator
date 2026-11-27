@@ -2278,7 +2278,7 @@ Future<void> _downloadProcessAssessmentPdf(
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
-              const pw.Text(
+              pw.Text(
                 'MICROFLUIDIC LIPOSOME REPORT',
                 style: pw.TextStyle(color: _pdfMuted, fontSize: 7.5),
               ),
