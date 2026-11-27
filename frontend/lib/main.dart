@@ -134,8 +134,8 @@ class _OutputPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     const items = [
       (Icons.bubble_chart_outlined, 'Carrier & excipients'),
-      (Icons.tune_rounded, 'Ratios & batches'),
-      (Icons.straighten_rounded, 'Size · PDI · zeta'),
+      (Icons.tune_rounded, 'Ratios'),
+      (Icons.straighten_rounded, 'Size · PDI'),
       (Icons.science_outlined, 'Entrapment & release'),
     ];
     return Wrap(
@@ -429,7 +429,6 @@ class _ProcessOutputPreview extends StatelessWidget {
         Icons.bubble_chart_outlined,
         Color(0xFFB2761E)
       ),
-      ('ZETA', 'not modeled here', Icons.electric_bolt_outlined, _muted),
       ('ENTRAPMENT', 'not modeled here', Icons.science_outlined, _muted),
     ];
     return Wrap(
@@ -571,10 +570,8 @@ class _FormulationFlowState extends State<FormulationFlow> {
     'carrier',
     'excipients',
     'ratios',
-    'batches',
     'size',
     'pdi',
-    'zeta',
     'entrapment',
     'release',
   ];
