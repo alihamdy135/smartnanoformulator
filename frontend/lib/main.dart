@@ -1485,10 +1485,10 @@ class _FormulationResultView extends StatelessWidget {
         const SizedBox(height: 17),
         for (final group in const <(String, List<String>)>[
           ('CARRIER & EXCIPIENT EVIDENCE', ['carrier', 'excipients']),
-          ('RATIOS & PROPOSED BATCHES', ['ratios', 'batches']),
+          ('RATIO EVIDENCE', ['ratios']),
           (
             'PARTICLE AND LOADING OUTCOMES',
-            ['size', 'pdi', 'zeta', 'entrapment']
+            ['size', 'pdi', 'entrapment']
           ),
           ('RELEASE PROFILE', ['release']),
         ]) ...[
