@@ -97,7 +97,7 @@ class Hybrid:
             ranked.append((match,float(sim),doc["id"],{**doc,"applicability":label,
                 "independence":"training_source" if reused else "training_overlap_unverified"}))
         ranked.sort(key=lambda item:(-int(item[0]),-item[1],item[2]))
-        return [item[3] for item in ranked[:3]]
+        return [item[3] for item in ranked[:5]]
 
     def regression(self, request, target):
         family = request.get("model_family","drug")
