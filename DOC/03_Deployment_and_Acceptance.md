@@ -6,7 +6,7 @@
 | --- | --- |
 | Flutter Web on Firebase Hosting | Research and process forms, validation feedback, endpoint state cards, citation panels and API connection. Build using `flutter build web` and serve `build/web`. Configure a rewrite to `/index.html` if using path-based client navigation. |
 | FastAPI on Vercel | Validate JSON, route through the engine, enforce API versions, add health checks, and return typed results and errors. Pin Python 3.14 initially, matching the archive. |
-| Research runtime | Bundle the reviewed joblib artifacts used by inference, the nine-card corpus, process metrics, drug metrics, process training range data and grouped error CSVs. Keep the full training releases in the research artifacts. |
+| Research runtime | Bundle the reviewed joblib artifacts used by inference, the 18-card corpus, process metrics, drug metrics, process training range data and grouped error CSVs. Keep the full training releases in the research artifacts. |
 | Optional Firebase Authentication | If approved for pilot access, the client sends a Firebase ID token and the API verifies it for the intended Firebase project. No auth is required by the proposed OpenAPI default. |
 | Persistence | Stateless first release. Persisting user inputs or saving result history requires a separate product decision. |
 
