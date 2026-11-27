@@ -1,7 +1,5 @@
 part of 'main.dart';
 
-part of 'main.dart';
-
 enum _WorkspaceSection { formulation, process }
 
 extension on _WorkspaceSection {
