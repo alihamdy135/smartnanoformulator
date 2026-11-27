@@ -24,7 +24,7 @@ from engine.hybrid import Hybrid
 
 API_VERSION = "0.1.0"
 MODEL_RELEASE = os.getenv("NANOPREDICT_MODEL_RELEASE", "hybrid-2026-11-14")
-CORPUS_RELEASE = os.getenv("NANOPREDICT_CORPUS_RELEASE", "curated-evidence-2026-11-14")
+CORPUS_RELEASE = os.getenv("NANOPREDICT_CORPUS_RELEASE", "curated-evidence-2026-11-27")
 ASSET_ROOT = Path(__file__).resolve().parent / "engine" / "assets"
 ASSET_BUNDLE = Path(__file__).resolve().parent / "runtime-assets.zip"
 ASSET_BUNDLE_ROOT = Path("/tmp/smartnanoformulator-assets")
